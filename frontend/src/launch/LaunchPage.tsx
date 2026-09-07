@@ -1,110 +1,82 @@
 import { useEffect, useState } from 'react'
 import LaunchForm, { type LaunchedToken } from './LaunchForm'
 import TokenGrid, { type Filter } from './TokenGrid'
+import { PaperHeader, PaperFooter } from './PaperChrome'
 import './launch.css'
 
-const SAMPLE_WALLET = '0x5AMP…1E01'
-
-export default function LaunchPage() {
-  const [wallet, setWallet] = useState<string | null>(null)
+export default function ExplorePage() {
+  const [wallet, setWallet] = useState(false)
   const [launched, setLaunched] = useState<LaunchedToken[]>([])
   const [filter, setFilter] = useState<Filter>('all')
+  const [search, setSearch] = useState('')
   const [creating, setCreating] = useState(false)
+  const [notice, setNotice] = useState('')
 
-  useEffect(() => {
-    document.title = 'Pons companion — launchpad'
-  }, [])
+  useEffect(() => { document.title = 'Explore — Plum' }, [])
 
   return (
     <div className="pad">
-      <header className="pad-bar">
-        <a className="pad-brand" href="/launch"><span className="pad-stripes" aria-hidden="true" />Pons companion</a>
-        <nav className="pad-nav" aria-label="Primary">
-          <a href="/launch" aria-current="page">Explore</a>
-          <a href="#ledger">Ledger</a>
-          <a href="/">Opening</a>
-        </nav>
-        <button type="button" className="pad-btn" onClick={() => setCreating(true)}>+ Create</button>
-        <button
-          type="button"
-          className="pad-btn pad-btn--dark"
-          onClick={() => setWallet((value) => (value ? null : SAMPLE_WALLET))}
-          title="Sample only. No wallet provider is wired yet."
-        >
-          {wallet ? wallet : 'Connect'}
-        </button>
-      </header>
-
-      <section className="pad-hero" aria-labelledby="pad-hero-title">
-        <div className="pad-hero-copy">
-          <p className="pad-kicker">pons v2 · Robinhood Chain · sample build</p>
-          <h1 id="pad-hero-title">Launch a coin.<br />See every fee <em>first.</em></h1>
-          <p className="pad-hero-sub">The fee math, the gas, and the graduation line, shown before you sign. Read from the chain, not a spreadsheet.</p>
-          <div className="pad-hero-actions">
-            <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Launch a coin →</button>
-            <a className="pad-link" href="#ledger">How it works →</a>
+      <PaperHeader page="explore" wallet={wallet} onConnect={() => setWallet(value => !value)} onCreate={() => setCreating(true)} />
+      <main id="paper-main">
+        <section className="pad-hero" aria-labelledby="pad-hero-title">
+          <div className="pad-hero-copy">
+            <p className="pad-kicker"><span className="pad-dot" /> The discovery desk <span className="pad-issue">No. 001</span></p>
+            <h1 id="pad-hero-title">A new window<br /><em>on what’s next.</em></h1>
+            <p className="pad-hero-sub">A place for curious people and early ideas.<br />Explore the collection, or try a launch of your own.</p>
+            <div className="pad-hero-actions">
+              <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Create a coin <span aria-hidden="true">↗</span></button>
+              <a className="pad-link" href="/about">A little about us <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
-        </div>
-        <img className="pad-hero-mac" src="/images/macintosh-render.png" alt="" width="1536" height="1024" />
-        <dl className="pad-stats" aria-label="Sample statistics">
-          <Stat label="Coins launched here" value={String(launched.length)} note="sample session" />
-          <Stat label="Graduated" value="0" note="none yet" />
-          <Stat label="Fees shown first" value="100%" note="every launch" />
-          <Stat label="Gas quoted in" value="ETH" note="before you sign" />
-        </dl>
-      </section>
+          <figure className="pad-hero-figure">
+            <span className="pad-plate-label">PERSONAL COMPUTING / NEW POSSIBILITIES</span>
+            <img className="pad-hero-mac" src="/images/macintosh-render.png" alt="An ivory Macintosh, keyboard and mouse" width="1536" height="1024" />
+            <figcaption><span>A familiar feeling.</span><span>From the Plum desktop ↗</span></figcaption>
+          </figure>
+          <dl className="pad-stats" aria-label="Demo collection statistics">
+            <Stat number="01" label="In the collection" value={String(10 + launched.length).padStart(2, '0')} note="sample coins" />
+            <Stat number="02" label="Graduated" value="05" note="sample coins" />
+            <Stat number="03" label="On the curve" value="05" note="sample coins" />
+            <Stat number="04" label="Made by you" value={String(launched.length).padStart(2, '0')} note="this visit" />
+          </dl>
+        </section>
 
-      <div className="pad-stripe-rule" aria-hidden="true" />
+        <div className="pad-stripe-rule" aria-hidden="true" />
 
-      <section className="pad-explore" aria-labelledby="pad-explore-title">
-        <div className="pad-explore-head">
-          <h2 id="pad-explore-title">Coins on Pons <span className="pad-count">placeholder rows · no market data</span></h2>
-          <div className="pad-filters" role="group" aria-label="Filter">
-            {(['all', 'graduated', 'curve', 'stocks'] as Filter[]).map((value) => (
-              <button key={value} type="button" className="pad-chip" aria-pressed={filter === value} onClick={() => setFilter(value)}>
-                {{ all: 'All', graduated: 'Graduated', curve: 'On the curve', stocks: 'Stocks' }[value]}
-              </button>
-            ))}
+        <section className="pad-explore" aria-labelledby="pad-explore-title">
+          <div className="pad-explore-head">
+            <div><p className="pad-kicker">The collection</p><h2 id="pad-explore-title">Explore the possibilities<span className="pad-period">.</span></h2></div>
+            <label className="pad-search"><span className="pad-sr-only">Search coins by name, ticker or address</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="1.5" /><path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.5" /></svg><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Find something interesting" /></label>
           </div>
-        </div>
-        <TokenGrid launched={launched} filter={filter} />
-      </section>
+          <div className="pad-collection-tools">
+            <div className="pad-filters" role="group" aria-label="Filter coins">
+              {(['all', 'graduated', 'curve', 'stocks'] as Filter[]).map(value => (
+                <button key={value} type="button" className="pad-chip" aria-pressed={filter === value} onClick={() => setFilter(value)}>
+                  {{ all: 'All coins', graduated: 'Graduated', curve: 'On the curve', stocks: 'Stocks' }[value]}
+                </button>
+              ))}
+            </div>
+            <p className="pad-sample-note"><span className="pad-dot" /> Demo collection · No live market data</p>
+          </div>
+          <p className="pad-sr-only" role="status">{notice}</p>
+          <TokenGrid launched={launched} filter={filter} search={search} onReset={() => { setSearch(''); setFilter('all') }} />
+          <div className="pad-collection-end"><span>End of this edition</span><span>More possibilities ahead.</span></div>
+        </section>
 
-      <section className="pad-ledger" id="ledger" aria-labelledby="pad-ledger-title">
-        <h2 id="pad-ledger-title">How it works</h2>
-        <ol>
-          <li>Fill in the launch form. The quote shows launch fee, trade fee, creator tax, and graduation before you sign.</li>
-          <li>Pons deploys the coin. Liquidity is locked. Trading starts on the curve.</li>
-          <li>Creator fees appear here as claimable, pending, or claimed, with transaction links.</li>
-        </ol>
-        <p className="pad-fine">Sample copy. Steps two and three are not built.</p>
-      </section>
-
-      <footer className="pad-footer">
-        <span><span className="pad-stripes" aria-hidden="true" />Pons companion · working title</span>
-        <span>Copyright (c) 2026. Not affiliated with Pons or Robinhood.</span>
-      </footer>
-
-      {creating && (
-        <LaunchForm
-          wallet={wallet}
-          onConnect={() => setWallet(SAMPLE_WALLET)}
-          onClose={() => setCreating(false)}
-          onLaunch={(token) => {
-            setLaunched((list) => [token, ...list])
-            setCreating(false)
-          }}
-        />
-      )}
+        <aside className="pad-invitation">
+          <div><p className="pad-kicker">Something on your mind?</p><h2>Every idea starts <em>somewhere.</em></h2></div>
+          <button type="button" className="pad-btn" onClick={() => setCreating(true)}>Try the creation desk <span aria-hidden="true">↗</span></button>
+        </aside>
+      </main>
+      <PaperFooter />
+      {creating && <LaunchForm wallet={wallet} onConnect={() => setWallet(true)} onClose={() => setCreating(false)} onLaunch={token => {
+        setLaunched(list => [token, ...list]); setFilter('all'); setSearch(''); setCreating(false)
+        setNotice(`${token.name} added to your demo collection. It will clear when you reload.`)
+      }} />}
     </div>
   )
 }
 
-function Stat({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <div className="pad-stat">
-      <dt>{label}</dt>
-      <dd>{value}<small>{note}</small></dd>
-    </div>
-  )
+function Stat({ number, label, value, note }: { number: string; label: string; value: string; note: string }) {
+  return <div className="pad-stat"><dt><span>{number}</span>{label}</dt><dd>{value}<small>{note}</small></dd></div>
 }

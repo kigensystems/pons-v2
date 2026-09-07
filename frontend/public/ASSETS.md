@@ -1,5 +1,9 @@
 # Opening scene assets
 
+## Reuse in Plum's Explore and About pages
+
+The September 7 Explore/About implementation reuses the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The artwork file is unchanged; Explore uses CSS sepia/saturation grading and multiply blending, and About uses CSS brightness/saturation grading over a dark green background. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
+
 ## Monitor channels
 
 The active image-based opening and preserved 3D scene share the same renderer-independent playback controller. The image version fits its 640 x 480 canvas into the artwork's glass with an SVG clip/transform. An exposure curve and small highlight diffusion are applied directly to that canvas's SVG rendering, clipped inside the glass. An 8 x 6 sampled average drives keyboard light; a luminance mask derived at runtime from the unchanged artwork preserves dark key gaps and legends. The earlier 160 x 120 bloom copy, painted edge glow, and casing wash were removed following user feedback. These are runtime composites; no source video or computer-image pixels were rewritten.

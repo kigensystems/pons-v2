@@ -1,34 +1,61 @@
-# Launchpad page
+# Plum — Explore and About
 
-Added September 7, 2026, Pacific time. First rough shape of the main page: a launchpad where a creator connects a wallet, launches a coin through Pons, and browses coins below.
+Updated September 7, 2026. Current implementation and handoff; visual inspection is not user design approval.
 
-## References
+## Integration and scope
 
-- Aesthetic: the About Us section of the [Shader site](https://www.shader.se/). Cream paper, dark serif headlines, small serif body, rainbow stripe rules, paper grain and faint scanlines, hard offset shadows.
-- Layout: [StonkFun](https://www.stonkfun.xyz/), the [Pons explore page](https://www.ponsfamily.com/launchpad), and [Snowball Capital](https://snowballcapital.fun/). Compact top bar with search and connect, short hero with stat tiles, filter chips, dense card grid.
-- Launch fields: the [Pons v2 launch form](https://www.ponsfamily.com/launchpad/create) as observed on September 7, 2026.
+The reviewed `feature/launch-desk` branch was fast-forwarded from `decff68` to `f032924` and pushed to `main`. GitHub returned no pull requests for this repository, including an all-state query, so there was no PR to merge or close. Main was never rebased or force-pushed. The original feature passed build, lint, and all 24 existing tests before integration.
 
-## Where it lives
+The user subsequently selected **Plum** as the name, asked for refinement of both Explore and About, and clarified that our existing design leads: Shader is a reference, not a template. Generated coin artwork was rejected; it is not used, and further generation is paused.
 
-- `frontend/src/launch/LaunchPage.tsx`: top bar, hero with stat tiles, explore section with filter chips, short how-it-works, footer. Holds sample wallet, launched coins, filter, and search state.
-- `frontend/src/launch/LaunchForm.tsx`: the Create dialog. Compact two-column fields, a quote panel, and a Connect or Launch footer.
-- `frontend/src/launch/TokenGrid.tsx`: card grid with ten placeholder coins. Sample launches appear first as queued. Filters: all, graduated, on the curve, stocks. Search matches name, ticker, or address.
-- `frontend/src/launch/launch.css`: all styles for this page. Nothing in `index.css` changed. Headings set their own color because the opening scene's global `h1` rule paints cream.
-- `frontend/src/main.tsx`: renders this page when the path starts with `/launch`, otherwise the opening scene. No router is installed.
+## Pages and code
 
-Open `/launch` on the dev server. Promoting it to the root path is a one-line change in `main.tsx`.
+- `/`: the existing opening, with Plum naming and links to Explore/About. Only the header, loader name, metadata, and a small navigation stylesheet changed. TV playback, composited lighting, scene artwork, and the retained Three.js implementation are untouched.
+- `/explore`: the collection, search, four filter chips, sample statistics, and native creation dialog. `/launch` remains an exact-path alias; trailing slashes work. No router dependency was added.
+- `/about`: a dark green opening with the existing Macintosh, followed by the story, principles, prototype note, and an Explore link.
+- `frontend/src/launch/LaunchPage.tsx` exports `ExplorePage`. The existing directory is retained for continuity with Claude's feature. `PaperChrome.tsx` provides shared navigation/footer; `TokenGrid.tsx` holds the sample collection; `LaunchForm.tsx` owns the creation dialog; `launchModel.ts` contains the illustrative quote calculation.
+- `frontend/src/about/` holds the About component and scoped styles. `index.css` is unchanged. No dependency or hosting configuration changes.
 
-## What is real and what is sample
+## Design decisions
 
-- Connect toggles a sample address labeled as such. No wallet provider is wired.
-- Create opens a native dialog. Launch needs the sample wallet, a name, and a ticker. It adds a queued card to the grid and closes. Nothing leaves the browser.
-- The quote runs locally. Creator tax is clamped to 0 to 10 percent and added to the 1.00 percent base trade fee. Launch fee, trade fee, snipe window, graduation, and locked liquidity are copied from the Pons v2 form on the date above and labeled sample.
-- Every card and stat tile is invented placeholder data and labeled as such. Card art is a generated tint with the ticker initials; no images are used.
+Retain the six-column desktop card layout and two-column mobile layout. Give it calmer spacing, clear name/ticker hierarchy, square muted placeholder art, and comfortable search/filter controls. The mobile hero omits the decorative image to bring the collection closer.
+
+Use Georgia for the main headlines and italic Plum name, self-hosted Instrument Serif for editorial details/cards, and VT323 for terminal labels, with Georgia body text, warm paper, green ink, restrained plum accents, and a thin muted color rule. Static grain, very faint scanlines, and restrained color fringing support the material without distorting controls. About's asymmetric Macintosh scene connects to our existing opening; its editorial layout and copy are original. The [live Shader About reference](https://www.shader.se/#about-us) and the repository's [user favorites](../reviews/2026-09-06/USER-FAVORITES.md) informed the review.
+
+The first rendered pass was revised to compact Explore's hero, improve small-label legibility using our existing terminal font, and focus the Name field when the dialog opens. The final cross-page comparison aligned the main headlines and Plum name with the opening's Georgia treatment. Desktop and mobile were inspected at normal size. Existing artwork/fonts are reused without file edits; [provenance](../frontend/public/ASSETS.md) records the CSS treatment.
+
+## Prototype behavior
+
+- All ten coins, prices, changes, curve states, addresses, and statistics are examples. No live market requests, wallet provider, signing, trading, deployment, fee claiming, or chain integration exists.
+- Search matches name, ticker, or displayed sample address, ignoring case and surrounding whitespace. Filters and search combine; empty results offer a working reset.
+- Connect enables a clearly labeled local demo state. Connecting does not submit a completed form. Add demo coin is a separate action.
+- Name and alphanumeric ticker are required; description and local image are optional. Images accept PNG/JPG/WebP/GIF up to 2 MB, with a preview and validation errors. Nothing is uploaded to a service.
+- Added coins use unique IDs so repeated tickers coexist. They appear first as **Your demo**, with no invented market values or deployed state. Creation resets filters/search so the result is visible. Demo entries are excluded from the sample curve filter.
+- The illustrative quote preserves both currencies for non-ETH initial buys. For example, 25 USDG plus the sample creation fee displays `0.0005 ETH + 25 USDG`. Gas is explicitly not estimated. The numbers are not represented as current Pons fees.
+- Demo entries and the connection live only in component memory. Leaving Explore or reloading clears them. Unsupported social/holder-sharing fields and unverified liquidity/graduation claims from the scaffold were removed.
+- Native modal behavior, explicit initial focus, Escape dismissal, focus restoration, scroll locking, visible focus rings, and result announcements support keyboard use. Textures are static; reduced motion removes transitions. Neither new page starts a TV or render loop.
 
 ## Validation
 
-- `npm --prefix frontend run build` and `npm --prefix frontend run lint` pass.
-- Visually inspected at 1280 wide, at the pane's 573 wide size, and at the 375 mobile preset. Six cards per row at 1280, two at 375. No horizontal overflow at 375.
-- Create, fill name, ticker, and 2.5 percent creator tax: the quote shows 3.50 percent traders pay. Connect then Launch closed the dialog, added a queued card first in the grid, and moved the coins-launched tile to 1. Graduated and Stocks filters reduce the grid as expected.
-- The browser pane's screenshots do not capture the dialog's top layer, so the dialog was checked through the DOM, not by eye.
-- Not checked: reduced motion beyond the transition reset, screen reader flow, the browser file picker.
+- Build and lint pass without warnings. All 27 Node tests pass, including three new tests covering mixed-currency totals, tiny buys, and non-finite/bounded inputs.
+- Existing production preview at `http://127.0.0.1:4173/` reused throughout, rebuilt and reloaded after edits.
+- Desktop at 1440 × 900 and mobile at 390 × 844: both pages, editorial content, footer, grid, and creation dialog inspected. Additional 320px-width checks found no document overflow on either page.
+- Filters return 10 All / 5 Graduated / 5 On the curve / 2 Stocks. Case/whitespace search, empty state, reset, and result counts checked in the browser.
+- Desktop and mobile demo creation checked. Verified connection keeps a populated form open before explicit submission, duplicate symbols remain separate, counters update, Escape dismisses, and focus returns to the opening button. Forward/backward keyboard movement inside the form checked; this is not a screen-reader audit.
+- Reduced-motion emulation reports zero button transition duration, and the override was cleared afterward. No browser warning/error logs were reported during the checked flows.
+- **Not verified end to end:** selecting a local image through the file picker. The Chrome extension returned `Not allowed` when setting the chosen file; its documentation points to the file-URL permission. The application validation/preview code is present, but no successful picker test is claimed. No real wallet/chain test applies to this prototype.
+
+## Screenshots
+
+The Explore before/after pairs use matching viewports. About is newly created, so its screenshots document the implementation rather than a prior-page comparison.
+
+| View | Before | Current |
+| --- | --- | --- |
+| Explore desktop | [Scaffold](screenshots/explore-before-desktop.png) | [Opening view](screenshots/explore-after-desktop.png) · [Grid](screenshots/explore-grid-desktop.png) |
+| Explore mobile | [Scaffold](screenshots/explore-before-mobile.png) | [Opening view](screenshots/explore-after-mobile.png) · [Grid](screenshots/explore-grid-mobile.png) |
+| About desktop | New page | [Opening view](screenshots/about-after-desktop.png) · [Story](screenshots/about-story-desktop.png) |
+| About mobile | New page | [Opening view](screenshots/about-after-mobile.png) · [Story](screenshots/about-story-mobile.png) |
+| Create | Revised dialog | [Desktop](screenshots/create-desktop.png) · [Mobile](screenshots/create-mobile.png) |
+| Opening | Naming and navigation only | [Desktop](screenshots/plum-opening-desktop.png) · [Mobile](screenshots/plum-opening-mobile.png) |
+
+No deployment was performed. Work continues on `main`; Claude's next feature should branch from the updated remote main.

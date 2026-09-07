@@ -1,0 +1,80 @@
+.about-intro { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 35px; min-height: 600px; padding: 72px max(48px, calc((100vw - 1200px) / 2)); padding-bottom: 105px; overflow: hidden; isolation: isolate; color: #eae6d4; background: #17221b; }
+.about-intro::before { content: ''; position: absolute; z-index: -2; inset: 0; background: radial-gradient(ellipse at 75% 38%, #69705a5e 0, #263b2b60 31%, transparent 65%), linear-gradient(140deg, #1b2920, #101a14); }
+.about-intro .pad-kicker { color: #bbc4a6; font-size: 14px; margin-bottom: 25px; }
+.about-intro .pad-dot { background: #c2c9a0; box-shadow: 0 0 8px #d5e6b05c; }
+.about-intro h1 { font: 400 clamp(44px, 4.1vw, 62px)/1.14 Georgia, serif; color: #efe9d7; letter-spacing: -.035em; text-shadow: -.6px 0 #a7c9f58c, .7px .3px #f2a3788c, 0 0 5px #f4dfb552, 0 0 20px #e6c99d33; }
+.about-intro h1 em { color: #d3dbc0; }
+.about-intro-sub { font-size: 16px; line-height: 1.7; margin: 26px 0 25px; color: #c6c9b7; }
+.about-story-link { display: inline-flex; gap: 45px; text-decoration: none; border-bottom: 1px solid #c2cbb85e; padding: 8px 0 10px; font-size: 13px; }
+.about-computer { position: relative; margin: 0 -25px 0 -40px; }
+.about-computer::before { content: ''; position: absolute; z-index: -1; left: 14%; right: 5%; bottom: 20%; height: 17%; background: #060d09; border-radius: 50%; filter: blur(18px); }
+.about-computer img { display: block; width: 100%; height: auto; filter: brightness(.77) saturate(.65) sepia(.08); }
+.about-computer figcaption { margin-top: 5px; text-align: center; color: #a1ab96; font: 13px/1.4 var(--mono); letter-spacing: .1em; }
+.about-hero-foot { position: absolute; bottom: 28px; left: max(48px, calc((100vw - 1200px) / 2)); right: max(48px, calc((100vw - 1200px) / 2)); display: flex; justify-content: space-between; padding-top: 18px; border-top: 1px solid #c4d1b32b; font: 13px/1.5 var(--mono); letter-spacing: .06em; color: #a5af9a; }
+.about-atmosphere { position: absolute; z-index: -1; pointer-events: none; inset: 0; background: linear-gradient(175deg, transparent 15%, #b1bba309 45%, transparent 67%), radial-gradient(ellipse at 100% 15%, #c4ceb510, transparent 56%); }
+.about-editorial, .about-principles { max-width: 1248px; margin: auto; padding: 55px 24px 70px; }
+.about-section-label { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); margin-bottom: 44px; }
+.about-section-label .pad-kicker { font-size: 13px; }
+.about-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; }
+.about-columns h2 { font-size: clamp(40px, 4vw, 58px); }
+.about-columns h2 em { color: #677457; }
+.about-lede { max-width: 400px; margin: 22px 0 0; font: 24px/1.35 var(--serif); color: var(--ink-2); }
+.about-story-body { padding-top: 3px; }
+.about-story-body p { font-size: 15px; line-height: 1.8; color: var(--ink-2); margin: 0 0 18px; }
+.about-divider { max-width: 1200px; margin: auto; display: flex; gap: 22px; align-items: center; }
+.about-divider span { height: 1px; background: var(--line); flex: 1; }
+.about-divider i { width: 7px; height: 7px; border: 1px solid #948087; transform: rotate(45deg); }
+.about-principles { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; padding-top: 65px; }
+.about-principles h2 { font-size: 49px; }
+.about-principles h2 em { color: #677457; }
+.about-principles-heading > p:last-child { font: italic 14px/1.6 var(--body); color: var(--ink-2); margin-top: 24px; }
+.about-principle-list article { display: flex; gap: 26px; padding: 22px 0; border-top: 1px solid var(--line); }
+.about-principle-list article:first-child { padding-top: 0; border-top: 0; }
+.about-principle-list article > span { padding-top: 9px; font: 14px var(--mono); color: var(--plum); }
+.about-principle-list h3 { font-size: 31px; }
+.about-principle-list p { font-size: 14px; line-height: 1.7; margin: 11px 0 0; color: var(--ink-2); }
+.about-edition { max-width: 1200px; margin: 0 auto; padding: 25px 30px; display: grid; grid-template-columns: 190px 1fr 95px; gap: 30px; align-items: center; border: 1px solid var(--line); background: #e0e0cd5c; }
+.about-edition .pad-kicker { margin: 0; }
+.about-edition > p { font-size: 13px; line-height: 1.7; color: var(--ink-2); margin: 0; }
+.about-edition-number { text-align: right; font: italic 25px var(--serif); color: #78667b; }
+.about-signoff { padding: 85px 24px 95px; text-align: center; }
+.about-signoff .pad-kicker { justify-content: center; margin-bottom: 20px; }
+.about-signoff h2 { font-size: clamp(53px, 6vw, 82px); }
+.about-signoff h2 em { color: #677457; }
+.about-signoff .pad-btn { margin-top: 26px; min-width: 170px; }
+@media (max-width: 1100px) {
+  .about-intro { padding: 65px 36px 95px; gap: 20px; min-height: 550px; }
+  .about-hero-foot { left: 36px; right: 36px; }
+  .about-editorial, .about-principles { padding-left: 28px; padding-right: 28px; }
+  .about-columns, .about-principles { gap: 50px; }
+  .about-divider, .about-edition { margin-left: 28px; margin-right: 28px; }
+  .about-edition { grid-template-columns: 140px 1fr; gap: 25px; }
+  .about-edition-number { display: none; }
+}
+@media (max-width: 760px) {
+  .about-intro { grid-template-columns: 1fr; gap: 12px; padding: 36px 24px 90px; min-height: 0; }
+  .about-intro .pad-kicker { margin-bottom: 20px; font-size: 13px; }
+  .about-intro h1 { font-size: clamp(30px, 8.3vw, 49px); }
+  .about-intro-sub { font-size: 14px; margin: 20px 0 16px; }
+  .about-story-link { font-size: 12px; }
+  .about-computer { max-width: 420px; width: 100%; margin: -8px auto 0; }
+  .about-computer figcaption { font-size: 11px; margin-top: -5px; }
+  .about-hero-foot { left: 24px; right: 24px; bottom: 23px; font-size: 11px; gap: 18px; }
+  .about-hero-foot > span:last-child { max-width: 170px; text-align: right; }
+  .about-editorial { padding: 34px 24px 42px; }
+  .about-section-label { margin-bottom: 30px; }
+  .about-section-label > span:last-child { display: none; }
+  .about-columns, .about-principles { grid-template-columns: 1fr; gap: 28px; }
+  .about-columns h2 { font-size: 43px; }
+  .about-lede { font-size: 23px; margin-top: 18px; }
+  .about-story-body p { font-size: 14px; }
+  .about-divider { margin: 0 24px; }
+  .about-principles { padding: 40px 24px 35px; }
+  .about-principles h2 { font-size: 43px; }
+  .about-principles-heading > p:last-child { margin-top: 16px; }
+  .about-principle-list article { gap: 20px; }
+  .about-principle-list h3 { font-size: 30px; }
+  .about-edition { margin: 0 24px; padding: 22px; grid-template-columns: 1fr; gap: 15px; }
+  .about-signoff { padding: 55px 20px 65px; }
+  .about-signoff h2 { font-size: 53px; }
+}

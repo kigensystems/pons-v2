@@ -3,6 +3,7 @@ import type { LaunchedToken } from './LaunchForm'
 export type Filter = 'all' | 'graduated' | 'curve' | 'stocks'
 
 type Card = {
+  id: string
   ticker: string
   name: string
   mc: string
@@ -13,10 +14,12 @@ type Card = {
   graduated: boolean
   address: string
   hue: number
+  image?: string
+  description?: string
 }
 
 // Placeholder cards. Shapes follow the Pons explore grid; every value is invented.
-const SAMPLE: Card[] = [
+const SAMPLE = [
   { ticker: 'SAMPLE', name: 'Sample Token', mc: '$1.20M', change: '+4.2%', age: '3d', paired: 'ETH', progress: 100, graduated: true, address: '0x0000…0001', hue: 28 },
   { ticker: 'PLCHLD', name: 'Placeholder', mc: '$840.0K', change: '−1.1%', age: '5d', paired: 'ETH', progress: 100, graduated: true, address: '0x0000…0002', hue: 200 },
   { ticker: 'DEMO', name: 'Demo Coin', mc: '$412.5K', change: '+12.8%', age: '1d', paired: 'USDG', progress: 100, graduated: true, address: '0x0000…0003', hue: 120 },
@@ -31,44 +34,49 @@ const SAMPLE: Card[] = [
 
 const STOCK_PAIRS = new Set(['HOOD', 'AAPL', 'TSLA', 'NVDA'])
 
-export default function TokenGrid({ launched, filter }: { launched: LaunchedToken[]; filter: Filter }) {
+export default function TokenGrid({ launched, filter, search, onReset }: { launched: LaunchedToken[]; filter: Filter; search: string; onReset: () => void }) {
   const cards: Card[] = [
     ...launched.map((token, index) => ({
+      id: token.id,
       ticker: token.ticker,
       name: token.name,
       mc: '—',
-      change: 'queued',
+      change: 'demo',
       age: 'now',
       paired: token.paired,
       progress: 0,
       graduated: false,
-      address: 'pending',
+      address: 'this visit',
       hue: (index * 67) % 360,
+      image: token.image,
+      description: token.description,
     })),
-    ...SAMPLE,
+    ...SAMPLE.map(card => ({ ...card, id: card.address })),
   ]
   const visible = cards.filter((card) => {
     if (filter === 'graduated' && !card.graduated) return false
-    if (filter === 'curve' && card.graduated) return false
+    if (filter === 'curve' && (card.graduated || card.address === 'this visit')) return false
     if (filter === 'stocks' && !STOCK_PAIRS.has(card.paired)) return false
-    return true
+    return `${card.name} ${card.ticker} ${card.address}`.toLowerCase().includes(search.trim().toLowerCase())
   })
 
-  if (visible.length === 0) return <p className="pad-empty">No coins match.</p>
+  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker or filter.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins ↗</button></div>
 
   return (
-    <ul className="pad-grid">
+    <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
       {visible.map((card) => (
-        <li key={`${card.ticker}-${card.address}`} className="pad-card" data-graduated={card.graduated}>
+        <li key={card.id} className="pad-card" data-graduated={card.graduated}>
           <div className="pad-card-art" style={{ '--hue': card.hue } as React.CSSProperties} aria-hidden="true">
-            <span>{card.ticker.slice(0, 2)}</span>
-            <b className="pad-badge">{card.graduated ? 'Graduated' : card.address === 'pending' ? 'Queued' : `${card.progress}%`}</b>
+            {card.image ? <img src={card.image} alt="" /> : <span>{card.ticker.slice(0, 2)}</span>}
+            <b className="pad-badge">{card.graduated ? 'Graduated' : card.address === 'this visit' ? 'Your demo' : `Curve · ${card.progress}%`}</b>
           </div>
           <div className="pad-card-body">
-            <div className="pad-card-title"><strong>{card.name}</strong><span>${card.ticker}</span></div>
+            <div className="pad-card-title"><strong title={card.name}>{card.name}</strong><span>${card.ticker}</span></div>
+            {card.description && <p className="pad-sr-only">{card.description}</p>}
             <div className="pad-card-row"><span className="pad-mc">{card.mc}<small>MC</small></span><span className="pad-change" data-neg={card.change.startsWith('−')}>{card.change}</span></div>
-            {!card.graduated && (
-              <div className="pad-progress" role="progressbar" aria-valuenow={card.progress} aria-valuemin={0} aria-valuemax={100} aria-label="Curve progress">
+            <span className="pad-sr-only">{card.graduated ? 'Sample graduated coin' : card.address === 'this visit' ? 'Demo coin, not deployed' : 'Sample coin on the curve'}</span>
+            {!card.graduated && card.address !== 'this visit' && (
+              <div className="pad-progress" role="progressbar" aria-valuenow={card.progress} aria-valuemin={0} aria-valuemax={100} aria-label={`${card.name} sample curve progress`}>
                 <span style={{ width: `${card.progress}%` }} />
               </div>
             )}
@@ -76,6 +84,6 @@ export default function TokenGrid({ launched, filter }: { launched: LaunchedToke
           </div>
         </li>
       ))}
-    </ul>
+    </ul></>
   )
 }

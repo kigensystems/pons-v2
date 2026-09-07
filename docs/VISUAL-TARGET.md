@@ -2,7 +2,7 @@
 
 ## Reference and current state
 
-- Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and existing opening-only scope.
+- Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and identity. This document covers the opening; the separately authorized Explore and About pages are documented in [LAUNCH-DESK.md](LAUNCH-DESK.md).
 - Current implementation: original Macintosh artwork with live TV, composited glow, and SVG shadows. Preserve working TV and opt-in audio.
 - Latest CRT cleanup: [desktop before](screenshots/crt-clean-before-desktop.png), [desktop after](screenshots/crt-clean-after-desktop.png), [mobile before](screenshots/crt-clean-before-mobile.png), [mobile after](screenshots/crt-clean-after-mobile.png). Same paused opening picture at each viewport. Painted glow outlines and broad washes are removed; small highlight diffusion stays inside the glass, and the key reflection uses a luminance mask. These are implementation evidence awaiting user assessment.
 - Rejected CRT-brightness pass: [desktop](screenshots/crt-after-desktop.png), [mobile](screenshots/crt-after-mobile.png). User feedback: "The edges + reflections just look really bad, very low quality." Do not treat the earlier visual inspection as acceptance.

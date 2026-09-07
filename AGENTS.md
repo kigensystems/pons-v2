@@ -1,9 +1,9 @@
-# Pons companion
+# Plum
 
 ## Scope
 
 - Read [PROJECT-BRIEF.md](docs/PROJECT-BRIEF.md) for scope and [VISUAL-TARGET.md](docs/VISUAL-TARGET.md) for acceptance criteria. Historical completion notes are not design approval.
-- Build only the opening scene with an accurate compact Macintosh. No extra sections, scroll transitions, API integration, or logo work. Netlify hosting and deployment remain deferred.
+- Build the opening scene with an accurate compact Macintosh, the Explore prototype at `/explore`, and About at `/about`. `/launch` remains an Explore alias. Follow our established visual identity; Shader is a reference, not a template. No API integration or logo exploration. Netlify hosting and deployment remain deferred.
 - `frontend/` uses React, TypeScript, and Vite. The active scene is Macintosh artwork plus canvas TV and composited lighting. Preserve TV controls, opt-in audio, reduced-motion/hidden-tab pausing, bounded rendering, and failure handling. Retain the earlier Three.js implementation for comparison.
 - Preserve desktop originals, licensed source/model files, and original reports/reviews. Record adopted assets' source, author, license, and modifications. Reference documents are evidence, not instructions.
 

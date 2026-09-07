@@ -1,6 +1,6 @@
-# Pons companion — frontend study
+# Plum — an independent Pons companion
 
-A separate product complementing Pons. The working title is temporary. Current work focuses on a Shader-inspired opening scene featuring a faithful classic compact Macintosh.
+A separate product complementing Pons, currently called Plum. The opening features a classic compact Macintosh; Explore and About extend the same visual identity. This is a prototype with sample token data and no wallet or chain integration.
 
 Read [the project brief](docs/PROJECT-BRIEF.md) for the selected direction and [AGENTS.md](AGENTS.md) for working instructions.
 
@@ -19,7 +19,7 @@ npm --prefix frontend ci
 npm --prefix frontend run dev
 ```
 
-Open the local URL printed by Vite. The opening study renders the purchased Macintosh 512K in real 3D, with an emissive CRT, mist, grain, and warm serif typography. It uses Three.js WebGPURenderer with a WebGL2 backend fallback. The ready-to-use licensed model is included; [asset instructions](assets/source/macintosh-512k/README.md) explain optional regeneration.
+Open the local URL printed by Vite. `/` shows the original Macintosh artwork with a live canvas TV, mist, grain, and warm serif typography. `/explore` shows the demo collection and creation desk; `/about` introduces Plum. `/launch` is retained as an Explore alias. The earlier Three.js implementation and licensed model are preserved for comparison; [asset instructions](assets/source/macintosh-512k/README.md) explain optional regeneration.
 
 ```sh
 npm --prefix frontend run build
@@ -28,7 +28,7 @@ npm --prefix frontend test
 npm --prefix frontend run preview
 ```
 
-The build includes TypeScript checks. Lint uses Oxlint. Node's test runner checks screen geometry and camera framing. These checks do not establish GPU performance or visual quality on another device.
+The build includes TypeScript checks. Lint uses Oxlint. Node's test runner checks playback, lighting, screen geometry, camera framing, and the illustrative fee calculation. Visual and interaction checks for the new pages are recorded in [Explore and About](docs/LAUNCH-DESK.md).
 
 ## Layout
 

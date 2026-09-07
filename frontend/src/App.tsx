@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
 import ImageTelevision from './ImageTelevision'
 import ImageGrounding from './ImageGrounding'
+import './openingNavigation.css'
 
 function App() {
   const [progress, setProgress] = useState(0)
@@ -38,8 +39,8 @@ function App() {
       </div>
 
       <header className="masthead">
-        <span className="working-name">Pons companion<span className="name-note">Working title</span></span>
-        <span className="edition">Opening study <span className="edition-number">01</span></span>
+        <span className="working-name">Plum<span className="name-note">A companion to Pons</span></span>
+        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
       </header>
 
       <div className="scene-object scene-object--still">

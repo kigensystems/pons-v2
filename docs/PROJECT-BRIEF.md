@@ -4,17 +4,20 @@ Updated September 7, 2026.
 
 ## Current direction
 
-Build only the opening scene for a separate companion to the Pons launchpad. Product name and features remain undecided. Logo, extra sections, scroll transitions, API integration, and deployment are deferred.
+The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Georgia headlines, Instrument Serif editorial details, terminal labels, warm ivory, dark green atmosphere, and the compact Macintosh. Shader's About section is a reference for treatment, not a template to copy. Logo exploration, API integration, and deployment remain deferred.
+
+Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 
 Use an accurate compact Macintosh. The user prefers the original image presentation with a working TV. Keep that direction unless the user changes it. Shader informs atmosphere, lighting, material treatment, composition, and luminous typography; retain our Macintosh and identity.
 
-Latest direction: a slightly darker, less defined landscape, with the Macintosh sharing the room's lighting. Subdue the casing and fog, preserve surface contact, and favor localized CRT light and small reflections over a broad color wash.
+Latest opening-scene direction: a slightly darker, less defined landscape, with the Macintosh sharing the room's lighting. Subdue the casing and fog, preserve surface contact, and favor localized CRT light and small reflections over a broad color wash.
 
 Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance criteria.
 
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
+- Explore and About use scoped styles, the existing fonts/artwork, and static grain. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
 - Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels, brief static transitions, Play/Pause, and opt-in sound.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
