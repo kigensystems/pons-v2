@@ -118,17 +118,41 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
           <stop offset=".45" stopColor="var(--tv-light)" stopOpacity=".65" />
           <stop offset="1" stopColor="var(--tv-light)" stopOpacity="0" />
         </radialGradient>
+        <linearGradient id={`${clipId}-bezel-reflection`}>
+          <stop offset="0" stopColor="var(--tv-light)" stopOpacity="0" />
+          <stop offset=".35" stopColor="var(--tv-light)" stopOpacity=".9" />
+          <stop offset=".8" stopColor="var(--tv-light)" stopOpacity="1" />
+          <stop offset="1" stopColor="var(--tv-light)" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id={`${clipId}-glass-shade`} r=".7">
+          <stop offset=".45" stopColor="#080c10" stopOpacity="0" />
+          <stop offset=".8" stopColor="#080c10" stopOpacity=".12" />
+          <stop offset="1" stopColor="#080c10" stopOpacity=".55" />
+        </radialGradient>
+        <radialGradient id={`${clipId}-glass-reflection`}>
+          <stop offset="0" stopColor="#dfe9e5" stopOpacity=".16" />
+          <stop offset=".4" stopColor="#dfe9e5" stopOpacity=".06" />
+          <stop offset="1" stopColor="#dfe9e5" stopOpacity="0" />
+        </radialGradient>
       </defs>
       <g className="image-tv-emission">
         <path d="M 596 143 L 917 161 L 909 435 L 580 412 Z" fill="var(--tv-light)" filter={`url(#${clipId}-halo)`} />
+        {/* Light catches the inward-facing lower lip, not the whole front casing. */}
+        <path d="M 573 428 Q 737 462 922 448" fill="none" stroke={`url(#${clipId}-bezel-reflection)`} strokeWidth="14" filter={`url(#${clipId}-edge)`} />
+        <path d="M 930 187 Q 935 310 922 424" fill="none" stroke="var(--tv-light)" strokeOpacity=".45" strokeWidth="7" filter={`url(#${clipId}-edge)`} />
       </g>
       <g className="image-tv-reflection" clipPath={`url(#${clipId}-keyboard)`}>
-        <ellipse cx="615" cy="729" rx="330" ry="113" transform="rotate(10 615 729)" fill={`url(#${clipId}-reflection)`} />
+        <ellipse cx="632" cy="708" rx="230" ry="70" transform="rotate(10 632 708)" fill={`url(#${clipId}-reflection)`} />
       </g>
       <g className="image-tv-picture" clipPath={`url(#${clipId})`}>
         <foreignObject width="640" height="480" transform="matrix(.585 .031 -.025 .638 570 129)">
           <canvas ref={canvasRef} className="image-tv-canvas" width="640" height="480" role="img" aria-label="TV cycling four video channels with brief static between them" />
         </foreignObject>
+      </g>
+      {/* Restrained room reflection and edge falloff give the moving picture glass depth. */}
+      <g clipPath={`url(#${clipId})`} aria-hidden="true">
+        <rect x="560" y="135" width="375" height="315" fill={`url(#${clipId}-glass-shade)`} />
+        <ellipse cx="585" cy="178" rx="100" ry="185" transform="rotate(24 585 178)" fill={`url(#${clipId}-glass-reflection)`} />
       </g>
       {/* A small copy of the actual bright pixels blooms across the glass edge. */}
       <g className="image-tv-bloom" filter={`url(#${clipId}-phosphor)`} aria-hidden="true">

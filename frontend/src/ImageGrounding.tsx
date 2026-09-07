@@ -15,7 +15,7 @@ export default function ImageGrounding() {
       </defs>
 
       {/* The tall case casts farther right; the low peripherals stay close to the desk. */}
-      <g fill="#0b0d0c" filter="url(#ground-cast)" opacity=".5">
+      <g fill="#0b0d0c" filter="url(#ground-cast)" opacity=".62">
         <path d="M540 676 L1118 629 L1280 718 L1070 826 L600 746 Z" />
         <path d="M105 824 L808 951 L955 800 L998 851 L842 1005 L119 872 Z" />
         <path d="M994 933 L1105 964 L1217 873 L1260 910 L1136 1010 L1002 974 Z" />

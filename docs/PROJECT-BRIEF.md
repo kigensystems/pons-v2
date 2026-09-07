@@ -8,6 +8,8 @@ Build only the opening scene for a separate companion to the Pons launchpad. Pro
 
 Use an accurate compact Macintosh. The user prefers the original image presentation with a working TV. Keep that direction unless the user changes it. Shader informs atmosphere, lighting, material treatment, composition, and luminous typography; retain our Macintosh and identity.
 
+Latest direction: a slightly darker, less defined landscape, with the Macintosh sharing the room's lighting. Subdue the casing and fog, preserve surface contact, and favor localized CRT light and small reflections over a broad color wash.
+
 Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance criteria.
 
 ## What exists
@@ -23,7 +25,7 @@ Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance
 
 The user finds the added light/reflections barely noticeable and the shadows fake. The computer still needs convincing surface contact and better integration with the dreamy environment. Technical validation and past completion messages are not aesthetic approval.
 
-The September 7 contact revision removes the detached keyboard-side shadow strip and places overlapping, filled footprints beneath the objects. Desktop and mobile screenshots are in the visual target. This is an inspected iteration awaiting user assessment; the earlier light/reflection feedback remains open.
+The September 7 contact revision removed the detached keyboard-side shadow strip and placed overlapping, filled footprints beneath the objects. The following atmosphere pass darkens the floor and casing, reduces the purple baked tint, and adds CRT edge falloff, a soft glass reflection, inner-bezel light, and a smaller rear-keyboard spill. Desktop and mobile comparisons are in the visual target. This is an inspected iteration awaiting user assessment, not aesthetic approval.
 
 Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. Use the existing Pause TV control for comparisons. The proposed timestamp-lock preview was declined as overcomplicated; no code was added. A Blender pre-render was suggested but has not been selected.
 

@@ -4,7 +4,8 @@
 
 - Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and existing opening-only scope.
 - Current implementation: original Macintosh artwork with live TV, composited glow, and SVG shadows. Preserve working TV and opt-in audio.
-- Latest contact revision: [desktop](screenshots/contact-after-desktop.png) and [mobile](screenshots/contact-after-mobile.png). Filled shadows sit beneath the transparent artwork and foreground haze sits behind the assembly. These are implementation evidence, not approved design.
+- Latest atmosphere revision: [desktop before](screenshots/atmosphere-before-desktop.png), [desktop after](screenshots/atmosphere-after-desktop.png), [mobile before](screenshots/atmosphere-before-mobile.png), [mobile after](screenshots/atmosphere-after-mobile.png). Same paused opening picture at each viewport. Darker floor/casing, quieter fog, stronger broad cast shadow, localized CRT reflections. These are implementation evidence, not approved design.
+- Prior contact revision: [desktop](screenshots/contact-after-desktop.png) and [mobile](screenshots/contact-after-mobile.png). Filled shadows sit beneath the transparent artwork and foreground haze sits behind the assembly.
 - Previous baseline: [desktop before this edit](screenshots/contact-before-desktop.png) and [earlier mobile](screenshots/image-grounding-mobile.jpg), from the `14299f4` implementation. User feedback: light/reflection changes are not noticeably better, and shadows look fake. The new contact revision awaits assessment; light/reflection feedback remains open. Do not carry earlier completion claims forward as aesthetic approval.
 
 ## Acceptance criteria
@@ -12,6 +13,7 @@
 - The CRT visibly emits light at normal viewing size. Bright footage produces perceptible glow; dark footage emits less. Any keyboard spill should read as light on the keys and housing, not an unrelated color wash.
 - The computer, keyboard, and mouse convincingly rest on one surface. Contact edges and shadow direction agree with the image's perspective and baked lighting; no detached dark outlines or floating objects.
 - Keep warm ivory casing with readable material detail and a restrained cool fill. The computer should belong in the surrounding scene.
+- Let the landscape recede into darkness without losing contact edges. The screen should supply localized light to the inner bezel and nearby keyboard; retain a soft glass reflection and curved-edge falloff without obscuring footage.
 - Haze establishes depth behind and around the computer while leaving surface contact readable. Compare softness, grain, and glow with Shader rather than judging each overlay in isolation.
 - Desktop and mobile retain clear copy, visible TV and controls, and a coherent composition without horizontal overflow.
 

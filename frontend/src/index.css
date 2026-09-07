@@ -139,7 +139,7 @@ body:has(.loading-screen) { overflow: hidden; }
   background: #10120f;
 }
 .room, .vignette, .grain { position: absolute; inset: 0; pointer-events: none; }
-.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 72% 74%, #42433f 0%, #252c29 30%, #181d1b 53%, #111413 80%); }
+.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 72% 74%, #30332f 0%, #202623 30%, #171c1a 53%, #111413 80%); }
 .window-light {
   position: absolute;
   width: 44%;
@@ -165,7 +165,7 @@ body:has(.loading-screen) { overflow: hidden; }
 .desk {
   position: absolute;
   inset: 60% -20% -30%;
-  background: radial-gradient(ellipse at 65% 48%, #a29b8e38, #767a701c 45%, transparent 70%);
+  background: radial-gradient(ellipse at 65% 48%, #a29b8e20, #767a7010 45%, transparent 70%);
   filter: blur(24px);
 }
 .room-haze {
@@ -175,7 +175,7 @@ body:has(.loading-screen) { overflow: hidden; }
   right: -15%;
   bottom: -18%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, #c4b9b05c, #9b9c8626 40%, transparent 70%);
+  background: radial-gradient(ellipse, #c4b9b032, #9b9c8618 40%, transparent 70%);
   filter: blur(45px);
   animation: haze-drift 24s ease-in-out infinite alternate;
 }
@@ -253,7 +253,7 @@ body:has(.loading-screen) { overflow: hidden; }
   height: 74%;
   left: -3%;
   top: 31%;
-  opacity: .48;
+  opacity: .3;
   transform: rotate(-5deg);
   -webkit-mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
   mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
@@ -264,7 +264,7 @@ body:has(.loading-screen) { overflow: hidden; }
   height: 49%;
   left: -5%;
   bottom: -8%;
-  opacity: .18;
+  opacity: .09;
   animation-direction: alternate-reverse;
   -webkit-mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
   mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
@@ -325,7 +325,7 @@ h1 em { font-weight: 400; }
   .scene-controls { flex-direction: column; align-items: flex-end; gap: 6px; }
   .foreground-haze { inset: 60% -50% -20% -50%; }
   .mist--back { top: 40%; height: 60%; width: 160%; left: -30%; }
-  .mist--front { height: 38%; bottom: 0; opacity: .14; }
+  .mist--front { height: 38%; bottom: 0; opacity: .07; }
   .window-light { width: 90%; right: -20%; top: -10%; opacity: .1; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -334,13 +334,13 @@ h1 em { font-weight: 400; }
 
 /* The original artwork has a wider composition than the live model assembly. */
 .scene-object--still { z-index: 1; width: 72%; left: 28.5%; top: 12%; height: 78%; }
-.macintosh--still { position: relative; height: 100%; filter: saturate(.92); -webkit-mask-image: none; mask-image: none; }
+.macintosh--still { position: relative; height: 100%; filter: brightness(.8) saturate(.68) contrast(1.08); -webkit-mask-image: none; mask-image: none; }
 .image-grounding { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; mix-blend-mode: multiply; }
 .image-television { --tv-light: #b4beff; --tv-glow: 0; --tv-spill: 0; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .image-tv-picture { opacity: .94; }
 .image-tv-canvas { display: block; width: 640px; height: 480px; filter: brightness(1.4) saturate(1.1); }
-.image-tv-emission { mix-blend-mode: screen; opacity: var(--tv-glow); }
-.image-tv-reflection { mix-blend-mode: screen; opacity: var(--tv-spill); }
+.image-tv-emission { mix-blend-mode: screen; opacity: min(.85, calc(var(--tv-glow) * 1.7)); }
+.image-tv-reflection { mix-blend-mode: screen; opacity: min(.3, calc(var(--tv-spill) * 1.3)); }
 .image-tv-bloom { mix-blend-mode: screen; opacity: .55; }
 .image-tv-bloom-canvas { display: block; width: 640px; height: 480px; }
 @media (min-aspect-ratio: 19/10) and (min-width: 901px) {

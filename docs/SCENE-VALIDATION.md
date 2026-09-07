@@ -1,5 +1,12 @@
 # Macintosh opening scene validation
 
+## Darker atmosphere and localized CRT light — September 7, 2026
+
+- Reduced room/floor illumination and foreground/rear mist, subdued the artwork's brightness and saturation, and deepened only the broad cast-shadow layer. Contact footprints and artwork coordinates are unchanged. Added curved-screen edge shading and a faint room reflection, light on the inner lower/right bezel, and a smaller reflection over the rear keyboard. Emission/spill remain driven by existing sampled footage, with CSS opacity caps of .85/.3; black input still yields zero emission. Source artwork and videos are unchanged.
+- Revisited live Shader and compared before/after at 1440 x 900 and 390 x 844 with the same paused opening picture. Casing and landscape are visibly quieter, the lower bezel carries a localized tint, and keys, contact edges, copy, and controls remain readable. No horizontal overflow at either size. Evidence: [desktop before](screenshots/atmosphere-before-desktop.png), [desktop after](screenshots/atmosphere-after-desktop.png), [mobile before](screenshots/atmosphere-before-mobile.png), [mobile after](screenshots/atmosphere-after-mobile.png). This remains an image composite awaiting user assessment, not a physical-lighting render.
+- Rebuilt/reloaded the existing production preview at `http://127.0.0.1:4173/`. Reduced-motion startup remained paused. Manual Play produced changing footage and changed the light from purple to a warmer tint; sampled emission opacity rose from .423 to .615. Pause restored Play TV with sound off. The render loop, 5Hz light sampling, playback controller, and audio handling are unchanged.
+- Build, lint, all 24 existing tests, and whitespace checks passed. The tests cover black/bright light response and playback lifecycle/failure behavior. No new dependency or update loop; no new performance benchmark, physical-phone test, or manual failure/audio/background-tab audit. No deployment.
+
 ## Filled surface contact — September 7, 2026
 
 - Moved the SVG beneath the transparent artwork and replaced narrow edge strips with overlapping filled footprints. The tall case retains a softer rightward cast; keyboard and mouse casts stay closer to their bases. Raised the assembly above foreground haze so its contact edges remain readable. Original artwork, TV canvas, playback controller, light sampling, and licensed sources are unchanged.
