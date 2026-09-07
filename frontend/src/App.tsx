@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
+
+const MacintoshScene = lazy(() => import('./MacintoshScene'))
 
 function App() {
   const [paused, setPaused] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
   const [hidden, setHidden] = useState(() => document.hidden)
-  const [imageFailed, setImageFailed] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -35,33 +35,10 @@ function App() {
         <span className="edition">Opening study <span className="edition-number">01</span></span>
       </header>
 
-      <div className="scene-object" data-loaded={imageLoaded}>
-        <img
-          className="macintosh"
-          src="/images/macintosh-render.png"
-          alt="A classic beige Macintosh, with its original-style keyboard and mouse, in warm evening light."
-          width="1536"
-          height="1024"
-          fetchPriority="high"
-          draggable="false"
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageFailed(true)}
-          hidden={imageFailed}
-        />
-        {imageLoaded && !imageFailed && (
-          <div className="crt" aria-hidden="true">
-            <div className="crt-glow" />
-            <div className="crt-content">
-              <svg className="happy-mac" viewBox="0 0 32 40" fill="none">
-                <path d="M4 2h24v34H4z M7 5h18v21H7z M7 31h3 M19 31h6 M10 36v3h12v-3" />
-                <path d="M12 12v3 M20 12v3 M12 19h2v2h4v-2h2" />
-              </svg>
-              <span className="crt-greeting">hello.</span>
-              <span className="crt-caption">a new beginning<span className="cursor">_</span></span>
-            </div>
-            <div className="crt-scanlines" />
-          </div>
-        )}
+      <div className="scene-object">
+        <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
+          <MacintoshScene active={!paused && !hidden} />
+        </Suspense>
       </div>
 
       <div className="foreground-haze" aria-hidden="true" />
@@ -81,7 +58,6 @@ function App() {
           <span className="scene-caption">Somewhere between then and what’s next.</span>
         </div>
         <div className="scene-controls">
-          {imageFailed && <span className="asset-error" role="status">Macintosh artwork could not load. Refresh to retry.</span>}
           <button
             className="motion-button"
             type="button"

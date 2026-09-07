@@ -4,7 +4,8 @@
 
 This is a separate product that complements the Pons launchpad. Its name and feature set remain open. Logo work is deferred; the user may develop it separately. Resume logo and identity development only when requested.
 
-- `frontend/`: React + TypeScript + Vite application, with Three.js and React Three Fiber installed for scene development.
+- `frontend/`: React + TypeScript + Vite application. `MacintoshScene.tsx` owns the Three.js renderer and its resource lifecycle; the shell and practical controls remain in the DOM.
+- `assets/tools/`: reproducible Blender import and GLB inspection scripts. `assets/source/macintosh-512k/` contains licensed local source/working files excluded from Git. Never move or modify the user's originals on the desktop.
 - `reports-examples/` and `reviews/`: original research, visual references, and reviews. Preserve these files.
 - `docs/PROJECT-BRIEF.md`: current scope, selected direction, and deferred decisions. Read it before design or implementation work.
 - `netlify.toml`: intended Netlify build configuration. Hosting is deferred; do not deploy as part of local development.
@@ -15,7 +16,7 @@ Build only the opening scene, closely matching Shader's visual quality, composit
 
 Do not add scroll transitions, additional sections, product workflows, or logo exploration. A crypto API will be used later; Mobula is a candidate, not a selected or connected provider. Keep future data access separate from the scene and leave API integration out of the current work.
 
-Netlify is the selected eventual host. Vercel and Next.js are not required by the current plan. WebGPU/TSL with WebGL 2 fallback is the proposed rendering direction; validate it on the actual scene before treating it as settled or faster.
+Netlify is the selected eventual host. Vercel and Next.js are not required by the current plan. The scene uses Three.js WebGPURenderer and TSL bloom, with WebGL 2 fallback. Preserve reduced-motion/hidden-tab pausing, bounded pixel ratio, and the still fallback. Recheck performance after material changes; do not assume WebGPU is faster across devices.
 
 ## Research & Design Decisions
 

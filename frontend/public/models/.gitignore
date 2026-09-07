@@ -1,0 +1,4 @@
+# Licensed local web exports are generated from the user's purchased source.
+*.glb
+*.gltf
+*.bin

@@ -8,7 +8,7 @@ An independent companion to the Pons launchpad. The first audience, product task
 
 - Lead reference: [Shader](https://www.shader.se/).
 - Visual target: dreamy dark haze, retro computer graphics, warm luminous serif typography, convincing materials, and careful composition. Match the reference closely instead of inventing another visual direction.
-- Required object: an old-school compact Macintosh. Use the upright beige CRT enclosure and appropriate keyboard/mouse proportions of the early compact Mac family as the starting point. No exact Macintosh model year has been selected.
+- Required object: the purchased Macintosh 512K by Shrednector, with its accurate upright CRT enclosure, keyboard, and mouse. See the source record below.
 - Supporting reference: [Oxigen](https://www.oxigen.sa/) for atmospheric depth; its voxel landscape is not an instruction to add a second scene or voxelize the Mac.
 - Current deliverable: the opening scene only. No scroll behavior or transitions. Subtle ambient movement can be considered within this scene, with a static reduced-motion presentation.
 - Logo: deferred; the user may develop it independently. All project naming in the scaffold is a working label.
@@ -19,15 +19,15 @@ The request combines Shader's atmosphere with the user's explicit Macintosh choi
 
 Prefer an existing, visually faithful model over a rough generated substitute. Inspect the actual preview before recommending it, then inspect the downloaded geometry, texture sizes, material setup, and license before adopting it. Keep source and optimized versions traceable.
 
-The user explicitly rejected the previous Plewr IBM 5155 and Poly Haven Classic Laptop suggestions. Do not reuse them. A generic retro look, small file size, or permissive license alone does not meet the visual brief. No model has been selected or downloaded during initialization.
+The user explicitly rejected the previous Plewr IBM 5155 and Poly Haven Classic Laptop suggestions. Do not reuse them. A generic retro look, small file size, or permissive license alone does not meet the visual brief.
 
-The strongest candidate from the initial replacement search is [Apple Macintosh 128K by treehouse3d](https://www.cgtrader.com/3d-models/electronics/computer/apple-macintosh-128k). Its [preview](https://img-new.cgtrader.com/items/5080603/9dfc166184/apple-macintosh-128k-3d-model-9dfc166184.webp) was visually inspected: faithful compact enclosure, recessed CRT, detailed keyboard, separate mouse, and vents. The listing showed $7.50 and a Royalty Free License on September 6, 2026. It offers Blender/FBX source; no GLB was confirmed. This is a lead, not an approved asset. Full license suitability, source-file compatibility, materials, and web conversion remain unverified; no purchase was made.
+The earlier treehouse3d Macintosh 128K lead has been superseded by the user's purchased Shrednector model. Do not replace the selected model with another asset without a reason grounded in the brief.
 
 ## Technical decisions
 
 - React + TypeScript + Vite, using npm.
-- Three.js + React Three Fiber for scene development.
-- Proposed graphics path: Three.js WebGPURenderer and TSL, with WebGL 2 fallback. Confirm compatibility and performance once a real scene exists; do not claim that a package installation proves renderer support.
+- Three.js WebGPURenderer and TSL bloom, with WebGL 2 fallback. The single scene is owned by a React component with explicit resource cleanup. React Three Fiber remains installed but is not imported.
+- Bound GPU work: 30-fps ambient cap, desktop/mobile pixel-ratio caps of 1.5/1.25, low-resolution bloom, and rendering only on initial load/resize while paused. A local test is not a guarantee for every device.
 - Eventual hosting: Netlify. Configuration is prepared locally; no site or deployment has been created.
 - A crypto data API will be added later. Mobula is only a possible provider. No API clients, credentials, requests, or speculative endpoints are needed now.
 - Keep rendering and future data access separate. Store future private API credentials on the server, never in browser-exposed Vite variables.
@@ -35,19 +35,33 @@ The strongest candidate from the initial replacement search is [Apple Macintosh 
 
 ## Current opening study
 
-The placeholder has been replaced by a fixed-camera scene: detailed generated Macintosh artwork, DOM CRT greeting and scanlines, layered SVG/CSS mist, grain, chromatic text glow, self-hosted Instrument Serif, and responsive composition. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
+The opening now renders the purchased model in real 3D, with a curved emissive CRT, authored greeting texture and scanlines, warm key light, lavender rim light, self shadows, subtle pointer parallax, and TSL bloom. CSS/SVG mist and grain extend the atmosphere around it. Readable typography and the pause/resume control stay in the DOM. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
 
-This is rendered artwork with animated layers, not a live 3D model. Three/R3F remain installed but are not imported into this page. No WebGPU/WebGL renderer or performance benchmark is claimed. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled by the user, and pauses in hidden tabs.
+The earlier generated artwork is retained as a loading/error fallback. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled by the user, and pauses in hidden tabs. The real 3D implementation is isolated in a separate loaded module. No scroll, logo, or API work was added.
 
-The user asked for continual comparison with the real Shader site. Direct desktop comparison showed that Shader has stronger CRT bloom and more pronounced textured fog. The study was adjusted in that direction, but full 3D lighting, depth, and parallax remain outstanding.
+The user asked for continual comparison with the real Shader site. Direct comparison informed the CRT glow, textured fog, dramatic scale, and light balance. This is a close atmospheric study with the user's Macintosh choice, not a claim of matching Shader pixel for pixel.
 
-Validation: production build/TypeScript and Oxlint pass. Desktop and 390 × 844 compositions were visually inspected in Chrome. Keyboard activation toggled animation between running and paused with a visible 2px focus outline. Reduced-motion presentation starts paused. A deliberately blocked artwork request showed the error message and hid the broken image; clearing the block restored the artwork. No horizontal overflow at 390px. Temporary browser emulation and request blocking were reset. Device performance and live 3D remain untested.
+Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint are separate from visual rendering and device checks.
+
+## Paused checkpoint and next pass
+
+The user requested a pause on September 6. The working real 3D opening is saved and the local preview remains running. The latest visual feedback is unresolved: the user prefers the earlier generated computer image (`frontend/public/images/macintosh-render.png`) to the current live model presentation.
+
+Resume with these priorities, within the opening scene:
+
+1. Match the image's warm cream housing, soft highlights, lavender reflections, and darker glossy CRT. Controlled Blender studies indicate lighting and screen reflections are the main difference; existing authored normals are smooth, and bevel/normal-channel experiments did not improve the result.
+2. Make the computer the main focus through its framing and a quieter headline. Current composition still places a large headline on the left and the computer on the right.
+3. Add deliberate computer manipulation and a way to focus the monitor for its future interface. Only subtle pointer parallax and the atmosphere pause control exist at this checkpoint; direct rotation and monitor interaction remain unimplemented.
+
+Comparison script: `assets/tools/compare_macintosh_surface.py`. Local studies are retained under `assets/source/macintosh-512k/work/macintosh-surface-*.png`; `baseline` and `glass` are useful starting references. The glass study uses roughness 0.14, coat weight 0.25, and a front-left softbox near screen height. These are Blender studies, not changes applied to the frontend or final GLB. No geometry rewrite is currently indicated.
 
 ## Selected 3D asset path
 
-The user's strongest model choice is [Mac 512K Computer 1984 by shrednector](https://sketchfab.com/3d-models/mac-512k-computer-1984-5d6c93e4c5e840e6a5b6f2f88dde5604). The live page has no model download control. A visually matching model by the same creator is sold on [CGTrader](https://www.cgtrader.com/3d-models/electronics/computer/retro-mac-computer-80s); the listing offers FBX/OBJ, keyboard, mouse, and two 4K texture sets. The exact downloadable revision is unverified. The user said they are buying it; source files have not been received. This supersedes the earlier treehouse3d candidate.
+The user's strongest model choice is [Mac 512K Computer 1984 by shrednector](https://sketchfab.com/3d-models/mac-512k-computer-1984-5d6c93e4c5e840e6a5b6f2f88dde5604). The live page has no model download control. The user bought the matching model from [CGTrader](https://www.cgtrader.com/3d-models/electronics/computer/retro-mac-computer-80s) and supplied FBX/OBJ plus ten 4K texture maps. All twelve files were copied from `Desktop/Retro Mac 3D` with matching SHA256 hashes; the originals were not moved or edited.
 
-Blender 5.2.1 LTS was found installed and its CLI successfully reported its version. Import, rendering, material conversion, and GLB export are pending the model. Preserve purchased archives in `assets/source/macintosh-512k/` and inspect their actual contents and license before adopting a web export.
+Blender 5.2.1 LTS imported the FBX. Materials were reconnected and visually checked in a studio render. The editable source retains original geometry and full-resolution textures. A separate 4.41-MiB GLB keeps 25,146 triangles, merges static pieces into four model draws, and uses 2K color / 1K normal and packed data maps. The curved Screen mesh remains independent. Rebuild and inspection scripts live in `assets/tools/`.
+
+Purchased source, working blends, and the GLB are ignored by Git. A clean checkout must restore/rebuild the licensed asset before displaying live 3D. Public deployment and asset distribution packaging are deferred with Netlify hosting.
 
 ## Reference context
 
