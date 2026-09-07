@@ -8,7 +8,7 @@
 - Listing license: Royalty Free License (no AI). Model files were used locally for Blender processing and application rendering. They were not uploaded to an image generator or shared as source assets. The listing/source record is in `assets/source/macintosh-512k/README.md`; no license document was included in the supplied folder.
 - Blender import and PBR reconnect: `assets/tools/prepare_macintosh.py`. Preserves the source and writes a separate web derivative.
 - Web optimization: static meshes merged to four draws, 2K JPEG base color maps, 1K lossless normal and packed AO/roughness/metallic maps. Original geometry retained: 25,146 triangles, 4,623,224-byte GLB.
-- CRT screen: separate `Screen` mesh with normalized UVs, replaced at runtime with an authored canvas texture and emissive material.
+- CRT screen: separate `Screen` mesh with normalized UVs. Its runtime material uses an authored canvas texture for emission, with independent dark reflective glass and clearcoat. Runtime softboxes are baked into a small environment map; licensed source geometry and maps are unchanged.
 - Keep licensed source files out of public asset folders. Public deployment and distribution packaging remain deferred with Netlify hosting.
 
 ## Macintosh artwork
@@ -29,4 +29,4 @@
 
 ## Procedural graphics
 
-`images/mist.svg`, the inline grain filter, CRT overlays, and the small Macintosh line drawing are authored in this repository. The mist filter is static; CSS animates layer transforms rather than regenerating noise every frame. Motion starts paused for reduced-motion users and can be explicitly enabled with the atmosphere button.
+`images/mist.svg`, the inline grain filter, CRT content, softbox environment, and the small Macintosh line drawing are authored in this repository. The mist filter is static; CSS animates layer transforms rather than regenerating noise every frame. Motion starts paused for reduced-motion users and can be explicitly enabled with Space while the scene has keyboard focus. There is no visible atmosphere button.

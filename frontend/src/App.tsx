@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import SceneErrorBoundary from './SceneErrorBoundary'
 
 const MacintoshScene = lazy(() => import('./MacintoshScene'))
 
@@ -36,9 +37,11 @@ function App() {
       </header>
 
       <div className="scene-object">
-        <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
-          <MacintoshScene active={!paused && !hidden} />
-        </Suspense>
+        <SceneErrorBoundary>
+          <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
+            <MacintoshScene active={!paused && !hidden} onToggleAtmosphere={() => setPaused((value) => !value)} />
+          </Suspense>
+        </SceneErrorBoundary>
       </div>
 
       <div className="foreground-haze" aria-hidden="true" />
@@ -56,19 +59,6 @@ function App() {
         <div className="scene-note">
           <span className="scene-index">001 — THE OPENING</span>
           <span className="scene-caption">Somewhere between then and what’s next.</span>
-        </div>
-        <div className="scene-controls">
-          <button
-            className="motion-button"
-            type="button"
-            onClick={() => setPaused(!paused)}
-            aria-label={paused ? 'Resume atmosphere' : 'Pause atmosphere'}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-              {paused ? <path d="m3 1 7 5-7 5Z" fill="currentColor" /> : <path d="M3 1v10M9 1v10" stroke="currentColor" strokeWidth="2" />}
-            </svg>
-            <span>{paused ? 'Resume atmosphere' : 'Pause atmosphere'}</span>
-          </button>
         </div>
       </footer>
     </main>
