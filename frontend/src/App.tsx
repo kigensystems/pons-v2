@@ -1,37 +1,16 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
-import SceneErrorBoundary from './SceneErrorBoundary'
+import { useCallback, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
-
-const MacintoshScene = lazy(() => import('./MacintoshScene'))
 
 function App() {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [sound, setSound] = useState(false)
-  const handleSoundBlocked = useCallback(() => setSound(false), [])
-  const handleProgress = useCallback((value: number) => setProgress((previous) => Math.max(previous, value)), [])
+  const [imageError, setImageError] = useState(false)
   const dismissLoading = useCallback(() => setLoading(false), [])
-  const [paused, setPaused] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-  const [hidden, setHidden] = useState(() => document.hidden)
-
-  useEffect(() => {
-    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const updateMotion = () => setPaused(preference.matches)
-    const updateVisibility = () => setHidden(document.hidden)
-    preference.addEventListener('change', updateMotion)
-    document.addEventListener('visibilitychange', updateVisibility)
-    return () => {
-      preference.removeEventListener('change', updateMotion)
-      document.removeEventListener('visibilitychange', updateVisibility)
-    }
-  }, [])
 
   return (
     <>
     {loading && <LoadingScreen progress={progress} complete={progress === 100} onExited={dismissLoading} />}
-    <main className="opening" inert={loading} aria-busy={loading} data-motion={paused || hidden || loading ? 'paused' : 'playing'}>
+    <main className="opening" inert={loading} aria-busy={loading} data-motion="paused">
       <div className="room" aria-hidden="true">
         <div className="window-light" />
         <div className="window-frame" />
@@ -45,12 +24,22 @@ function App() {
         <span className="edition">Opening study <span className="edition-number">01</span></span>
       </header>
 
-      <div className="scene-object">
-        <SceneErrorBoundary onError={dismissLoading}>
-          <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
-            <MacintoshScene active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} onProgress={handleProgress} onError={dismissLoading} onToggleAtmosphere={() => setPaused((value) => !value)} />
-          </Suspense>
-        </SceneErrorBoundary>
+      <div className="scene-object scene-object--still">
+        <img
+          className="macintosh macintosh--still"
+          src="/images/macintosh-render.png"
+          alt="Warm ivory Macintosh with a dark curved screen, keyboard, and mouse"
+          width="1536"
+          height="1024"
+          fetchPriority="high"
+          hidden={imageError}
+          onLoad={() => setProgress(100)}
+          onError={() => { setImageError(true); dismissLoading() }}
+        />
+        {imageError && <div className="model-status">
+          <p role="status">The Macintosh image could not load.</p>
+          <button className="motion-button" type="button" onClick={() => window.location.reload()}>Reload image</button>
+        </div>}
       </div>
 
       <div className="foreground-haze" aria-hidden="true" />
@@ -68,14 +57,6 @@ function App() {
         <div className="scene-note">
           <span className="scene-index">001 — THE OPENING</span>
           <span className="scene-caption">Somewhere between then and what’s next.</span>
-        </div>
-        <div className="tv-controls">
-          <button className="tv-sound" type="button" aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>
-            {paused ? 'Play TV' : 'Pause TV'}
-          </button>
-          <button className="tv-sound" type="button" aria-pressed={sound} onClick={() => setSound((value) => !value)}>
-            TV sound {sound ? 'on' : 'off'}
-          </button>
         </div>
       </footer>
     </main>

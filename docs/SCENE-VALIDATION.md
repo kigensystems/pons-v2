@@ -1,5 +1,13 @@
 # Macintosh opening scene validation
 
+## Original image comparison — September 7, 2026
+
+- At the user's request, first committed and pushed the 3D atmosphere checkpoint (`92048f0`), then replaced the active renderer with the original, unedited 1536 x 1024 image. Retained the revised fog and type. Camera/TV controls are absent, all fog animations are paused, and the previous 3D/media implementation remains in source.
+- Inspected actual production desktop at 1440 x 900 and the normal wide window, plus 390 x 844 mobile. Artwork, keyboard, mouse, and copy are visible; mobile scroll width equals its 390px viewport. Evidence: [desktop](screenshots/image-study-desktop.jpg), [mobile](screenshots/image-study-mobile.jpg). This image has softer baked shading than the model checkpoint; no claim of matching Shader exactly.
+- The image loads at its native 1536px width and dismisses the loader. Verified no canvas/video elements, no scene-module/GLB/MP4 resource requests, and all four CSS atmosphere animations paused. The production build contains only the React shell (~61.6 KB gzip JavaScript), with no Three.js scene chunk. The existing PNG itself remains 1.77 MB.
+- Deliberately blocked the image request: the loader dismissed, the broken artwork was hidden, and the visible error offered Reload image. Removed request blocking and verified keyboard retry restored the artwork. Temporary browser overrides were cleared after inspection.
+- Build/TypeScript and Oxlint passed. The 19 existing media/framing tests passed at the preceding 3D checkpoint; those modules are unchanged and not loaded by this image view. No new tests were added for the reversible artwork switch. No deployment.
+
 ## Softer atmosphere checkpoint — September 7, 2026
 
 - Compared live Shader, the supplied screenshot, the original generated Macintosh image, and rendered production desktop/mobile views. Reduced opening yaw/elevation to 14/10 degrees, softened ivory housing and lavender fill, reduced glass reflection, enlarged/repositioned the desktop scene, and tightened mobile spacing. Stronger layered mist exposed letterboxing in the original SVG; `preserveAspectRatio="none"` removes those hard fog boundaries. No purchased geometry or textures changed.

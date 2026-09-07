@@ -331,3 +331,16 @@ h1 em { font-weight: 400; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* The original artwork has a wider composition than the live model assembly. */
+.scene-object--still { width: 72%; left: 28.5%; top: 12%; height: 78%; }
+.macintosh--still { height: 100%; filter: saturate(.92); }
+@media (min-aspect-ratio: 19/10) and (min-width: 901px) {
+  .scene-object--still { width: 69%; left: 31%; top: 9%; height: 85%; }
+}
+@media (max-width: 900px) {
+  .scene-object--still { width: 106%; left: -3%; top: 31%; height: 60%; }
+}
+@media (max-width: 540px) {
+  .scene-object--still { width: 112%; left: -6%; top: max(34%, 290px); height: 46%; }
+}
