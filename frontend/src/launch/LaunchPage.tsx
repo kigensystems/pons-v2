@@ -1,95 +1,110 @@
-import { useEffect } from 'react'
-import LaunchForm from './LaunchForm'
+import { useEffect, useState } from 'react'
+import LaunchForm, { type LaunchedToken } from './LaunchForm'
+import TokenGrid, { type Filter } from './TokenGrid'
 import './launch.css'
 
+const SAMPLE_WALLET = '0x5AMP…1E01'
+
 export default function LaunchPage() {
+  const [wallet, setWallet] = useState<string | null>(null)
+  const [launched, setLaunched] = useState<LaunchedToken[]>([])
+  const [filter, setFilter] = useState<Filter>('all')
+  const [creating, setCreating] = useState(false)
+
   useEffect(() => {
-    document.title = 'Pons companion — launch desk'
+    document.title = 'Pons companion — launchpad'
   }, [])
 
   return (
-    <div className="launch">
-      <header className="launch-masthead">
-        <a className="launch-brand" href="/">
-          <span className="launch-brand-stripes" aria-hidden="true" />
-          Pons companion
-        </a>
-        <nav className="launch-nav" aria-label="Primary">
-          <a href="/">Opening</a>
-          <a href="/launch" aria-current="page">Launch desk</a>
+    <div className="pad">
+      <header className="pad-bar">
+        <a className="pad-brand" href="/launch"><span className="pad-stripes" aria-hidden="true" />Pons companion</a>
+        <nav className="pad-nav" aria-label="Primary">
+          <a href="/launch" aria-current="page">Explore</a>
           <a href="#ledger">Ledger</a>
-          <a href="#contact">Contact</a>
+          <a href="/">Opening</a>
         </nav>
-        <a className="launch-nav-cta" href="#deploy">☎ Deploy a token</a>
+        <button type="button" className="pad-btn" onClick={() => setCreating(true)}>+ Create</button>
+        <button
+          type="button"
+          className="pad-btn pad-btn--dark"
+          onClick={() => setWallet((value) => (value ? null : SAMPLE_WALLET))}
+          title="Sample only. No wallet provider is wired yet."
+        >
+          {wallet ? wallet : 'Connect'}
+        </button>
       </header>
 
-      <section className="launch-hero" aria-labelledby="launch-hero-title">
-        <div className="launch-hero-copy">
-          <p className="launch-eyebrow">A companion to Pons · Robinhood Chain</p>
-          <h1 id="launch-hero-title">Infrastructure for the people who actually launch on Pons.</h1>
-          <p className="launch-hero-lede">
-            Every fee shown before you click. Every number read from the chain. No spreadsheet, no guesswork, no DM to support.
-          </p>
-        </div>
-        <figure className="launch-hero-figure">
-          <img src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />
-          <figcaption>Pons companion, Launch Desk. Version 0.1. Sample build.</figcaption>
-        </figure>
-      </section>
-
-      <div className="launch-stripes" aria-hidden="true" />
-
-      <section className="launch-about" aria-labelledby="launch-about-title">
-        <h2 id="launch-about-title">Serious about launching. Not another bonding curve.</h2>
-        <div className="launch-columns">
-          <div>
-            <p>
-              Pons is the busiest launchpad on Robinhood Chain, and the people who use it most have the same three complaints: gas
-              sticker shock, creator fees that vanish into an indexer, and fee math nobody can explain before they press launch.
-            </p>
-            <p>
-              Pons companion sits beside Pons, not against it. It reads the same contracts and shows you the truth on chain:
-              what you will pay, what holders will receive, what the protocol keeps, and when your fees are actually claimable.
-            </p>
-          </div>
-          <div>
-            <p>
-              The launch desk below is the first piece. Fill it in like a form from 1984, and the receipt on the right updates
-              as you type. Nothing is sent anywhere until you connect a wallet, and the wallet step is not wired yet.
-            </p>
-            <p>
-              Coming after this: a fee truth panel for live tokens, a holder concentration strip on every token page, and a
-              gas quote in the asset you are paying with. Controls and clarity on top of Pons, not a rival pad.
-            </p>
+      <section className="pad-hero" aria-labelledby="pad-hero-title">
+        <div className="pad-hero-copy">
+          <p className="pad-kicker">pons v2 · Robinhood Chain · sample build</p>
+          <h1 id="pad-hero-title">Launch a coin.<br />See every fee <em>first.</em></h1>
+          <p className="pad-hero-sub">The fee math, the gas, and the graduation line, shown before you sign. Read from the chain, not a spreadsheet.</p>
+          <div className="pad-hero-actions">
+            <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Launch a coin →</button>
+            <a className="pad-link" href="#ledger">How it works →</a>
           </div>
         </div>
+        <img className="pad-hero-mac" src="/images/macintosh-render.png" alt="" width="1536" height="1024" />
+        <dl className="pad-stats" aria-label="Sample statistics">
+          <Stat label="Coins launched here" value={String(launched.length)} note="sample session" />
+          <Stat label="Graduated" value="0" note="none yet" />
+          <Stat label="Fees shown first" value="100%" note="every launch" />
+          <Stat label="Gas quoted in" value="ETH" note="before you sign" />
+        </dl>
       </section>
 
-      <LaunchForm />
+      <div className="pad-stripe-rule" aria-hidden="true" />
 
-      <section className="launch-ledger" id="ledger" aria-labelledby="launch-ledger-title">
-        <div className="launch-stripes" aria-hidden="true" />
-        <h2 id="launch-ledger-title">What the ledger will show</h2>
-        <ul className="launch-ledger-list">
-          <li><strong>Claimable, pending, claimed.</strong> Three numbers with transaction links, never a bare zero.</li>
-          <li><strong>Effective tax.</strong> One figure that includes the platform share and any holder split.</li>
-          <li><strong>Trade failures with a reason.</strong> No liquidity, wrong pool, paused, wrong quote. Chain says, not UI says.</li>
-          <li><strong>Holder risk.</strong> Top holders, clustered wallets, time to first sell.</li>
-        </ul>
-        <p className="launch-fineprint">Sample roadmap. No metric above is measured yet.</p>
+      <section className="pad-explore" aria-labelledby="pad-explore-title">
+        <div className="pad-explore-head">
+          <h2 id="pad-explore-title">Coins on Pons <span className="pad-count">placeholder rows · no market data</span></h2>
+          <div className="pad-filters" role="group" aria-label="Filter">
+            {(['all', 'graduated', 'curve', 'stocks'] as Filter[]).map((value) => (
+              <button key={value} type="button" className="pad-chip" aria-pressed={filter === value} onClick={() => setFilter(value)}>
+                {{ all: 'All', graduated: 'Graduated', curve: 'On the curve', stocks: 'Stocks' }[value]}
+              </button>
+            ))}
+          </div>
+        </div>
+        <TokenGrid launched={launched} filter={filter} />
       </section>
 
-      <footer className="launch-footer" id="contact">
-        <div className="launch-footer-brand">
-          <span className="launch-brand-stripes" aria-hidden="true" />
-          <strong>Pons companion</strong>
-          <span>An independent companion to the Pons launchpad. Working title.</span>
-        </div>
-        <div className="launch-footer-meta">
-          <span>Copyright (c) Pons companion, 2026.</span>
-          <span>Not affiliated with Pons or Robinhood.</span>
-        </div>
+      <section className="pad-ledger" id="ledger" aria-labelledby="pad-ledger-title">
+        <h2 id="pad-ledger-title">How it works</h2>
+        <ol>
+          <li>Fill in the launch form. The quote shows launch fee, trade fee, creator tax, and graduation before you sign.</li>
+          <li>Pons deploys the coin. Liquidity is locked. Trading starts on the curve.</li>
+          <li>Creator fees appear here as claimable, pending, or claimed, with transaction links.</li>
+        </ol>
+        <p className="pad-fine">Sample copy. Steps two and three are not built.</p>
+      </section>
+
+      <footer className="pad-footer">
+        <span><span className="pad-stripes" aria-hidden="true" />Pons companion · working title</span>
+        <span>Copyright (c) 2026. Not affiliated with Pons or Robinhood.</span>
       </footer>
+
+      {creating && (
+        <LaunchForm
+          wallet={wallet}
+          onConnect={() => setWallet(SAMPLE_WALLET)}
+          onClose={() => setCreating(false)}
+          onLaunch={(token) => {
+            setLaunched((list) => [token, ...list])
+            setCreating(false)
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+function Stat({ label, value, note }: { label: string; value: string; note: string }) {
+  return (
+    <div className="pad-stat">
+      <dt>{label}</dt>
+      <dd>{value}<small>{note}</small></dd>
     </div>
   )
 }
