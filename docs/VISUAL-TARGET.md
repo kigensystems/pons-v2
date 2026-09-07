@@ -4,8 +4,8 @@
 
 - Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and existing opening-only scope.
 - Current implementation: original Macintosh artwork with live TV, composited glow, and SVG shadows. Preserve working TV and opt-in audio.
-- Latest captured baseline: [desktop](screenshots/image-grounding-desktop.jpg) and [mobile](screenshots/image-grounding-mobile.jpg), from commit `14299f4`. These are implementation evidence, not approved design.
-- User feedback on this baseline: light/reflection changes are not noticeably better, and the shadows look fake. These remain unresolved. Do not carry earlier completion claims forward as aesthetic approval.
+- Latest contact revision: [desktop](screenshots/contact-after-desktop.png) and [mobile](screenshots/contact-after-mobile.png). Filled shadows sit beneath the transparent artwork and foreground haze sits behind the assembly. These are implementation evidence, not approved design.
+- Previous baseline: [desktop before this edit](screenshots/contact-before-desktop.png) and [earlier mobile](screenshots/image-grounding-mobile.jpg), from the `14299f4` implementation. User feedback: light/reflection changes are not noticeably better, and shadows look fake. The new contact revision awaits assessment; light/reflection feedback remains open. Do not carry earlier completion claims forward as aesthetic approval.
 
 ## Acceptance criteria
 

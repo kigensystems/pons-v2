@@ -14,7 +14,7 @@ Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance
 
 - React + TypeScript + Vite in `frontend/`.
 - Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels, brief static transitions, Play/Pause, and opt-in sound.
-- SVG screen alignment, bloom, color spill, and contact/cast shadows. These are image composites, not physical lighting.
+- SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
 - The loader completes when the artwork loads. Image failure exposes reload; exhausted video failures show NO SIGNAL.
 - The purchased Macintosh model, Blender sources, and earlier Three.js implementation remain preserved. The active view does not load that renderer or offer its camera controls.
@@ -22,6 +22,8 @@ Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance
 ## Unresolved feedback
 
 The user finds the added light/reflections barely noticeable and the shadows fake. The computer still needs convincing surface contact and better integration with the dreamy environment. Technical validation and past completion messages are not aesthetic approval.
+
+The September 7 contact revision removes the detached keyboard-side shadow strip and places overlapping, filled footprints beneath the objects. Desktop and mobile screenshots are in the visual target. This is an inspected iteration awaiting user assessment; the earlier light/reflection feedback remains open.
 
 Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. Use the existing Pause TV control for comparisons. The proposed timestamp-lock preview was declined as overcomplicated; no code was added. A Blender pre-render was suggested but has not been selected.
 

@@ -1,34 +1,35 @@
-/** Shadows share the artwork's coordinates and contain sizing with the television. */
+/** Filled footprints sit beneath the transparent artwork, in its coordinates. */
 export default function ImageGrounding() {
   return (
     <svg className="image-grounding" viewBox="0 0 1536 1024" aria-hidden="true">
       <defs>
         <filter id="ground-cast" x="-30%" y="-80%" width="180%" height="280%">
-          <feGaussianBlur stdDeviation="23" />
+          <feGaussianBlur stdDeviation="28" />
         </filter>
         <filter id="ground-soft-contact" x="-20%" y="-70%" width="150%" height="240%">
-          <feGaussianBlur stdDeviation="8" />
+          <feGaussianBlur stdDeviation="10" />
         </filter>
         <filter id="ground-contact" x="-15%" y="-50%" width="140%" height="200%">
-          <feGaussianBlur stdDeviation="2.5" />
+          <feGaussianBlur stdDeviation="3" />
         </filter>
       </defs>
 
-      {/* The baked warm key is above-left; cast shadows soften toward the right. */}
-      <g fill="#0b0d0c" filter="url(#ground-cast)" opacity=".46">
-        <path d="M962 752 L1142 648 L1370 747 L1082 866 Z" />
-        <path d="M105 850 L803 977 L949 837 L1072 915 L888 1042 L188 904 Z" />
-        <path d="M983 952 L1106 986 L1226 889 L1322 944 L1182 1040 L1024 990 Z" />
+      {/* The tall case casts farther right; the low peripherals stay close to the desk. */}
+      <g fill="#0b0d0c" filter="url(#ground-cast)" opacity=".5">
+        <path d="M540 676 L1118 629 L1280 718 L1070 826 L600 746 Z" />
+        <path d="M105 824 L808 951 L955 800 L998 851 L842 1005 L119 872 Z" />
+        <path d="M994 933 L1105 964 L1217 873 L1260 910 L1136 1010 L1002 974 Z" />
       </g>
-      <g fill="#090c0b" filter="url(#ground-soft-contact)" opacity=".64">
-        <path d="M967 750 L1146 647 L1173 665 L988 775 Z" />
-        <path d="M97 845 L803 976 L950 835 L960 855 L810 997 L103 862 Z" />
-        <path d="M983 950 Q1035 972 1107 986 L1228 887 L1240 904 L1115 1003 Q1040 991 985 968 Z" />
+      <g fill="#080a09" filter="url(#ground-soft-contact)" opacity=".78">
+        <path d="M520 664 L1145 626 L1161 653 L987 771 L528 700 Z" />
+        <path d="M96 811 L300 674 L952 780 L960 837 L812 985 L98 856 Z" />
+        <path d="M982 923 L1090 835 L1228 864 L1235 892 L1110 995 L982 963 Z" />
       </g>
-      <g fill="#080b09" filter="url(#ground-contact)" opacity=".7">
-        <path d="M960 749 Q982 760 1001 744 L1000 756 Q980 768 963 757 Z" />
-        <path d="M96 845 L794 975 Q809 978 820 967 L949 837 L949 844 L821 976 Q809 986 794 982 L97 851 Z" />
-        <path d="M982 954 Q1032 976 1101 987 Q1109 990 1119 981 L1229 889 L1229 896 L1119 990 Q1110 997 1100 993 Q1035 986 983 961 Z" />
+      {/* Overlap the silhouettes so blur cannot leave a detached outline. */}
+      <g fill="#060807" filter="url(#ground-contact)" opacity=".85">
+        <path d="M530 675 L1148 636 L1151 649 L992 762 L532 694 Z" />
+        <path d="M96 825 L300 680 L952 787 L954 835 L816 975 Q807 982 794 980 L97 851 Z" />
+        <path d="M982 934 L1090 842 L1227 868 L1230 890 L1118 985 Q1109 994 1098 990 L983 959 Z" />
       </g>
     </svg>
   )

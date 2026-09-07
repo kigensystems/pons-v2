@@ -1,5 +1,12 @@
 # Macintosh opening scene validation
 
+## Filled surface contact — September 7, 2026
+
+- Moved the SVG beneath the transparent artwork and replaced narrow edge strips with overlapping filled footprints. The tall case retains a softer rightward cast; keyboard and mouse casts stay closer to their bases. Raised the assembly above foreground haze so its contact edges remain readable. Original artwork, TV canvas, playback controller, light sampling, and licensed sources are unchanged.
+- Compared the paused production scene before/after at 1440 x 900 and revisited live Shader. The detached keyboard-side rim is removed, with a continuous contact shadow beneath the base. Inspected 390 x 844 at normal size against the earlier mobile capture; the assembly and controls remain visible, and document width equals viewport width at both sizes. Desktop captures use different paused TV frames, so this comparison assesses contact, not changes in emission. Evidence: [before desktop](screenshots/contact-before-desktop.png), [after desktop](screenshots/contact-after-desktop.png), [after mobile](screenshots/contact-after-mobile.png). This is an iteration awaiting user design assessment.
+- The existing preview was confirmed at `http://127.0.0.1:4173/`, rebuilt and reloaded. Reduced-motion startup displayed Play TV; manual Play produced changing footage, and Pause restored Play TV with sound still off. No browser warnings/errors were captured. No playback code changed; failure/hidden-tab/audio behavior was not manually re-audited.
+- Build, lint, all 24 existing tests, and whitespace checks passed. No new dependencies, rendering loop, or pixel assets. No new performance benchmark or physical-phone test. No deployment.
+
 ## Grounded image composition — September 7, 2026
 
 - Removed the still artwork's inherited bottom fade, which erased keyboard/mouse contact edges. Added registered SVG shadows at three softness levels beneath the tower, keyboard, and mouse; the broad shadows extend down/right from the artwork's upper-left key. Strengthened the receiving surface slightly and reduced foreground fog wash while retaining rear mist. The SVG shares the artwork/TV viewBox and contain sizing. This is 2D compositing, not newly introduced 3D geometry.

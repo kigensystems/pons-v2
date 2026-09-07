@@ -43,6 +43,7 @@ function App() {
       </header>
 
       <div className="scene-object scene-object--still">
+        {!imageError && <ImageGrounding />}
         <img
           className="macintosh macintosh--still"
           src="/images/macintosh-render.png"
@@ -55,7 +56,6 @@ function App() {
           onError={() => { setImageError(true); dismissLoading() }}
         />
         {!imageError && <>
-          <ImageGrounding />
           <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />
         </>}
         {imageError && <div className="model-status">
