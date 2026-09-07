@@ -8,6 +8,7 @@ Updated September 7, 2026. What was implemented from the [integration report](PL
 | --- | --- |
 | `backend/src/server.ts` | `node:http` server, error envelope, global rate limit, worker start |
 | `backend/src/config.ts` | Environment loading with named errors; testnet needs explicit factory/router addresses |
+| `frontend/src/launch/appkit.ts` | Reown AppKit over wagmi: wallet picker, QR sign-in, network switching; sign-in itself stays in `wallet.ts` |
 | `backend/src/chain/abi.ts` | pons v2 fragments transcribed from the docs snapshot: three-argument `launchToken`, getters, `TokenLaunched`, router `launchAndBuy` |
 | `backend/src/chain/client.ts` | viem adapter: pinned settings reads, eligibility, gas/fee simulation, receipts, protocol state, SIWE verification |
 | `backend/src/chain/encode.ts` | Pure calldata construction and the terms hash |
@@ -33,7 +34,7 @@ npm --prefix backend run dev      # reads ../.env, listens on 127.0.0.1:8787
 npm --prefix frontend run dev     # proxies /api to the backend
 ```
 
-Required in `.env`: `ROBINHOOD_RPC_URL` (or `ROBINHOOD_TESTNET_RPC_URL` with `PLUM_CHAIN_ID=46630`) and `SESSION_SECRET`. `MOBULA_API_KEY` enables market enrichment; without it cards show "no market data". The other `PLUM_*` variables are documented in `.env.example`.
+Required in `.env`: `ROBINHOOD_RPC_URL` (or `ROBINHOOD_TESTNET_RPC_URL` with `PLUM_CHAIN_ID=46630`), `SESSION_SECRET`, and `VITE_REOWN_PROJECT_ID` for the wallet picker (Vite reads the repository-root `.env`; only `VITE_` names reach the browser). `MOBULA_API_KEY` enables market enrichment; without it cards show "no market data". The other `PLUM_*` variables are documented in `.env.example`.
 
 Checks: `npm --prefix backend test`, `typecheck`, `lint`; frontend `build`, `lint`, `test`. The HTTP end-to-end test binds a local port, so it needs the sandbox off in Claude sessions.
 
