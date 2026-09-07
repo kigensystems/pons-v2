@@ -1,5 +1,7 @@
 # Next session: integrate Plum launches
 
+> Superseded. The integration was built and merged on September 7, 2026; see [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md) for the current state. Kept for the reasoning behind the design.
+
 Prepared September 7, 2026. The user deferred implementation to the next session. This handoff adds no live integration or deployment.
 
 ## Start here
