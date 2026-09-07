@@ -15,7 +15,7 @@ The private repository includes the application, documentation, all research/ref
 Use Node.js 24 and npm. From this directory:
 
 ```sh
-npm --prefix frontend ci
+npm --prefix frontend install --legacy-peer-deps
 npm --prefix frontend run dev
 ```
 
