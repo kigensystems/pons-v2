@@ -47,6 +47,8 @@ Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint 
 
 The user requested a pause on September 6. The working real 3D opening is saved and the local preview remains running. The latest visual feedback is unresolved: the user prefers the earlier generated computer image (`frontend/public/images/macintosh-render.png`) to the current live model presentation.
 
+Repository handoff: implementation checkpoint `e90b606` was fast-forwarded from `codex/review-tech-stack` into `main`, which is now checked out. No remote is configured. The research folders remain untracked; licensed source, Blender studies, and the exported model remain local and ignored. Preserve these local files when resuming or transferring the project.
+
 Resume with these priorities, within the opening scene:
 
 1. Match the image's warm cream housing, soft highlights, lavender reflections, and darker glossy CRT. Controlled Blender studies indicate lighting and screen reflections are the main difference; existing authored normals are smooth, and bevel/normal-channel experiments did not improve the result.
