@@ -4,7 +4,7 @@
 
 - Current typography: [Apple Garamond titles and matching comparisons](TYPOGRAPHY.md#current-titles-only). Page and section titles use Apple Garamond; earlier body and supporting fonts are restored.
 
-- Opening-to-Explore scroll transition: [behavior and validation](SCROLL-TRANSITION.md), [desktop through the glass](screenshots/scroll-through-desktop.jpg), [mobile through the glass](screenshots/scroll-through-mobile.jpg). Native scroll zooms toward the CRT and reveals Explore; reverse scrolling restores the opening. This is separate from the unresolved lighting feedback below.
+- Opening-to-Explore: the scroll transition was removed on September 7 at the user's request; an Enter link in the intro now navigates to Explore. See [Opening to Explore](SCROLL-TRANSITION.md). This is separate from the unresolved lighting feedback below.
 
 - Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and identity. This document covers the opening; the separately authorized Explore and About pages are documented in [LAUNCH-DESK.md](LAUNCH-DESK.md).
 - Current implementation: original Macintosh artwork with live TV, composited glow, and SVG shadows. Preserve working TV and opt-in audio.
