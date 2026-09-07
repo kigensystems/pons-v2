@@ -13,7 +13,7 @@ npm --prefix frontend ci
 npm --prefix frontend run dev
 ```
 
-Open the local URL printed by Vite. The current app is a minimal setup placeholder; the Macintosh scene and renderer are not implemented yet.
+Open the local URL printed by Vite. The current opening study combines detailed Macintosh artwork, a live CRT overlay, mist, grain, and warm serif typography. It is a fixed-camera image composition; a live 3D model and GPU renderer are the next phase.
 
 ```sh
 npm --prefix frontend run build

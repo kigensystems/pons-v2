@@ -33,11 +33,21 @@ The strongest candidate from the initial replacement search is [Apple Macintosh 
 - Keep rendering and future data access separate. Store future private API credentials on the server, never in browser-exposed Vite variables.
 - No scroll library is needed at this stage.
 
-## Initialization status
+## Current opening study
 
-The repository contains a runnable React shell, TypeScript/build/lint tooling, and the scene libraries. The shell is explicitly a setup placeholder, not the requested finished scene. No 3D model, shaders, camera choreography, or final product copy have been implemented yet.
+The placeholder has been replaced by a fixed-camera scene: detailed generated Macintosh artwork, DOM CRT greeting and scanlines, layered SVG/CSS mist, grain, chromatic text glow, self-hosted Instrument Serif, and responsive composition. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
 
-Initialization checks passed: TypeScript/production build, Oxlint, and a local HTTP response. The static shell was visually inspected at desktop and 390-pixel mobile width, with no browser errors or warnings observed. The configured Netlify output path resolves to the generated build. Netlify deployment, 3D rendering, and performance remain untested.
+This is rendered artwork with animated layers, not a live 3D model. Three/R3F remain installed but are not imported into this page. No WebGPU/WebGL renderer or performance benchmark is claimed. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled by the user, and pauses in hidden tabs.
+
+The user asked for continual comparison with the real Shader site. Direct desktop comparison showed that Shader has stronger CRT bloom and more pronounced textured fog. The study was adjusted in that direction, but full 3D lighting, depth, and parallax remain outstanding.
+
+Validation: production build/TypeScript and Oxlint pass. Desktop and 390 × 844 compositions were visually inspected in Chrome. Keyboard activation toggled animation between running and paused with a visible 2px focus outline. Reduced-motion presentation starts paused. A deliberately blocked artwork request showed the error message and hid the broken image; clearing the block restored the artwork. No horizontal overflow at 390px. Temporary browser emulation and request blocking were reset. Device performance and live 3D remain untested.
+
+## Selected 3D asset path
+
+The user's strongest model choice is [Mac 512K Computer 1984 by shrednector](https://sketchfab.com/3d-models/mac-512k-computer-1984-5d6c93e4c5e840e6a5b6f2f88dde5604). The live page has no model download control. A visually matching model by the same creator is sold on [CGTrader](https://www.cgtrader.com/3d-models/electronics/computer/retro-mac-computer-80s); the listing offers FBX/OBJ, keyboard, mouse, and two 4K texture sets. The exact downloadable revision is unverified. The user said they are buying it; source files have not been received. This supersedes the earlier treehouse3d candidate.
+
+Blender 5.2.1 LTS was found installed and its CLI successfully reported its version. Import, rendering, material conversion, and GLB export are pending the model. Preserve purchased archives in `assets/source/macintosh-512k/` and inspect their actual contents and license before adopting a web export.
 
 ## Reference context
 
