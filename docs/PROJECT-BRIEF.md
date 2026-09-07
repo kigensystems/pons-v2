@@ -4,7 +4,7 @@ Updated September 7, 2026.
 
 ## Current direction
 
-The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond headlines, body copy and editorial details, VT323 terminal labels, warm ivory, dark green atmosphere, and the compact Macintosh. Shader's About section is a reference for treatment, not a template to copy. Logo exploration, API integration, and deployment remain deferred.
+The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond page and section titles, Georgia body copy, Instrument Serif editorial details, VT323 terminal labels, warm ivory, dark green atmosphere, and the compact Macintosh. Shader's About section is a reference for treatment, not a template to copy. Logo exploration, API integration, and deployment remain deferred.
 
 Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 

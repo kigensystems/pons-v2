@@ -2,7 +2,7 @@
 .about-intro::before { content: ''; position: absolute; z-index: -2; inset: 0; background: radial-gradient(ellipse at 75% 38%, #69705a5e 0, #263b2b60 31%, transparent 65%), linear-gradient(140deg, #1b2920, #101a14); }
 .about-intro .pad-kicker { color: #bbc4a6; font-size: 14px; margin-bottom: 25px; }
 .about-intro .pad-dot { background: #c2c9a0; box-shadow: 0 0 8px #d5e6b05c; }
-.about-intro h1 { font: 400 clamp(44px, 4.1vw, 62px)/1.14 var(--font-serif); color: #efe9d7; letter-spacing: -.035em; text-shadow: -.6px 0 #a7c9f58c, .7px .3px #f2a3788c, 0 0 5px #f4dfb552, 0 0 20px #e6c99d33; }
+.about-intro h1 { font: 400 clamp(44px, 4.1vw, 62px)/1.14 var(--font-title); color: #efe9d7; letter-spacing: -.035em; text-shadow: -.6px 0 #a7c9f58c, .7px .3px #f2a3788c, 0 0 5px #f4dfb552, 0 0 20px #e6c99d33; }
 .about-intro h1 em { color: #d3dbc0; }
 .about-intro-sub { font-size: 16px; line-height: 1.7; margin: 26px 0 25px; color: #c6c9b7; }
 .about-story-link { display: inline-flex; gap: 45px; text-decoration: none; border-bottom: 1px solid #c2cbb85e; padding: 8px 0 10px; font-size: 13px; }

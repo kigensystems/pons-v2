@@ -2,7 +2,7 @@
 
 ## Reuse in Plum's Explore and About pages
 
-The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later requested Apple Garamond update replaces its serif typography; the earlier font files are retained. The artwork file is unchanged; Explore uses CSS sepia/saturation grading and multiply blending, and About uses CSS brightness/saturation grading over a dark green background. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
+The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; Explore uses CSS sepia/saturation grading and multiply blending, and About uses CSS brightness/saturation grading over a dark green background. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
 
 ## Monitor channels
 
@@ -46,15 +46,15 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 
 ## Typography
 
-### Apple Garamond — September 7, 2026
+### Apple Garamond â€” September 7, 2026
 
-- Current serif family across the opening, loader title, Explore, About, navigation, body copy, cards and form controls, requested by the user. VT323 terminal labels remain.
+- Current title family for page and section headings across the opening, Explore and About, plus the loader title. The user clarified titles only; Georgia body copy/navigation/Plum naming, Instrument Serif editorial details/cards and VT323 terminal labels are restored.
 - Files: `fonts/AppleGaramond.ttf` (47,476 bytes), `fonts/AppleGaramond-Italic.ttf` (46,560 bytes), `fonts/AppleGaramond-Bold.ttf` (47,264 bytes), `fonts/AppleGaramond-BoldItalic.ttf` (45,724 bytes). Regular and italic at 400; bold and bold italic at 700. Self-hosted with `font-display: swap`; regular is preloaded.
 - Source: [DaFont Apple Garamond listing](https://www.dafont.com/apple-garamond.font), [six-font ZIP](https://dl.dafont.com/dl/?f=apple_garamond), retrieved September 7, 2026. Four faces copied byte-for-byte; no conversion, subsetting, outline, metadata or naming modifications. Light faces were not adopted.
 - Attribution: embedded copyright names Bitstream Inc. (1991); individual designer not identified in the files. Exact copyright: "Copyright 1991 as an unpublished work by Bitstream Inc.  All rights reserved.  Confidential."
 - License: the downloaded archive contains no license document and the listing supplies no usage grant. Public web use and redistribution rights remain unverified; no open license is claimed. Font metadata's `fsType = 0` is a technical embedding flag, not evidence of a license. This is the existing private/local prototype; public deployment remains deferred.
 
-### Earlier fonts retained
+### Supporting fonts
 
 - Files: `fonts/InstrumentSerif-Regular.ttf`, `fonts/InstrumentSerif-Italic.ttf`.
 - Author: The Instrument Serif Project Authors.

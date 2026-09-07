@@ -2,7 +2,7 @@
 
 ## Reference and current state
 
-- Current typography: [Apple Garamond update and matching before/after screenshots](TYPOGRAPHY.md). Applies across the opening, Explore and About; VT323 terminal labels remain.
+- Current typography: [Apple Garamond titles and matching comparisons](TYPOGRAPHY.md#current-titles-only). Page and section titles use Apple Garamond; earlier body and supporting fonts are restored.
 
 - Opening-to-Explore scroll transition: [behavior and validation](SCROLL-TRANSITION.md), [desktop through the glass](screenshots/scroll-through-desktop.jpg), [mobile through the glass](screenshots/scroll-through-mobile.jpg). Native scroll zooms toward the CRT and reveals Explore; reverse scrolling restores the opening. This is separate from the unresolved lighting feedback below.
 

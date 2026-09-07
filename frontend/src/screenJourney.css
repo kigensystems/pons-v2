@@ -12,7 +12,7 @@
 .opening-journey[data-entered='true'] .journey-portal { will-change: auto; }
 .opening-journey[data-entered='true'] .opening-world { will-change: auto; }
 .journey-cue { display: inline-flex; align-items: center; gap: 15px; margin-top: 26px; min-height: 44px; color: #e5ddca; font: 15px 'VT323', monospace; letter-spacing: .07em; text-decoration: none; pointer-events: auto; }
-.journey-cue span { font: 22px var(--font-serif); }
+.journey-cue span { font: 22px Georgia, serif; }
 .journey-cue:hover { color: #fff6dd; }
 .journey-cue:focus-visible { outline: 2px solid #e5ddca; outline-offset: 5px; }
 @media (max-width: 540px) {

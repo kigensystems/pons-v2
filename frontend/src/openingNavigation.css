@@ -1,5 +1,5 @@
 .opening-nav { display: flex; align-items: center; gap: 28px; }
-.opening-nav a { color: #e2dec9; text-decoration: none; font: 14px/1.4 var(--font-serif); text-shadow: var(--phosphor-glow); padding: 8px 0; border-bottom: 1px solid transparent; }
+.opening-nav a { color: #e2dec9; text-decoration: none; font: 14px/1.4 Georgia, serif; text-shadow: var(--phosphor-glow); padding: 8px 0; border-bottom: 1px solid transparent; }
 .opening-nav a:hover { border-bottom-color: #d1d5b785; }
 .opening-nav a:focus-visible { outline: 2px solid #e2dec9; outline-offset: 5px; }
 @media (max-width: 600px) { .opening-nav { gap: 20px; } .opening-nav a { font-size: 12px; } }
