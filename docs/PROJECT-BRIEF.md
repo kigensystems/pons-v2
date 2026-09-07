@@ -29,7 +29,7 @@ The September 7 contact revision removed the detached keyboard-side shadow strip
 
 The latest iteration changes technique: an alpha-masked directional shade crosses the casing into a dark right side while preserving the lit front. The foreground floor and fog fall into deeper darkness. The TV and its localized light remain above this shading. Desktop/mobile comparisons are in the visual target; the iteration awaits user assessment.
 
-The subsequent CRT pass raises picture brightness, combines tight and soft bloom from the actual video highlights, and strengthens diffuse bezel/rear-keyboard reflections. Reflection color and strength still follow the footage. The directional room treatment remains unchanged.
+The subsequent CRT pass was rejected by the user: the edges and reflections looked low quality. Its painted edge strokes, broad casing wash, fake glass glint, and enlarged bloom copy are now removed. The latest revision retains the brighter exposure curve, adds small highlight diffusion directly to the full-resolution TV inside its glass clip, and masks keyboard spill with the source artwork's luminance so dark gaps/legends stay dark. This is still a 2D approximation awaiting assessment. The directional room treatment remains unchanged.
 
 Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. Use the existing Pause TV control for comparisons. The proposed timestamp-lock preview was declined as overcomplicated; no code was added. A Blender pre-render was suggested but has not been selected.
 

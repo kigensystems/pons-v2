@@ -12,7 +12,6 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
   const clipId = useId()
   const svgRef = useRef<SVGSVGElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const bloomRef = useRef<HTMLCanvasElement>(null)
   const playbackRef = useRef<ReturnType<typeof createMonitorPlayback> | null>(null)
   const activeRef = useRef(active)
   const syncRef = useRef(() => {})
@@ -26,13 +25,11 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
 
   useEffect(() => {
     const canvas = canvasRef.current!
-    const bloomContext = bloomRef.current!.getContext('2d')!
-    const updateBloom = () => bloomContext.drawImage(canvas, 0, 0, 160, 120)
     let frame = 0
     let lastTime = 0
     let frames = 0
     let lastLightTime = 0
-    let light = { color: [180, 190, 255], glow: 0, spill: 0 }
+    let light = { color: [180, 190, 255], spill: 0 }
     const sample = document.createElement('canvas')
     sample.width = 8
     sample.height = 6
@@ -46,12 +43,10 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
       const blend = immediate ? 1 : 0.25
       light = {
         color: light.color.map((value, index) => value + (target.color[index] - value) * blend),
-        glow: light.glow + (target.glow - light.glow) * blend,
         spill: light.spill + (target.spill - light.spill) * blend,
       }
       const style = svgRef.current!.style
       style.setProperty('--tv-light', `rgb(${light.color.map(Math.round).join(' ')})`)
-      style.setProperty('--tv-glow', String(light.glow))
       style.setProperty('--tv-spill', String(light.spill))
     }
     const playing = () => activeRef.current && !document.hidden
@@ -60,7 +55,6 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
       if (!playing()) return
       if (time - lastTime >= 1000 / 30) {
         if (playback.update(Math.min((time - lastTime) / 1000, 0.1))) {
-          updateBloom()
           updateLight(time)
         }
         lastTime = time - ((time - lastTime) % (1000 / 30))
@@ -69,7 +63,6 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
       frame = requestAnimationFrame(draw)
     }
     const invalidate = () => {
-      updateBloom()
       updateLight(performance.now(), !activeRef.current)
       if (playing() && !frame) frame = requestAnimationFrame(draw)
     }
@@ -111,67 +104,49 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
         <clipPath id={`${clipId}-keyboard`}>
           <path d="M 350 630 L 949 738 L 911 901 L 112 803 Z" />
         </clipPath>
-        <filter id={`${clipId}-halo`} x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="20" />
-        </filter>
-        <filter id={`${clipId}-edge`} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
         <filter id={`${clipId}-exposure`} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feComponentTransfer>
+          <feComponentTransfer result="exposed">
             <feFuncR type="table" tableValues={CRT_EXPOSURE} />
             <feFuncG type="table" tableValues={CRT_EXPOSURE} />
             <feFuncB type="table" tableValues={CRT_EXPOSURE} />
           </feComponentTransfer>
-        </filter>
-        <filter id={`${clipId}-phosphor`} x="-25%" y="-30%" width="150%" height="160%" colorInterpolationFilters="sRGB">
-          <feComponentTransfer result="highlights">
-            <feFuncR type="linear" slope="2.2" intercept="-.4" />
-            <feFuncG type="linear" slope="2.2" intercept="-.4" />
-            <feFuncB type="linear" slope="2.2" intercept="-.4" />
+          <feComponentTransfer in="exposed" result="highlights">
+            <feFuncR type="linear" slope="2" intercept="-1" />
+            <feFuncG type="linear" slope="2" intercept="-1" />
+            <feFuncB type="linear" slope="2" intercept="-1" />
           </feComponentTransfer>
-          <feGaussianBlur in="highlights" stdDeviation="18" result="halo" />
-          <feGaussianBlur in="highlights" stdDeviation="4" result="core" />
-          <feMerge>
-            <feMergeNode in="halo" />
-            <feMergeNode in="core" />
-          </feMerge>
+          <feGaussianBlur in="highlights" stdDeviation="1.6" />
+          <feComponentTransfer result="halation">
+            <feFuncA type="linear" slope=".22" />
+          </feComponentTransfer>
+          <feBlend in="exposed" in2="halation" mode="screen" />
         </filter>
+        {/* The source's bright key planes receive light; dark gaps and legends do not. */}
+        <filter id={`${clipId}-key-planes`} colorInterpolationFilters="sRGB">
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+            <feFuncG type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+            <feFuncB type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+          </feComponentTransfer>
+        </filter>
+        <mask id={`${clipId}-key-receiver`} maskUnits="userSpaceOnUse" x="112" y="630" width="840" height="271" style={{ maskType: 'luminance' }}>
+          <image href="/images/macintosh-render.png" width="1536" height="1024" filter={`url(#${clipId}-key-planes)`} />
+        </mask>
         <radialGradient id={`${clipId}-reflection`}>
           <stop offset="0" stopColor="var(--tv-light)" stopOpacity="1" />
           <stop offset=".45" stopColor="var(--tv-light)" stopOpacity=".65" />
           <stop offset="1" stopColor="var(--tv-light)" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id={`${clipId}-bezel-reflection`}>
-          <stop offset="0" stopColor="var(--tv-light)" stopOpacity="0" />
-          <stop offset=".35" stopColor="var(--tv-light)" stopOpacity=".9" />
-          <stop offset=".8" stopColor="var(--tv-light)" stopOpacity="1" />
-          <stop offset="1" stopColor="var(--tv-light)" stopOpacity="0" />
-        </linearGradient>
         <radialGradient id={`${clipId}-glass-shade`} r=".7">
           <stop offset=".45" stopColor="#080c10" stopOpacity="0" />
           <stop offset=".8" stopColor="#080c10" stopOpacity=".12" />
           <stop offset="1" stopColor="#080c10" stopOpacity=".55" />
         </radialGradient>
-        <radialGradient id={`${clipId}-glass-reflection`}>
-          <stop offset="0" stopColor="#dfe9e5" stopOpacity=".16" />
-          <stop offset=".4" stopColor="#dfe9e5" stopOpacity=".06" />
-          <stop offset="1" stopColor="#dfe9e5" stopOpacity="0" />
-        </radialGradient>
       </defs>
       {/* Shade the original alpha silhouette; the CRT and its light are added above it. */}
       <rect width="1536" height="1024" fill={`url(#${clipId}-room-shadow)`} mask={`url(#${clipId}-artwork)`} aria-hidden="true" />
-      {/* Diffuse screen light fades across the bezel without lighting the empty room. */}
-      <g className="image-tv-reflection" mask={`url(#${clipId}-artwork)`} aria-hidden="true">
-        <ellipse cx="740" cy="385" rx="255" ry="195" fill={`url(#${clipId}-reflection)`} />
-      </g>
-      <g className="image-tv-emission">
-        <path d="M 596 143 L 917 161 L 909 435 L 580 412 Z" fill="var(--tv-light)" filter={`url(#${clipId}-halo)`} />
-        {/* Light catches the inward-facing lower lip, not the whole front casing. */}
-        <path d="M 573 428 Q 737 462 922 448" fill="none" stroke={`url(#${clipId}-bezel-reflection)`} strokeWidth="22" filter={`url(#${clipId}-edge)`} />
-        <path d="M 930 187 Q 935 310 922 424" fill="none" stroke="var(--tv-light)" strokeOpacity=".65" strokeWidth="10" filter={`url(#${clipId}-edge)`} />
-      </g>
-      <g className="image-tv-reflection" clipPath={`url(#${clipId}-keyboard)`}>
+      <g className="image-tv-reflection" clipPath={`url(#${clipId}-keyboard)`} mask={`url(#${clipId}-key-receiver)`}>
         <ellipse cx="632" cy="708" rx="230" ry="70" transform="rotate(10 632 708)" fill={`url(#${clipId}-reflection)`} />
       </g>
       <g className="image-tv-picture" clipPath={`url(#${clipId})`}>
@@ -181,18 +156,10 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
           </foreignObject>
         </g>
       </g>
-      {/* Restrained room reflection and edge falloff give the moving picture glass depth. */}
+      {/* Original bezel detail remains exposed; highlight diffusion stays inside the glass. */}
       <g clipPath={`url(#${clipId})`} aria-hidden="true">
         <rect x="560" y="135" width="375" height="315" fill={`url(#${clipId}-glass-shade)`} />
-        <ellipse cx="585" cy="178" rx="100" ry="185" transform="rotate(24 585 178)" fill={`url(#${clipId}-glass-reflection)`} />
       </g>
-      {/* A small copy of the actual bright pixels blooms across the glass edge. */}
-      <g className="image-tv-bloom" filter={`url(#${clipId}-phosphor)`} aria-hidden="true">
-        <foreignObject width="640" height="480" transform="matrix(.585 .031 -.025 .638 570 129)">
-          <canvas ref={bloomRef} className="image-tv-bloom-canvas" width="160" height="120" />
-        </foreignObject>
-      </g>
-      <path className="image-tv-emission" d="M 596 143 C 690 142 823 151 911 159 Q 924 161 924 179 L 915 427 Q 914 440 901 441 C 801 441 655 429 589 418 Q 575 415 572 398 C 562 311 567 214 579 162 Q 583 143 596 143 Z" fill="none" stroke="var(--tv-light)" strokeWidth="6" filter={`url(#${clipId}-edge)`} />
     </svg>
   )
 }
