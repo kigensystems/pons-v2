@@ -7,6 +7,8 @@ const MacintoshScene = lazy(() => import('./MacintoshScene'))
 function App() {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [sound, setSound] = useState(false)
+  const handleSoundBlocked = useCallback(() => setSound(false), [])
   const handleProgress = useCallback((value: number) => setProgress((previous) => Math.max(previous, value)), [])
   const dismissLoading = useCallback(() => setLoading(false), [])
   const [paused, setPaused] = useState(
@@ -46,7 +48,7 @@ function App() {
       <div className="scene-object">
         <SceneErrorBoundary onError={dismissLoading}>
           <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
-            <MacintoshScene active={!paused && !hidden && !loading} onProgress={handleProgress} onError={dismissLoading} onToggleAtmosphere={() => setPaused((value) => !value)} />
+            <MacintoshScene active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} onProgress={handleProgress} onError={dismissLoading} onToggleAtmosphere={() => setPaused((value) => !value)} />
           </Suspense>
         </SceneErrorBoundary>
       </div>
@@ -66,6 +68,14 @@ function App() {
         <div className="scene-note">
           <span className="scene-index">001 — THE OPENING</span>
           <span className="scene-caption">Somewhere between then and what’s next.</span>
+        </div>
+        <div className="tv-controls">
+          <button className="tv-sound" type="button" aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>
+            {paused ? 'Play TV' : 'Pause TV'}
+          </button>
+          <button className="tv-sound" type="button" aria-pressed={sound} onClick={() => setSound((value) => !value)}>
+            TV sound {sound ? 'on' : 'off'}
+          </button>
         </div>
       </footer>
     </main>

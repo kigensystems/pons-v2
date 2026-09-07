@@ -51,6 +51,14 @@ The earlier generated artwork is retained as a loading/error fallback, including
 
 ## Selected interaction, September 6 follow-up
 
+### September 7 television playback
+
+The CRT now cycles the four user-supplied `Desktop/vlad-clips` videos in filename order, preserving their full 12/10/12/10-second lengths, then repeats. A 240ms burst of monochrome snow with a tracking band and filtered noise sound separates channels, following the live Shader landing page's moving footage within its curved CRT. The supplied clips retain their original audio. Sources and optimizations are recorded in `frontend/public/ASSETS.md`; desktop originals are untouched.
+
+Video is letterboxed into the existing curved screen mesh with subtle scanlines and a dark edge falloff. Housing, scene lighting, composition, background, and typography remain as before. Playback uses a single 640 x 480 canvas texture updated within the existing 30fps render cap. Media decoding and audio pause with the atmosphere, hidden tabs, and reduced motion. Reduced-motion loading shows a poster until the user starts playback. Broken or stalled clips are skipped; all failures show a still NO SIGNAL screen while the rest of the 3D scene remains usable.
+
+This request adds two small footer text controls: Play/Pause TV and TV sound on/off. These supersede the earlier restriction on visible controls only for television playback. Sound starts off for browser autoplay compatibility and is enabled by the sound button; that enables both clip audio and the brief static. Space on the scene also pauses/resumes television and atmosphere together. Monitor focus and camera controls remain unchanged. Public deployment remains deferred.
+
 The user's correction supersedes the earlier request for visible manipulation controls. Keep the Macintosh stationary. Drag to orbit the viewpoint through a bounded 3D space; do not rotate the model. No visible interaction toolbar or atmosphere button belongs in the opening.
 
 - Drag anywhere in the scene to change the camera viewpoint. Camera yaw is bounded to ±36° from the opening view, elevation to ±12°.

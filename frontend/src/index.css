@@ -279,6 +279,10 @@ h1 em { font-weight: 400; }
 .scene-index { font-family: 'VT323', monospace; font-size: 14px; letter-spacing: .12em; color: #d3c9d1; }
 .scene-caption { color: #c8bdc6; font-size: 12px; font-family: Georgia, 'Times New Roman', serif; text-shadow: var(--phosphor-glow); }
 .scene-controls { display: flex; align-items: center; gap: 20px; }
+.tv-controls { display: flex; align-items: center; gap: 12px; }
+.tv-sound { min-height: 44px; padding: 8px 0 8px 16px; border: 0; background: transparent; color: #d3c9d1; font: 15px 'VT323', monospace; letter-spacing: .06em; cursor: pointer; }
+.tv-sound:hover { color: #fff1d6; }
+.tv-sound:focus-visible { outline: 1px solid #f7e5b8; outline-offset: 4px; }
 .motion-button { display: flex; align-items: center; justify-content: center; gap: 11px; min-height: 44px; padding: 0 16px; background: #18211c80; color: #d9dfcd; border: 1px solid #a6b29b40; border-radius: 3px; cursor: pointer; font-size: 11px; transition: background .2s, border-color .2s; }
 .motion-button:hover { background: #344031b3; border-color: #a6b29b99; }
 @keyframes haze-drift { from { transform: translate3d(-3%, 0, 0) scale(.95); opacity: .6; } to { transform: translate3d(5%, -4%, 0) scale(1.08); opacity: 1; } }

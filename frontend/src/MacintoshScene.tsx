@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import {
   ACESFilmicToneMapping,
   Box3,
-  CanvasTexture,
   Color,
   DirectionalLight,
   Group,
@@ -18,7 +17,6 @@ import {
   RenderPipeline,
   Raycaster,
   Scene,
-  SRGBColorSpace,
   Vector2,
   Vector3,
   WebGPURenderer,
@@ -28,6 +26,7 @@ import { pass, vec4 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { fitCameraToPoints, getScreenFrame } from './sceneFraming'
+import { createMonitorChannels } from './monitorChannels'
 
 // Baked once at startup: broad studio reflections without extra per-frame lights.
 function makeStudioEnvironment() {
@@ -46,47 +45,6 @@ function makeStudioEnvironment() {
   softbox(new Vector3(4, 2.5, -2), 3, 5, '#b5a7ff', 3.5)
   softbox(new Vector3(0, 6, 0), 4, 3, '#fff2e2', 2)
   return studio
-}
-
-function makeScreenTexture() {
-  const screen = document.createElement('canvas')
-  screen.width = 768
-  screen.height = 576
-  const ctx = screen.getContext('2d')!
-  ctx.fillStyle = '#000000'
-  ctx.fillRect(0, 0, 768, 576)
-  const light = ctx.createRadialGradient(384, 280, 60, 384, 280, 430)
-  light.addColorStop(0, '#102724')
-  light.addColorStop(1, '#000000')
-  ctx.fillStyle = light
-  ctx.fillRect(0, 0, 768, 576)
-  ctx.strokeStyle = '#bbe4ce'
-  ctx.lineWidth = 3
-  ctx.strokeRect(359, 122, 50, 60)
-  ctx.strokeRect(365, 128, 38, 36)
-  ctx.beginPath()
-  ctx.moveTo(375, 138); ctx.lineTo(375, 144)
-  ctx.moveTo(393, 138); ctx.lineTo(393, 144)
-  ctx.moveTo(374, 151); ctx.lineTo(379, 156); ctx.lineTo(389, 156); ctx.lineTo(394, 151)
-  ctx.moveTo(366, 174); ctx.lineTo(372, 174)
-  ctx.moveTo(390, 174); ctx.lineTo(402, 174)
-  ctx.stroke()
-  ctx.shadowColor = '#b8ffe4'
-  ctx.shadowBlur = 12
-  ctx.fillStyle = '#d6f6df'
-  ctx.textAlign = 'center'
-  ctx.font = 'italic 132px "Instrument Serif", Georgia, serif'
-  ctx.fillText('hello.', 384, 332)
-  ctx.shadowBlur = 4
-  ctx.font = '16px "Courier New", monospace'
-  ctx.fillText('a new beginning_', 384, 408)
-  ctx.shadowBlur = 0
-  ctx.fillStyle = '#06181522'
-  for (let y = 0; y < 576; y += 3) ctx.fillRect(0, y, 768, 1)
-  const texture = new CanvasTexture(screen)
-  texture.colorSpace = SRGBColorSpace
-  texture.flipY = false
-  return texture
 }
 
 function disposeObject(object: Group | Scene) {
@@ -113,18 +71,23 @@ const TILT_LIMIT = Math.PI / 15
 
 type Props = {
   active: boolean
+  sound: boolean
+  onSoundBlocked: () => void
   onToggleAtmosphere: () => void
   onProgress: (progress: number) => void
   onError: () => void
 }
 
-export default function MacintoshScene({ active, onToggleAtmosphere, onProgress, onError }: Props) {
+export default function MacintoshScene({ active, sound, onSoundBlocked, onToggleAtmosphere, onProgress, onError }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const activeRef = useRef(active)
   const toggleAtmosphereRef = useRef(onToggleAtmosphere)
   const controllerRef = useRef<((playing: boolean) => void) | null>(null)
+  const monitorRef = useRef<ReturnType<typeof createMonitorChannels> | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [view, setView] = useState<ViewState>({ yaw: 0, pitch: 0, focused: false })
+
+  useEffect(() => { void monitorRef.current?.setSound(sound) }, [sound])
 
   useEffect(() => {
     activeRef.current = active
@@ -255,7 +218,9 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
         if (timestamp - lastFrame >= 1000 / 30 && (activeRef.current || dirty)) {
           if (viewDirty) { fitView(); viewDirty = false }
           if (activeRef.current) {
-            ambientTime += Math.min((timestamp - lastTimestamp) / 1000, 0.05)
+            const delta = Math.min((timestamp - lastTimestamp) / 1000, 0.1)
+            ambientTime += delta
+            monitorRef.current?.update(delta)
             lastTimestamp = timestamp
             if (!currentView.focused && !drag) {
               camera.position.x += (baseCamera.x + pointer.x * 0.1 - camera.position.x) * 0.08
@@ -382,6 +347,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
       // Clear pointer modality on exit so Tab re-entry can show keyboard focus.
       const clearInputModality = () => { delete canvas.dataset.input }
       const visibilityChanged = () => {
+        monitorRef.current?.setActive(!document.hidden && activeRef.current)
         if (document.hidden) { cancelDrag(); cancelAnimationFrame(frame); frame = 0 }
         else { lastTimestamp = performance.now(); invalidate() }
       }
@@ -404,6 +370,8 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
         canvas.removeEventListener('dblclick', resetView)
         cancelDrag()
         controllerRef.current = null
+        monitorRef.current?.dispose()
+        monitorRef.current = null
         disposePost()
         disposeEnvironment()
         disposeObject(scene)
@@ -470,7 +438,9 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
         await document.fonts.ready
         if (cancelled || cleaned) { cleanup(); return }
         onProgress(90)
-        const screenTexture = makeScreenTexture()
+        const monitor = createMonitorChannels(invalidate, onSoundBlocked, import.meta.env.DEV ? canvas : undefined)
+        monitorRef.current = monitor
+        const screenTexture = monitor.texture
         model.traverse((object) => {
           if (!(object instanceof Mesh)) return
           object.castShadow = true
@@ -481,7 +451,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
             // the softboxes independently, within the same model draw.
             screenMaterial = new MeshPhysicalMaterial({
               color: new Color('#080e12'),
-              emissive: new Color('#c7ead9'),
+              emissive: new Color('#ffffff'),
               emissiveMap: screenTexture,
               emissiveIntensity: 1.15,
               roughness: 0.14,
@@ -529,6 +499,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
         canvas.addEventListener('blur', clearInputModality)
         canvas.addEventListener('dblclick', resetView)
         controllerRef.current = (playing) => {
+          monitor.setActive(playing && !document.hidden)
           cancelAnimationFrame(frame)
           frame = 0
           canvas.dataset.motion = playing ? 'playing' : 'paused'
@@ -549,7 +520,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
       }
     })
     return () => { cancelled = true; cleanup() }
-  }, [onProgress, onError])
+  }, [onProgress, onError, onSoundBlocked])
 
   return (
     <div className="live-macintosh" data-state={state} data-view={view.focused ? 'monitor' : 'computer'}>
@@ -558,7 +529,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere, onProgress,
         <canvas ref={canvasRef} className="macintosh-canvas" role="group" tabIndex={state === 'ready' ? 0 : -1} aria-hidden={state !== 'ready'} aria-label="Explore the Macintosh in 3D" aria-describedby="computer-help" />
         {state === 'error' && <div className="model-status"><p role="status">Showing the still preview. The 3D scene could not load.</p><button className="motion-button" type="button" onClick={() => location.reload()}>Reload 3D scene</button></div>}
       </div>
-      <p id="computer-help" className="sr-only">Drag or use arrow keys to move your viewpoint around the stationary computer. Select the monitor or press Enter to focus; select again to return. Double-click, Escape, or Home resets the view. Space pauses or resumes the atmosphere.</p>
+      <p id="computer-help" className="sr-only">Drag or use arrow keys to move your viewpoint around the stationary computer. Select the monitor or press Enter to focus; select again to return. Double-click, Escape, or Home resets the view. Space pauses or resumes the atmosphere and television. Use the TV sound button to enable or mute sound.</p>
       {state === 'ready' && <span className="sr-only" role="status">{view.focused ? 'Monitor view. Select again to return.' : 'Computer view.'} Atmosphere {active ? 'playing' : 'paused'}.</span>}
     </div>
   )
