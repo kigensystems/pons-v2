@@ -88,3 +88,6 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - License: public domain, per the designer's statement reproduced in the README. Source: [Open Font Library](https://fontlibrary.org/en/font/chicagoflf), `chicagoflf.zip`, retrieved September 7, 2026, unchanged.
 - Same day, after approval: Instrument Serif and VT323 files and their OFL texts removed from `fonts/`. Their provenance entries below are historical.
 
+## Favicon
+
+- `favicon.ico`: supplied by the user on September 7, 2026 (16 × 16 and 32 × 32, 32-bit). Placed unchanged; linked from `index.html`.

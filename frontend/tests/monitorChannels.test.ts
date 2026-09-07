@@ -39,6 +39,7 @@ class FakeCanvas {
   context = {
     fillStyle: '', textAlign: '', font: '', imageSmoothingEnabled: true,
     fillRect() {}, fillText() {}, drawImage() {}, putImageData() {},
+    measureText: () => ({ width: 100 }), beginPath() {}, roundRect() {}, fill() {}, stroke() {}, strokeRect() {}, save() {}, restore() {}, translate() {}, moveTo() {}, lineTo() {}, arc() {}, closePath() {}, lineWidth: 1, strokeStyle: '', globalAlpha: 1, textBaseline: '', shadowColor: '', shadowBlur: 0, lineJoin: '', lineCap: '',
     createImageData: (width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
     createRadialGradient: () => ({ addColorStop() {} }),
   }

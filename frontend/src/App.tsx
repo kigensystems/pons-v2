@@ -15,6 +15,11 @@ function App() {
   const [hidden, setHidden] = useState(() => document.hidden)
   const [sound, setSound] = useState(false)
   const handleSoundBlocked = useCallback(() => setSound(false), [])
+  // The screen is the only control. Paused (reduced motion), a click plays with sound; playing, it toggles the sound.
+  const switchTv = useCallback(() => {
+    if (paused) { setPaused(false); setSound(true) } else setSound((value) => !value)
+  }, [paused])
+  const switchLabel = paused ? 'Play the TV with sound' : sound ? 'Mute the TV' : 'Unmute the TV'
   const dismissLoading = useCallback(() => { setLoading(false); sessionStorage.setItem('plum-booted', '1') }, [])
 
   useEffect(() => {
@@ -66,7 +71,7 @@ function App() {
           onError={() => { setImageError(true); dismissLoading() }}
         />
         {!imageError && <>
-          <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />
+          <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} onSwitch={switchTv} switchLabel={switchLabel} />
         </>}
         {imageError && <div className="model-status">
           <p role="status">The Macintosh image could not load.</p>
@@ -88,14 +93,6 @@ function App() {
       <footer className="scene-footer">
         <div className="scene-note">
           <span className="scene-index">The opening</span>
-        </div>
-        <div className="tv-controls">
-          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>
-            {paused ? 'Play TV' : 'Pause TV'}
-          </button>
-          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={sound} onClick={() => setSound((value) => !value)}>
-            TV sound {sound ? 'on' : 'off'}
-          </button>
         </div>
       </footer>
     </main>
