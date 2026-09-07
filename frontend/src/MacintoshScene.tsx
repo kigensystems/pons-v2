@@ -111,7 +111,14 @@ type SceneAction = { type: 'rotate'; yaw: number; pitch: number } | { type: 'foc
 const TURN_LIMIT = Math.PI / 5
 const TILT_LIMIT = Math.PI / 15
 
-export default function MacintoshScene({ active, onToggleAtmosphere }: { active: boolean; onToggleAtmosphere: () => void }) {
+type Props = {
+  active: boolean
+  onToggleAtmosphere: () => void
+  onProgress: (progress: number) => void
+  onError: () => void
+}
+
+export default function MacintoshScene({ active, onToggleAtmosphere, onProgress, onError }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const activeRef = useRef(active)
   const toggleAtmosphereRef = useRef(onToggleAtmosphere)
@@ -134,6 +141,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
       await Promise.resolve()
       const canvas = canvasRef.current
       if (cancelled || !canvas) return
+      onProgress(8)
 
       const forceWebGL = new URLSearchParams(location.search).get('renderer') === 'webgl'
       const renderer = new WebGPURenderer({ canvas, alpha: true, antialias: true, forceWebGL })
@@ -213,12 +221,17 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         if (!cancelled) {
           console.error('Macintosh scene could not render:', error)
           setState('error')
+          onError()
         }
       }
 
       const draw = (timestamp: number) => {
         try {
           pipeline!.render()
+          if (totalFrames === 0) {
+            setState('ready')
+            onProgress(100)
+          }
           dirty = false
           totalFrames++
           if (import.meta.env.DEV) {
@@ -401,6 +414,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         await renderer.init()
         initialized = true
         if (cancelled) { renderer.dispose(); return }
+        onProgress(18)
         renderer.onDeviceLost = () => { if (!cancelled && !cleaned) fail(new Error('Graphics device lost')) }
         canvas.dataset.renderer = 'isWebGPUBackend' in renderer.backend ? 'webgpu' : 'webgl2'
         resize()
@@ -428,8 +442,13 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         rim.position.set(4, 3, -3)
         scene.add(hemisphere, warm, rim)
 
-        const gltf = await new GLTFLoader().loadAsync('/models/macintosh-512k.glb')
+        const gltf = await new GLTFLoader().loadAsync('/models/macintosh-512k.glb', (event) => {
+          if (!cancelled && !cleaned && event.lengthComputable && event.total > 0) {
+            onProgress(20 + Math.min(event.loaded / event.total, 1) * 58)
+          }
+        })
         if (cancelled || cleaned) { disposeObject(gltf.scene); cleanup(); return }
+        onProgress(84)
         const model = gltf.scene
         const box = new Box3().setFromObject(model)
         const center = box.getCenter(new Vector3())
@@ -450,6 +469,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         })
         await document.fonts.ready
         if (cancelled || cleaned) { cleanup(); return }
+        onProgress(90)
         const screenTexture = makeScreenTexture()
         model.traverse((object) => {
           if (!(object instanceof Mesh)) return
@@ -494,7 +514,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         disposePost = () => { pipeline?.dispose(); glow.dispose(); scenePass.dispose() }
         ready = true
         canvas.dataset.model = 'macintosh-512k'
-        setState('ready')
+        onProgress(96)
         setView({ ...currentView })
         resizeObserver = new ResizeObserver(resize)
         resizeObserver.observe(canvas.parentElement!)
@@ -520,16 +540,22 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
       } catch (error) { fail(error) }
     }
 
-    void initialize()
+    void initialize().catch((error: unknown) => {
+      cleanup()
+      if (!cancelled) {
+        console.error('Macintosh scene could not initialize:', error)
+        setState('error')
+        onError()
+      }
+    })
     return () => { cancelled = true; cleanup() }
-  }, [])
+  }, [onProgress, onError])
 
   return (
     <div className="live-macintosh" data-state={state} data-view={view.focused ? 'monitor' : 'computer'}>
       <div className="scene-viewport">
         {state !== 'ready' && <img className="macintosh scene-fallback" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}
         <canvas ref={canvasRef} className="macintosh-canvas" role="group" tabIndex={state === 'ready' ? 0 : -1} aria-hidden={state !== 'ready'} aria-label="Explore the Macintosh in 3D" aria-describedby="computer-help" />
-        {state === 'loading' && <span className="model-status" role="status">Loading the Macintosh…</span>}
         {state === 'error' && <div className="model-status"><p role="status">Showing the still preview. The 3D scene could not load.</p><button className="motion-button" type="button" onClick={() => location.reload()}>Reload 3D scene</button></div>}
       </div>
       <p id="computer-help" className="sr-only">Drag or use arrow keys to move your viewpoint around the stationary computer. Select the monitor or press Enter to focus; select again to return. Double-click, Escape, or Home resets the view. Space pauses or resumes the atmosphere.</p>

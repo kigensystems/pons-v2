@@ -33,6 +33,12 @@ The earlier treehouse3d Macintosh 128K lead has been superseded by the user's pu
 - Keep rendering and future data access separate. Store future private API credentials on the server, never in browser-exposed Vite variables.
 - No scroll library is needed at this stage.
 
+## Loading screen
+
+The September 6 loading-screen request adds a close study of Shader's live boot screen: blue CRT field, cream italic title, monospace copy, a 21-segment progress bar, subtle static scanlines, and rounded dark edges. It uses the provisional name “Pons companion”; logo development remains deferred. Portrait layouts stack the title.
+
+The DOM loader covers scene-module loading, renderer initialization, model transfer/decoding, and first render. Its bar combines initialization milestones with actual model-download progress; it is preparation progress, not an overall byte percentage. Completion follows the first successful frame, then fades out over 600ms. Reduced motion removes that transition. The scene stays inert and atmosphere stays paused until the overlay exits. Initialization, model, rendering, or module failure dismisses it to expose the existing still preview and reload action.
+
 ## Current opening study
 
 The opening renders the purchased model in real 3D, with warmer cream housing, broad baked softbox reflections, lavender side light, and a dark glossy CRT. The greeting texture drives emission separately from the reflective glass and clearcoat. Geometry and licensed texture files are unchanged. The headline is quieter, and foreground mist/grain is reduced so the housing and keyboard remain clear. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.

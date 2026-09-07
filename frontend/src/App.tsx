@@ -1,9 +1,14 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import SceneErrorBoundary from './SceneErrorBoundary'
+import LoadingScreen from './LoadingScreen'
 
 const MacintoshScene = lazy(() => import('./MacintoshScene'))
 
 function App() {
+  const [progress, setProgress] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const handleProgress = useCallback((value: number) => setProgress((previous) => Math.max(previous, value)), [])
+  const dismissLoading = useCallback(() => setLoading(false), [])
   const [paused, setPaused] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
@@ -22,7 +27,9 @@ function App() {
   }, [])
 
   return (
-    <main className="opening" data-motion={paused || hidden ? 'paused' : 'playing'}>
+    <>
+    {loading && <LoadingScreen progress={progress} complete={progress === 100} onExited={dismissLoading} />}
+    <main className="opening" inert={loading} aria-busy={loading} data-motion={paused || hidden || loading ? 'paused' : 'playing'}>
       <div className="room" aria-hidden="true">
         <div className="window-light" />
         <div className="window-frame" />
@@ -37,9 +44,9 @@ function App() {
       </header>
 
       <div className="scene-object">
-        <SceneErrorBoundary>
+        <SceneErrorBoundary onError={dismissLoading}>
           <Suspense fallback={<img className="macintosh" src="/images/macintosh-render.png" alt="Classic Macintosh with keyboard and mouse" width="1536" height="1024" />}>
-            <MacintoshScene active={!paused && !hidden} onToggleAtmosphere={() => setPaused((value) => !value)} />
+            <MacintoshScene active={!paused && !hidden && !loading} onProgress={handleProgress} onError={dismissLoading} onToggleAtmosphere={() => setPaused((value) => !value)} />
           </Suspense>
         </SceneErrorBoundary>
       </div>
@@ -62,6 +69,7 @@ function App() {
         </div>
       </footer>
     </main>
+    </>
   )
 }
 

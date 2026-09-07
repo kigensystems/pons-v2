@@ -1,5 +1,13 @@
 # Macintosh opening scene validation
 
+## Loading screen — September 6 request
+
+- Visually inspected Shader's live blue CRT loading screen and compared it with the local production loader at the default desktop viewport (2015 × 1027) and an emulated 390 × 844 portrait viewport. Retained its simple title/copy/bar/footer composition; used the provisional project title and existing font instead of Shader's logo. Portrait title wraps into two lines. Static scanlines and subtle color separation avoid an additional animation loop.
+- Held the actual model request to inspect the loader. It stayed at the renderer milestone (18), with the underlying scene inert; releasing the request produced real download progress (41 observed), then a ready scene with no overlay or inert attribute. Inspected the loaded mobile scene as well.
+- Production WebGPU and forced WebGL2 both reached ready. Reduced-motion loading completed with the atmosphere paused; a no-preference WebGL2 check resumed atmosphere after exit and Enter focused the monitor. Browser keyboard interaction established that the overlay no longer blocked the scene.
+- Blocked the GLB, inspected the mobile still/error state, removed blocking, and activated Reload 3D scene with Enter: live rendering recovered. Independently blocked the lazy scene module and confirmed its error boundary dismissed the overlay and released inert, exposing the still/reload UI. Temporary interception, blocking, cache, viewport, and motion overrides were cleared after testing.
+- Build/TypeScript, lint, all six existing framing tests, and diff whitespace checks passed. Framing tests do not cover loader behavior; the lifecycle checks above were performed in Chrome. Scene chunk remains approximately 258.16 KB gzip with the existing large-chunk warning. No new dependencies, scene shaders, licensed assets, or per-frame work were added. Physical-phone and new GPU timing measurements were not performed.
+
 ## Current correction — September 6, 2026 pointer focus follow-up
 
 The user reported a white rectangular outline after clicking the computer. Reproduced in Chrome: the canvas had `data-input="pointer"` and matched `:focus-visible`, so excluding the custom keyboard rule still allowed the browser's native `outline: auto` to appear. The canvas now explicitly suppresses its default outline; the custom keyboard rule still applies. Clearing input modality on blur also restores the keyboard indicator when returning after mouse use.
