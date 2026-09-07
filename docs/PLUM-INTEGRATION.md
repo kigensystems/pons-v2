@@ -2,6 +2,8 @@
 
 Updated September 7, 2026. Technical handoff for replacing Plum's launch prototype with real token creation through pons. This report distinguishes current RPC evidence, documented API capabilities, and proposed application design. No token was deployed, transaction signed, or website published.
 
+For the next session's starting state, preserved decisions and implementation order, use the [integration handoff](LAUNCH-INTEGRATION-HANDOFF.md).
+
 ## 1. Decision and readiness
 
 Use **Alchemy for chain access**, **pons v2 for creation**, **a Plum-owned registry for Explore membership**, and **Mobula for market enrichment**. Keep our existing visual identity and grid. Explore must contain launches created through Plum, not a general pons or Robinhood discovery feed.
