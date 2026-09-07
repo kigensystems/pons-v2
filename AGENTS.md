@@ -11,7 +11,7 @@
 
 - Compare the rendered scene with [live Shader](https://www.shader.se/). Revisit it when refreshing direction; reuse reference context within an iteration. Close reproduction of fitting visual features is allowed; retain our Macintosh and identity.
 - For small adjustments, target a visible comparison within five minutes; explain delays. This is a feedback target, not a completion deadline.
-- Compare at the same viewport and video frame. Inspect desktop and mobile at normal size. Revise artificial or barely visible changes; reconsider the technique after two failed attempts.
+- Compare at the same viewport, using Pause TV for lighting checks. Inspect desktop and mobile at normal size. Revise artificial or barely visible changes; reconsider the technique after two failed attempts.
 - Reuse one preview/tab. Save final screenshots and settled decisions after visual success. Do not invent product claims or add unrelated decoration.
 
 ## Development

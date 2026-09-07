@@ -15,4 +15,4 @@
 - Haze establishes depth behind and around the computer while leaving surface contact readable. Compare softness, grain, and glow with Shader rather than judging each overlay in isolation.
 - Desktop and mobile retain clear copy, visible TV and controls, and a coherent composition without horizontal overflow.
 
-For each small adjustment, capture a matching before/after at one viewport first; hold the TV frame fixed for light comparisons. Inspect at normal size before checking the second viewport. If the result fails visually, revise the technique before writing completion evidence. The workflow and preview address are in [AGENTS.md](../AGENTS.md); scope and historical decisions remain in [PROJECT-BRIEF.md](PROJECT-BRIEF.md).
+For each small adjustment, compare before/after at one viewport first, using the existing Pause TV control for lighting checks. Do not build custom preview tooling for this. Inspect at normal size before checking the second viewport. If the result fails visually, revise the technique. Commands are in [AGENTS.md](../AGENTS.md); current scope is in [PROJECT-BRIEF.md](PROJECT-BRIEF.md).
