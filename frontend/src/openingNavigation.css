@@ -3,3 +3,9 @@
 .opening-nav a:hover { border-bottom-color: #d1d5b785; }
 .opening-nav a:focus-visible { outline: 2px solid #e2dec9; outline-offset: 5px; }
 @media (max-width: 600px) { .opening-nav { gap: 20px; } .opening-nav a { font-size: 12px; } }
+.enter-cue { pointer-events: auto; display: inline-flex; align-items: center; gap: 14px; margin-top: 30px; min-height: 44px; color: #e5ddca; font: 16px/1 'VT323', monospace; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; text-shadow: var(--phosphor-glow); transition: color .2s; }
+.enter-cue-key { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid #bac1a766; border-radius: 3px; font-size: 18px; box-shadow: 0 2px 0 #bac1a733; transition: transform .15s, box-shadow .15s; }
+.enter-cue:hover { color: #fff6dd; }
+.enter-cue:hover .enter-cue-key { transform: translateY(2px); box-shadow: none; }
+.enter-cue:focus-visible { outline: 2px solid #e5ddca; outline-offset: 5px; }
+@media (max-width: 600px) { .enter-cue { margin-top: 16px; font-size: 14px; min-height: 36px; } }
