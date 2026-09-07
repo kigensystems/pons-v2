@@ -26,6 +26,12 @@ Netlify is the selected eventual host. Vercel and Next.js are not required by th
 - Record selected design decisions separately from these durable guidelines.
 - Record each adopted asset's source, author, license, attribution requirements, and any optimization. Do not assume a free download permits product use.
 
+## Explicit Shader Reference Rules
+
+- Directly copying or closely reproducing Shader features is explicitly allowed when they fit our vision and current scope. Do not reject a fitting feature merely because it closely matches Shader.
+- Whenever you need a design refresh, always revisit the live [Shader site](https://www.shader.se/) and our design documents: `docs/PROJECT-BRIEF.md` and the relevant reports, reviews, and visual references. Use these sources to refresh context before making design decisions.
+- Always visually compare what we have actually built against Shader and our documented design targets using a browser or computer use. Inspect the rendered local build, compare, and iterate before calling design work complete; code inspection and build checks alone do not satisfy this rule.
+
 ## Visual Design Standards
 
 - Build around the user task and content. Avoid automatic slogan heroes, glowing orbs, decorative gradients, and repetitive feature-card grids. Familiar patterns are acceptable when they serve the design.
