@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { api, type Launch } from './api'
 import { wagmiConfig } from './appkit'
+import ExploreMonitor from './ExploreMonitor'
 import LaunchForm from './LaunchForm'
 import TokenGrid, { type Filter } from './TokenGrid'
 import { PaperHeader, PaperFooter } from './PaperChrome'
@@ -66,9 +67,7 @@ function ExploreDesk() {
               <a className="pad-link" href="/about">About us</a>
             </div>
           </div>
-          <figure className="pad-hero-figure">
-            <img className="pad-hero-mac" src="/images/macintosh-render.png" alt="An ivory Macintosh, keyboard and mouse" width="1536" height="1024" />
-          </figure>
+          <ExploreMonitor launch={launches[0] ?? null} loading={loading} error={error} />
           {!loading && !error && <p className="pad-hero-status" role="status">{stats.total === 0 ? 'No coins in the collection yet.' : [`${stats.total} in the collection`, `${stats.confirmed} confirmed`, `${graduated} graduated`, `${onCurve} on the curve`, wallet.session ? `${mine} made by you` : null].filter(Boolean).join(' · ')}</p>}
         </section>
 

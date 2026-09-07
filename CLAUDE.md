@@ -15,8 +15,8 @@ Read `AGENTS.md` (scope, visual rules, commands), `DESIGN.md` (tokens, type, mot
 
 The user reviews in their own Chrome through the Claude in Chrome extension. Use that browser for your own checks too; it has the console, network, and viewport tools.
 
-1. Start `npm --prefix frontend run dev` in the background with the sandbox disabled (port binding is blocked inside it). Add `npm --prefix backend run dev` when Explore needs the API; it reads the root `.env`.
-2. Open `http://127.0.0.1:5173`, not `localhost`; the API refuses other origins. Reuse one tab.
+1. Start `npm --prefix frontend run dev` in the background with the sandbox disabled (port binding is blocked inside it). Explore's hero and collection read from the API, so add `npm --prefix backend run dev` for that page; it reads the root `.env`. `.claude/launch.json` has entries for both servers.
+2. Open `http://127.0.0.1:5173`, not `localhost`; the API refuses writes from other origins. Reuse one tab.
 3. Check 1440 × 900 and 390 × 844 with `resize_window`. For lighting comparisons, emulate `prefers-reduced-motion` so the TV holds its poster. Read the console for errors.
 4. Keep `https://www.shader.se/` in a second tab when comparing against the reference.
 5. One screenshot per iteration at normal size. Save keepers to `docs/screenshots/` only after the user accepts the change.

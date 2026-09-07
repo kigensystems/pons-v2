@@ -24,12 +24,14 @@ Two passes landed on `main` after the user reviewed them in Chrome. The cut pass
 
 The TV sound work landed on September 7 evening after review in Chrome: the footer buttons are gone, the glass is the switch, a corner speaker glyph marks the state, and a Chicago cursor label names the action. Two earlier attempts, a subtitle-style caption and a System 1 dialog box, were rejected for covering the footage. The same commit set the site title to "Plum", added Open Graph and Twitter tags, and adopted the user's favicon (`frontend/public/favicon.ico`).
 
+Later on September 7 the Explore hero's Macintosh was replaced by a CRT close-up (`frontend/public/images/crt-close.jpg`, cut from the user's `explore-monitor.png`) whose glass shows the newest coin's logo or initials as emitted light, with NO SIGNAL whenever there is no coin to show. Built on the `claude/explore-monitor-crt-replace-c80916` worktree branch and checked at 1440 × 900 and 390 × 844 with mocked registry data; committed on that branch after the user's review in this session. The figure now also shows on mobile because it is live data; cut it there if it pushes the collection too far down.
+
 Open decisions, in order: the headline pattern (proposal: keep the two-line italic pair on the opening only, plain single-line headings elsewhere; see the About and Explore lines proposed in session); darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
 
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
-- Explore and About use scoped styles, the shared type tokens in `index.css`, the existing artwork, and static grain. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
+- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the newest coin. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
 - Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, muted autoplay, and opt-in sound. The glass is the only control: a click unmutes, mutes, or (under reduced motion) plays with sound. The picture carries one mark, a small outlined speaker in the top-right corner drawn into the canvas (crossed while muted, waves for two seconds when the sound comes on, a play triangle while paused), and a Chicago cursor label follows the pointer over the glass. The footer buttons were removed on September 7.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.

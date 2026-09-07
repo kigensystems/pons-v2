@@ -2,7 +2,7 @@
 
 ## Reuse in Plum's Explore and About pages
 
-The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; Explore uses CSS sepia/saturation grading and multiply blending, and About uses CSS brightness/saturation grading over a dark green background. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
+The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; About uses CSS brightness/saturation grading over a dark green background. Explore's hero used the same artwork with sepia grading and multiply blending until September 7, when it was replaced by the CRT close-up recorded below. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
 
 ## Monitor channels
 
@@ -47,6 +47,13 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 
 - File: `images/loading-mark.png`, 320 × 320, RGBA, 149,353 bytes.
 - Source: the user's bone-coloured render of the mark with cyan and pink fringe, `assets/reference/loading-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. Used only on the boot screen. Authored for this project by the user.
+
+## CRT close-up (Explore)
+
+- File: `images/crt-close.jpg`, 983 × 780, sRGB JPEG (quality 84), 151,703 bytes.
+- Source: the user's `explore-monitor.png` (1448 × 1086 RGB render of a compact Macintosh front on a checkerboard), supplied at the repository root on September 7, 2026 and kept there untracked. Cropped with sips to the screen and bezel (offset 232, 62 from the top left) and re-encoded as JPEG; no other pixel edits.
+- Author, generator, and license were not supplied and remain unknown. No public-use license is asserted; public deployment remains deferred.
+- Use: the Explore hero. The bezel multiplies onto the paper; the newest coin's logo or initials are drawn over the glass in CSS. Nothing in the file itself changes at runtime.
 
 ## Macintosh artwork
 

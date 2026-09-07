@@ -34,6 +34,7 @@ Two families, three roles. Tokens live in `index.css`.
 - Viewports checked: 1440 × 900 and 390 × 844; 320px must not overflow.
 - Opening: single non-scrolling scene; the Enter key label leads to Explore. The TV plays muted on its own; the glass is its only control. A small outlined speaker in the CRT's top-right corner (the Sound control panel's icon, crossed while muted, ringed with waves for a moment when the sound comes on, a play triangle while paused) is the only mark on the picture, and a Chicago cursor label names the action while the pointer is over the glass. No page-level TV buttons.
 - Explore: six-column card grid on desktop, two on mobile, paper surfaces, hairline `--line` rules, radius 3px or none.
+- Explore's one emitted-light surface is the hero CRT close-up. Its glass shows the newest coin (logo, or initials in phosphor `#f2e7d6` with the opening's glow), never decoration; the bezel photograph multiplies onto the paper like everything else.
 - About: full-bleed hero surface, then prose columns with a 1200px measure.
 
 ## Motion budget
