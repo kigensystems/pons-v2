@@ -2,27 +2,24 @@
 
 Read `AGENTS.md` first. It holds the durable project rules: scope, Shader reference rules, visual standards, validation, and commands. Then read `docs/PROJECT-BRIEF.md` for the selected direction and current handoff. This file only adds what those two do not cover.
 
-## Two sessions on one repo
+## Workflow
 
-A ChatGPT session commits directly to `main` and owns the landing page: `frontend/src/App.tsx`, `frontend/src/MacintoshScene.tsx`, `frontend/src/LoadingScreen.tsx`, `frontend/src/sceneFraming.ts`, `frontend/src/index.css`, `frontend/index.html`, `docs/PROJECT-BRIEF.md`, `docs/SCENE-VALIDATION.md`, and `frontend/public/`. Treat those as its files unless the user reassigns them.
+Claude Code runs every session on this repo, working directly on `main` in the main checkout. The earlier ChatGPT session and its worktree-and-PR split are retired as of September 7, 2026.
 
-This session works on separate features. Rules:
-
-- Work in a git worktree under `.claude/worktrees/`, never in the main checkout, which ChatGPT is editing. Create `feature/<name>` off `origin/main` for each feature. Never commit to `main` directly except for this file and `.claude/` config.
-- Before every push and before opening a PR: `git fetch origin` then `git rebase origin/main`. Resolve conflicts here, never on `main`.
+- Edit in the main checkout and commit on `main`. No feature branches or worktrees unless the user asks for one.
+- Show visual work in the browser and wait for the user's go-ahead before committing or pushing. Build, lint, and a self-check are not approval.
+- `git pull --ff-only origin main` before starting, and push after each approved commit so the other PC stays current.
 - Never force-push, rebase, reset, or amend anything already on `origin/main`.
-- Keep new work in new files or components. Shared files are the conflict risk: `App.tsx`, `main.tsx`, `index.css`, `index.html`, `package.json`, `vite.config.ts`. Touch them with the smallest possible hunk, ideally one import plus one JSX line, and say so in the PR.
-- Add new styles in a new stylesheet imported from the new component, not in `index.css`.
-- Add new docs as new files under `docs/`, not as edits to `PROJECT-BRIEF.md`.
-- Open a PR to `main` when a feature is done and rebased. The user merges PRs; never merge one yourself.
-- Keep pushing the feature branch at each verified working state so the other PC and the other session can see it.
+- Keep page styles in the page's own stylesheet. `index.css` holds the opening scene and shared tokens only.
+- Add new docs as new files under `docs/`. Update `PROJECT-BRIEF.md` when the direction or handoff changes.
+- The user inspects changes in their own Chrome through the Claude in Chrome extension, not the app's Browser pane. Run the dev server as a background process with the sandbox disabled and point them at `http://127.0.0.1:5173`.
 
 ## Commands
 
 Run from the repository root. Node 24, npm.
 
 ```sh
-npm --prefix frontend ci
+npm --prefix frontend install --legacy-peer-deps
 npm --prefix frontend run dev
 npm --prefix frontend run build
 npm --prefix frontend run lint
@@ -31,6 +28,8 @@ npm --prefix backend ci
 npm --prefix backend run dev
 npm --prefix backend test
 ```
+
+`npm ci` fails on the committed lock file since the wallet dependencies landed; use `install --legacy-peer-deps`, which leaves the lock unchanged.
 
 The backend reads the repository-root `.env` (see `.env.example`) and binds 127.0.0.1:8787; Vite proxies `/api` to it. Open the app at `http://127.0.0.1:5173`, not `localhost`, because the API refuses other origins. Details and the deferred checks: `docs/LAUNCH-API.md`, `docs/LAUNCH-API-HANDOFF.md`.
 

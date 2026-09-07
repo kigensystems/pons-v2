@@ -61,4 +61,4 @@ The Explore before/after pairs use matching CSS viewports (1440 × 900 and 390 �
 | Create | Revised dialog | [Desktop](screenshots/create-desktop.jpg) · [Mobile](screenshots/create-mobile.jpg) |
 | Opening | Naming and navigation only | [Desktop](screenshots/plum-opening-desktop.jpg) · [Mobile](screenshots/plum-opening-mobile.jpg) |
 
-No deployment was performed. Work continues on `main`; Claude's next feature should branch from the updated remote main.
+No deployment was performed. Work continues on `main`. The About page was rewritten on September 7; see [Shader About study](SHADER-ABOUT-STUDY.md) for the treatment it ports.

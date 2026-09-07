@@ -8,6 +8,8 @@ The product is called **Plum**, an independent companion to the Pons launchpad. 
 
 Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 
+About was rewritten on September 7 into a plain-words brief: Plum is a second window on Pons launches, on top of Pons and not instead of it, anonymous, with the Pons complaints research folded into three rules and a short list of what is being built. Its hero ports Shader's post-processing in 2D canvas and an SVG lens while the copy stays HTML; [Shader About study](SHADER-ABOUT-STUDY.md) records the chain and values. The user is supplying a better hero image.
+
 Scrolling from the opening now zooms through the Macintosh glass into Explore, reversing on upward scroll. Direct page links remain available. Deliberate scrolling always drives the zoom; reduced motion still pauses TV autoplay. See [Opening to Explore](SCROLL-TRANSITION.md) for behavior and desktop/mobile evidence.
 
 Use an accurate compact Macintosh. The user prefers the original image presentation with a working TV. Keep that direction unless the user changes it. Shader informs atmosphere, lighting, material treatment, composition, and luminous typography; retain our Macintosh and identity.
