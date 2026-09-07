@@ -1,6 +1,8 @@
 # Project brief
 
-Updated September 6, 2026, Pacific time.
+Updated September 7, 2026, Pacific time.
+
+Current visual acceptance criteria and unresolved feedback are in [VISUAL-TARGET.md](VISUAL-TARGET.md). The latest glow and shadow implementation has not met the user's visual expectations; the chronological notes below describe implementation history, not approval.
 
 ## Selected direction
 
