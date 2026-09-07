@@ -1,23 +1,33 @@
 import { useEffect, useRef, useState } from 'react'
-import { demoQuote, DEMO_LAUNCH_FEE, DEMO_BASE_FEE, type Paired } from './launchModel'
+import { api, ApiError, type Intent, type LaunchConfigResponse, type Session } from './api'
+import { describeIntent, formatBps, formatEth, gasAllowanceWei, isSettled, shortAddress } from './launchModel'
+import { sendPreparedTransaction, WalletError } from './wallet'
+import './launchLive.css'
 
-export type LaunchedToken = { id: string; name: string; ticker: string; description: string; image: string; paired: Paired; totalFee: number }
-type Props = { wallet: boolean; onConnect: () => void; onClose: () => void; onLaunch: (token: LaunchedToken) => void }
+type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; walletAvailable: boolean; onConnect: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
+type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 
-export default function LaunchForm({ wallet, onConnect, onClose, onLaunch }: Props) {
+const POLL_MS = 3000
+const ZERO = '0x0000000000000000000000000000000000000000'
+const nowSeconds = () => Math.floor(Date.now() / 1000)
+
+export default function LaunchForm({ session, config, connecting, walletAvailable, onConnect, onClose, onLaunched }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const nameInput = useRef<HTMLInputElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
-  const reader = useRef<FileReader | null>(null)
   const [name, setName] = useState('')
   const [ticker, setTicker] = useState('')
   const [description, setDescription] = useState('')
-  const [image, setImage] = useState('')
+  const [website, setWebsite] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState('')
   const [imageError, setImageError] = useState('')
-  const [readingImage, setReadingImage] = useState(false)
-  const [paired, setPaired] = useState<Paired>('ETH')
-  const [devBuy, setDevBuy] = useState('')
   const [creatorTax, setCreatorTax] = useState('0')
+  const [stage, setStage] = useState<Stage>('form')
+  const [intent, setIntent] = useState<Intent | null>(null)
+  const [problem, setProblem] = useState('')
+  const [now, setNow] = useState(nowSeconds)
+  const notified = useRef(false)
 
   useEffect(() => {
     const element = dialog.current
@@ -26,61 +36,170 @@ export default function LaunchForm({ wallet, onConnect, onClose, onLaunch }: Pro
     element?.showModal()
     nameInput.current?.focus()
     document.body.style.overflow = 'hidden'
-    return () => { reader.current?.abort(); element?.close(); document.body.style.overflow = overflow; opener?.focus() }
+    return () => { element?.close(); document.body.style.overflow = overflow; opener?.focus() }
   }, [])
 
-  const quote = demoQuote(Number(creatorTax), Number(devBuy), paired)
-  const ready = Boolean(wallet && name.trim() && /^[A-Z0-9]{1,12}$/.test(ticker) && !readingImage && !imageError)
+  useEffect(() => {
+    if (!preview) return
+    return () => URL.revokeObjectURL(preview)
+  }, [preview])
 
-  function readImage(file?: File) {
-    reader.current?.abort()
-    setImage(''); setImageError(''); setReadingImage(false)
-    if (!file) return
-    if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(file.type) || file.size > 2 * 1024 * 1024) {
-      setImageError('Choose a PNG, JPG, WebP or GIF under 2 MB.'); return
-    }
-    const next = new FileReader()
-    reader.current = next; setReadingImage(true)
-    next.onload = () => { setImage(String(next.result)); setReadingImage(false) }
-    next.onerror = () => { setImageError('That image could not be read. Try another file.'); setReadingImage(false) }
-    next.readAsDataURL(file)
+  // Poll a submitted intent until it settles.
+  useEffect(() => {
+    if (stage !== 'tracking' || !intent || isSettled(intent) && intent.status !== 'included') return
+    if (intent.status === 'confirmed') return
+    const timer = setTimeout(async () => {
+      try { setIntent(await api.intent(intent.id)) } catch (failure) { if (failure instanceof ApiError && failure.status === 401) setProblem('Your session ended. Sign in again to keep following this launch.') }
+    }, POLL_MS)
+    return () => clearTimeout(timer)
+  }, [stage, intent])
+
+  useEffect(() => {
+    if (intent && (intent.status === 'included' || intent.status === 'confirmed') && !notified.current) { notified.current = true; onLaunched(intent) }
+  }, [intent, onLaunched])
+
+  // Keep the quote countdown honest while a prepared intent is on screen.
+  useEffect(() => {
+    if (stage !== 'review') return
+    const timer = setInterval(() => setNow(nowSeconds()), 15_000)
+    return () => clearInterval(timer)
+  }, [stage])
+
+  // Dropped session or wallet change invalidates anything prepared but unsigned.
+  if (!session && (stage === 'review' || stage === 'preparing')) {
+    setStage('form'); setIntent(null); setProblem('Your wallet changed. Connect again and prepare a fresh quote.')
   }
 
-  return <dialog ref={dialog} className="pad-dialog" onCancel={event => { event.preventDefault(); onClose() }} onClose={() => { if (!dialog.current?.open) onClose() }} aria-labelledby="pad-form-title" aria-describedby="pad-form-description">
-    <form className="pad-form" onSubmit={event => {
-      event.preventDefault()
-      if (!ready) return
-      onLaunch({ id: crypto.randomUUID(), name: name.trim(), ticker, description: description.trim(), image, paired, totalFee: quote.totalFee })
-    }}>
-      <div className="pad-form-head"><div><p className="pad-kicker">Plum / The creation desk</p><h2 id="pad-form-title">An idea of your own.</h2></div><button type="button" className="pad-close" onClick={onClose} aria-label="Close creation desk">×</button></div>
+  const taxBps = Math.round(Number(creatorTax) * 100)
+  const maxTax = config?.maxCreatorTaxBps ?? 1000
+  const taxValid = Number.isFinite(Number(creatorTax)) && taxBps >= 0 && taxBps <= maxTax
+  const websiteValid = !website.trim() || /^https:\/\/\S+$/.test(website.trim())
+  const gateOpen = Boolean(config?.launchEnabled && config.configs[0]?.enabled)
+  const eligible = config?.eligibility?.canLaunch ?? true
+  const ready = Boolean(session && config && gateOpen && eligible && name.trim() && /^[A-Z0-9]{1,12}$/.test(ticker) && taxValid && websiteValid && !imageError)
+
+  function chooseImage(next?: File) {
+    setFile(null); setPreview(''); setImageError('')
+    if (!next) return
+    if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(next.type) || next.size > 2 * 1024 * 1024) { setImageError('Choose a PNG, JPG, WebP or GIF under 2 MB.'); return }
+    setFile(next); setPreview(URL.createObjectURL(next))
+  }
+
+  async function prepare() {
+    if (!ready) return
+    setStage('preparing'); setProblem('')
+    try {
+      const upload = file ? await api.upload(file) : null
+      const body: Record<string, unknown> = { name: name.trim(), symbol: ticker, description: description.trim(), creatorTaxBps: taxBps, launchConfigId: 0, pairToken: ZERO, initialBuyWei: '0' }
+      if (upload) body.logoUploadId = upload.id
+      if (website.trim()) body.socials = { website: website.trim() }
+      setIntent(await api.createIntent(crypto.randomUUID(), body))
+      setNow(nowSeconds())
+      setStage('review')
+    } catch (failure) {
+      setStage('form')
+      setProblem(failure instanceof Error ? failure.message : 'The launch could not be prepared.')
+    }
+  }
+
+  async function sign() {
+    if (!intent || !session) return
+    setStage('signing'); setProblem('')
+    try {
+      const gas = intent.simulation?.ok ? intent.simulation.gas : undefined
+      const hash = await sendPreparedTransaction(session, intent.transaction, gas)
+      setStage('tracking')
+      setIntent(await api.submit(intent.id, hash))
+    } catch (failure) {
+      setStage('review')
+      setProblem(failure instanceof WalletError || failure instanceof Error ? failure.message : 'The transaction was not sent.')
+    }
+  }
+
+  const expiresIn = intent ? Math.max(0, intent.expiresAt - now) : 0
+  const gasWei = gasAllowanceWei(intent?.simulation ?? null)
+  const status = intent ? describeIntent(intent.status, intent.failure) : null
+  const busy = stage === 'preparing' || stage === 'signing'
+  const explorer = intent?.launch && config ? `${config.chainId === 4663 ? 'https://robinhoodchain.blockscout.com' : 'https://explorer.testnet.chain.robinhood.com'}/token/${intent.launch.token}` : null
+
+  return <dialog ref={dialog} className="pad-dialog" onCancel={event => { event.preventDefault(); if (!busy) onClose() }} onClose={() => { if (!dialog.current?.open) onClose() }} aria-labelledby="pad-form-title" aria-describedby="pad-form-description">
+    <form className="pad-form" onSubmit={event => { event.preventDefault(); if (stage === 'form') void prepare(); else if (stage === 'review') void sign() }}>
+      <div className="pad-form-head"><div><p className="pad-kicker">Plum / The creation desk</p><h2 id="pad-form-title">An idea of your own.</h2></div><button type="button" className="pad-close" onClick={onClose} aria-label="Close creation desk" disabled={busy}>×</button></div>
       <div className="pad-form-body">
         <div className="pad-fields">
-          <p className="pad-fine pad-wide" id="pad-form-description">Make a demo coin. Nothing is published or sent to a chain.</p>
-          <label><span>Name</span><input ref={nameInput} required value={name} onChange={event => setName(event.target.value)} placeholder="Your bright idea" maxLength={40} /></label>
-          <label><span>Ticker</span><input required value={ticker} onChange={event => setTicker(event.target.value.toUpperCase())} placeholder="SYMBOL" maxLength={12} pattern="[A-Z0-9]{1,12}" title="1 to 12 letters or numbers" /></label>
-          <label className="pad-wide"><span>Description <small>(optional)</small></span><textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="A few words about your idea…" maxLength={280} rows={2} /></label>
-          <label className="pad-wide pad-file"><span>Coin image <small>(optional)</small></span><input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={event => readImage(event.target.files?.[0])} aria-describedby="pad-upload-help" /><small className="pad-fine" id="pad-upload-help">PNG, JPG, WebP or GIF · Up to 2 MB · Kept in this tab</small></label>
-          {image && <div className="pad-wide pad-upload-preview"><img src={image} alt="Your coin preview" onError={() => { setImage(''); setImageError('That file is not a readable image. Try another file.') }} /><button type="button" onClick={() => { setImage(''); if (fileInput.current) fileInput.current.value = '' }}>Remove image</button></div>}
-          {imageError && <p className="pad-error pad-wide" role="alert">{imageError}</p>}
-          <label><span>Paired asset</span><select value={paired} onChange={event => setPaired(event.target.value as Paired)}><option>ETH</option><option>USDG</option><option>cbBTC</option></select></label>
-          <label><span>Initial buy ({paired})</span><input type="number" min="0" max="1000000" step="0.00000001" inputMode="decimal" value={devBuy} onChange={event => setDevBuy(event.target.value)} placeholder="0.00" /></label>
-          <label><span>Creator fee (%)</span><input type="number" min="0" max="10" step="0.01" inputMode="decimal" value={creatorTax} onChange={event => setCreatorTax(event.target.value)} /></label>
-          <p className="pad-fine">Sample settings.<br />Try a fee from 0 to 10%.</p>
+          <ol className="pad-steps pad-wide" aria-label="Progress">
+            <li aria-current={stage === 'form' || stage === 'preparing' ? 'step' : undefined}>Describe</li>
+            <li aria-current={stage === 'review' || stage === 'signing' ? 'step' : undefined}>Review and sign</li>
+            <li aria-current={stage === 'tracking' ? 'step' : undefined}>Onchain</li>
+          </ol>
+          <p className="pad-fine pad-wide" id="pad-form-description">
+            {stage === 'tracking' ? 'Your transaction is on Robinhood Chain. Plum verifies it against the quote you signed.' : 'Creates a real token on Robinhood Chain through Pons. You pay the creation fee and gas from your wallet.'}
+          </p>
+          {problem && <p className="pad-error pad-wide" role="alert">{problem}</p>}
+          {config && !gateOpen && <p className="pad-error pad-wide" role="alert">Public launches are closed on the factory right now.</p>}
+          {config && !eligible && <p className="pad-error pad-wide" role="alert">This wallet is not eligible to launch right now.</p>}
+
+          {(stage === 'form' || stage === 'preparing') && <>
+            <label><span>Name</span><input ref={nameInput} required value={name} onChange={event => setName(event.target.value)} placeholder="Your bright idea" maxLength={40} disabled={busy} /></label>
+            <label><span>Ticker</span><input required value={ticker} onChange={event => setTicker(event.target.value.toUpperCase())} placeholder="SYMBOL" maxLength={12} pattern="[A-Z0-9]{1,12}" title="1 to 12 letters or numbers" disabled={busy} /></label>
+            <label className="pad-wide"><span>Description <small>(optional)</small></span><textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="A few words about your idea…" maxLength={280} rows={2} disabled={busy} /></label>
+            <label className="pad-wide pad-file"><span>Coin image <small>(optional)</small></span><input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={event => chooseImage(event.target.files?.[0])} aria-describedby="pad-upload-help" disabled={busy} /><small className="pad-fine" id="pad-upload-help">PNG, JPG, WebP or GIF · Up to 2 MB · Stored by Plum and linked from the token</small></label>
+            {preview && <div className="pad-wide pad-upload-preview"><img src={preview} alt="Your coin preview" /><button type="button" onClick={() => { chooseImage(); if (fileInput.current) fileInput.current.value = '' }}>Remove image</button></div>}
+            {imageError && <p className="pad-error pad-wide" role="alert">{imageError}</p>}
+            <label><span>Website <small>(optional)</small></span><input type="url" value={website} onChange={event => setWebsite(event.target.value)} placeholder="https://" disabled={busy} aria-invalid={!websiteValid} /></label>
+            <label><span>Creator fee (%)</span><input type="number" min="0" max={maxTax / 100} step="0.01" inputMode="decimal" value={creatorTax} onChange={event => setCreatorTax(event.target.value)} disabled={busy} aria-invalid={!taxValid} /></label>
+            <p className="pad-fine pad-wide">Paired with ETH. Initial buys and other pairs arrive once they are validated. The creator fee is fixed at launch and cannot be raised later.</p>
+          </>}
+
+          {(stage === 'review' || stage === 'signing') && intent && <div className="pad-review pad-wide">
+            <div className="pad-review-card">
+              {intent.tokenParams.logo ? <img src={intent.tokenParams.logo} alt="" /> : <div className="pad-review-mark" aria-hidden="true">{intent.tokenParams.symbol.slice(0, 2)}</div>}
+              <div><strong>{intent.tokenParams.name}</strong><span>${intent.tokenParams.symbol} · paired with ETH</span>{intent.tokenParams.description && <p>{intent.tokenParams.description}</p>}</div>
+            </div>
+            <p className="pad-fine">Terms were read from the factory at block {intent.terms.sourceBlock.toLocaleString('en-US')}. This quote expires in {Math.ceil(expiresIn / 60)} min; the wallet will show the same recipient, value and data.</p>
+            {intent.simulation && !intent.simulation.ok && <p className="pad-error" role="alert">Simulation failed: {intent.simulation.reason}</p>}
+          </div>}
+
+          {stage === 'tracking' && intent && status && <div className="pad-status pad-wide" data-tone={status.tone} role="status" aria-live="polite">
+            <strong>{status.tone === 'active' && <span className="pad-pulse" aria-hidden="true" />} {status.label}</strong>
+            <p>{status.detail}</p>
+            {intent.launch && <p>Token <code>{intent.launch.token}</code>{explorer && <> · <a href={explorer} target="_blank" rel="noreferrer">View on Blockscout ↗</a></>}</p>}
+            {intent.submissions.at(-1) && <p className="pad-fine">Transaction <code>{shortAddress(intent.submissions.at(-1)!.transactionHash)}</code></p>}
+          </div>}
         </div>
-        <aside className="pad-quote" aria-label="Illustrative fee quote"><p className="pad-kicker">Your sample quote</p><dl>
-          <Line label="Creation fee" value={`${DEMO_LAUNCH_FEE} ETH`} />
-          <Line label="Initial buy" value={quote.buy ? `${quote.buy} ${paired}` : 'None'} />
-          <Line label="Base trade fee" value={`${DEMO_BASE_FEE.toFixed(2)}%`} />
-          <Line label="Creator fee" value={`${quote.tax.toFixed(2)}%`} />
-          <Line label="Total trade fee" value={`${quote.totalFee.toFixed(2)}%`} strong />
-          <Line label="Network gas" value="Not estimated" />
-        </dl><div className="pad-quote-total" aria-live="polite" aria-atomic="true"><span>Illustrative total · excluding gas</span><strong>{quote.total}</strong></div><p className="pad-fine">These are example figures, not current Pons fees. No payment is due. A live launch would need a fresh quote.</p></aside>
+
+        <aside className="pad-quote" aria-label="Launch terms"><p className="pad-kicker">{intent ? 'Your terms' : 'Live terms'}</p><dl>
+          <Line label="Creation fee" value={config ? `${formatEth(config.launchFeeWei)} ETH` : '…'} />
+          <Line label="Network gas" value={gasWei !== null ? `≤ ${formatEth(gasWei)} ETH` : intent ? 'Not estimated' : 'Estimated after review'} note={gasWei !== null ? 'allowance at the current fee cap' : undefined} />
+          <Line label="Initial buy" value="None" />
+          <Line label="Base trade fee" value={config?.configs[0] ? formatBps(Number(config.configs[0].curveFeeBps)) : '…'} />
+          <Line label="Creator fee" value={taxValid ? formatBps(taxBps) : '—'} />
+          <Line label="Total trade fee" value={config?.configs[0] && taxValid ? formatBps(Number(config.configs[0].curveFeeBps) + taxBps) : '—'} strong />
+        </dl><div className="pad-quote-total" aria-live="polite" aria-atomic="true"><span>{gasWei !== null ? 'Up to, including gas' : 'Creation fee · excluding gas'}</span><strong>{config ? `${formatEth(BigInt(config.launchFeeWei) + (gasWei ?? 0n))} ETH` : '…'}</strong></div>
+        <p className="pad-fine">{intent?.simulation?.ok ? `Wallet balance ${formatEth(intent.simulation.balanceWei)} ETH.` : config ? `Read at block ${Number(config.blockNumber).toLocaleString('en-US')}. Gas is estimated for your wallet during review.` : 'Reading the factory…'}</p></aside>
       </div>
-      <div className="pad-form-foot">{wallet ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready}>{readingImage ? 'Reading image…' : 'Add demo coin'} <span aria-hidden="true">↗</span></button> : <button type="button" className="pad-btn pad-btn--dark" onClick={event => { event.preventDefault(); onConnect() }}>Connect demo <span aria-hidden="true">↗</span></button>}<span className="pad-fine">{wallet ? 'Your coin stays for this visit. Leaving Explore or reloading clears it.' : 'Try the flow with a demo connection. No wallet or signature needed.'}</span></div>
+      <div className="pad-form-foot">
+        {!session
+          ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting || !walletAvailable}>{connecting ? 'Check your wallet…' : walletAvailable ? 'Connect wallet' : 'No wallet found'} <span aria-hidden="true">↗</span></button>
+          : stage === 'form' || stage === 'preparing'
+            ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'} <span aria-hidden="true">↗</span></button>
+            : stage === 'review' || stage === 'signing'
+              ? <>
+                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)}>{stage === 'signing' ? 'Confirm in your wallet…' : 'Sign in wallet'} <span aria-hidden="true">↗</span></button>
+                <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={() => { setStage('form'); setIntent(null); setProblem('') }}>Edit</button>
+              </>
+              : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'} <span aria-hidden="true">↗</span></button>}
+        <span className="pad-fine">
+          {!session ? walletAvailable ? 'Signing in is a free message signature. Nothing is sent to the chain until you confirm a transaction.' : 'Install a browser wallet such as MetaMask or Rabby, then reload this page.'
+            : stage === 'review' ? 'Your wallet shows the exact transaction. Plum only learns the hash.'
+            : stage === 'tracking' ? 'You can close this window; the launch keeps settling on its own.'
+            : 'Fees are read live from the Pons factory.'}
+        </span>
+      </div>
     </form>
   </dialog>
 }
 
-function Line({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
-  return <div className="pad-quote-line" data-strong={strong}><dt>{label}</dt><dd>{value}</dd></div>
+function Line({ label, value, note, strong }: { label: string; value: string; note?: string; strong?: boolean }) {
+  return <div className="pad-quote-line" data-strong={strong}><dt>{label}</dt><dd>{value}{note && <small>{note}</small>}</dd></div>
 }

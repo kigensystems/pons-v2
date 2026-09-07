@@ -1,6 +1,8 @@
-export function PaperHeader({ page, wallet, onConnect, onCreate }: {
-  page: 'explore' | 'about'; wallet?: boolean; onConnect?: () => void; onCreate?: () => void
-}) {
+import { shortAddress } from './launchModel'
+
+export type WalletControl = { address: string | null; connecting: boolean; available: boolean; onConnect: () => void; onDisconnect: () => void }
+
+export function PaperHeader({ page, wallet, onCreate }: { page: 'explore' | 'about'; wallet?: WalletControl; onCreate?: () => void }) {
   return <>
     <a className="pad-skip" href="#paper-main">Skip to content</a>
     <header className="pad-bar">
@@ -12,7 +14,11 @@ export function PaperHeader({ page, wallet, onConnect, onCreate }: {
       </nav>
       <div className="pad-bar-actions">
         {onCreate ? <button type="button" className="pad-btn pad-btn--quiet" onClick={onCreate}>+ Create</button> : <span className="pad-header-note">An independent companion.</span>}
-        {onConnect ? <button type="button" className="pad-btn pad-btn--dark" aria-pressed={wallet} onClick={onConnect}>{wallet ? 'Demo connected ✓' : 'Connect demo'}</button> : <a className="pad-btn pad-btn--dark" href="/explore">Explore coins <span aria-hidden="true">↗</span></a>}
+        {wallet
+          ? wallet.address
+            ? <button type="button" className="pad-btn pad-btn--dark" onClick={wallet.onDisconnect} title={wallet.address}>{shortAddress(wallet.address)} · Sign out</button>
+            : <button type="button" className="pad-btn pad-btn--dark" onClick={wallet.onConnect} disabled={wallet.connecting} aria-busy={wallet.connecting}>{wallet.connecting ? 'Check your wallet…' : wallet.available ? 'Connect wallet' : 'No wallet found'}</button>
+          : <a className="pad-btn pad-btn--dark" href="/explore">Explore coins <span aria-hidden="true">↗</span></a>}
       </div>
     </header>
   </>

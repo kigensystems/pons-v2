@@ -72,12 +72,12 @@ Registry rows move from `included` to `confirmed` after `PLUM_CONFIRMATIONS` blo
 - pons custom errors are declared without parameters because their signatures are unpublished; an unknown revert is reported with its selector.
 - The logo URI written onchain points at `PLUM_PUBLIC_URL`. For a real launch that must be a durable public host or an IPFS pin; the local disk adapter is development only.
 - `verifySiweMessage` for contract wallets depends on RPC and was only tested with an EOA offline.
-- Mobula normalization is based on the documented field names and a fake server; no live Mobula call was made here because this machine has no `.env`.
+- Mobula normalization is based on the documented field names and a fake server; no live Mobula call was made. The root `.env` arrived at the end of the session in the main checkout; see [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md).
 - Initial buys, pair tokens other than ETH and the router path are encoded in the ABI but refused by the API until validated on a fork or testnet.
 
 ## Recommended next steps
 
-1. Provision `.env` on this machine and rerun `scripts/check-launch-apis.mjs`, then exercise sign-in and intent preparation with a real wallet on the dev server.
+1. Follow [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md): real wallet sign-in and intent simulation on the dev server, then the testnet addresses.
 2. Run one creation on a mainnet fork (Foundry `anvil --fork-url`) with an impersonated account to confirm `launchToken` encoding, the fee value and the event decoding before any real launch.
 3. Decide hosting for the backend and uploads (a small Node host plus persistent disk or object storage; IPFS pinning for logos).
 4. Add EIP-6963 wallet discovery if users have several extensions installed; the current connector uses `window.ethereum`.

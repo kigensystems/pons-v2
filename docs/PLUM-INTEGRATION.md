@@ -4,7 +4,7 @@ Updated September 7, 2026. Technical handoff for replacing Plum's launch prototy
 
 For the next session's starting state, preserved decisions and implementation order, use the [integration handoff](LAUNCH-INTEGRATION-HANDOFF.md).
 
-Implementation status, routes and verification evidence for the built API are in [Plum launch API](LAUNCH-API.md).
+Implementation status, routes and verification evidence for the built API are in [Plum launch API](LAUNCH-API.md). The next session starts from [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md).
 
 ## 1. Decision and readiness
 
