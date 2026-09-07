@@ -1,4 +1,5 @@
-export const CHANNEL_URLS = [1, 2, 3, 4].map((channel) => `/videos/channels/channel-0${channel}.mp4`)
+// Play order is the user's priority, not file order: channel 4 opens, then 2, 3, 1.
+export const CHANNEL_URLS = [4, 2, 3, 1].map((channel) => `/videos/channels/channel-0${channel}.mp4`)
 export const STATIC_SECONDS = 0.24
 const STALL_SECONDS = 8
 

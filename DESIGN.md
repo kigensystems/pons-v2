@@ -38,7 +38,7 @@ Two families, three roles. Tokens live in `index.css`.
 
 ## Motion budget
 
-Two moments per page at most. Allowed: the TV picture and its glow, static transitions between channels, the About hero's diffusion/bloom/grain/vignette. Refused: scroll-driven zooms (removed September 7), section fade-and-slide, card hover lifts, scanlines, channel split, lens warp, particles. `prefers-reduced-motion` pauses the TV and removes transitions. TV work is capped at 30fps and stops in hidden tabs.
+Two moments per page at most. Allowed: the boot screen's 1.8 s hold on a session's first visit, the TV picture and its glow, static transitions between channels, the About hero's diffusion/bloom/grain/vignette. Refused: scroll-driven zooms (removed September 7), section fade-and-slide, card hover lifts, scanlines, channel split, lens warp, particles. `prefers-reduced-motion` pauses the TV and removes transitions. TV work is capped at 30fps and stops in hidden tabs.
 
 ## Copy
 

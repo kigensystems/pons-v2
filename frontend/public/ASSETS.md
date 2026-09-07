@@ -22,7 +22,8 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 
 - Optimization: FFmpeg/libx264, 768 × 432 preserving 16:9 proportions, 30 fps, CRF 24, slow preset, `yuv420p`, AAC audio at 80 kbit/s, and MP4 fast-start metadata. Original frame rates were 30, 30000/1001, 60000/1001, and 30000/1001 fps respectively; the small duration differences above follow frame-rate normalization. The audio tracks are retained in the derivatives; runtime playback controls determine whether they are audible.
 - Reproduction: `ffmpeg -i INPUT -map 0:v:0 -map 0:a:0? -vf "scale=768:-2,fps=30" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -c:a aac -b:a 80k -movflags +faststart OUTPUT`.
-- Poster: first decoded frame of `channel-01.mp4`, exported with `-frames:v 1 -q:v 3` as a 768 × 432 JPEG (51,637 bytes).
+- Play order: channel-04, then 02, 03, 01 (the user's priority, set in `src/monitorPlayback.ts`), not file order.
+- Poster: opening frame of `channel-04.mp4`, the first channel shown, taken with macOS Quick Look (`qlmanage -t -s 768`) and saved by sips as a 768 × 432 JPEG at quality 85 (75,013 bytes) on September 7, 2026. It replaced the earlier channel-01 frame when the play order changed.
 - Media validation: FFprobe confirmed H.264/yuv420p, AAC, 768 × 432, and 30 fps for each derivative. FFmpeg decoded every complete derivative without reported errors. Browser playback and the screen presentation require separate runtime validation.
 
 ## Live Macintosh 512K
@@ -41,6 +42,11 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - File: `images/plum-mark.png`, 256 × 256, RGBA, 99,446 bytes.
 - Source: the user's own logo render, `assets/reference/plum-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. The glow is baked into the pixels; pages add a CSS halo on dark ground and multiply it on paper.
 - Authored for this project by the user. No third-party mark or Shader asset was copied.
+
+## Loader mark
+
+- File: `images/loading-mark.png`, 320 × 320, RGBA, 149,353 bytes.
+- Source: the user's bone-coloured render of the mark with cyan and pink fringe, `assets/reference/loading-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. Used only on the boot screen. Authored for this project by the user.
 
 ## Macintosh artwork
 

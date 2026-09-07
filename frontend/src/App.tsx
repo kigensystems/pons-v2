@@ -7,12 +7,21 @@ import './openingNavigation.css'
 function App() {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(true)
+  // The boot screen stays up for at least this long on the first visit of a session, so the lockup
+  // reads as an opening rather than a flash. Reduced motion and later visits skip the hold.
+  const [held, setHeld] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('plum-booted') === '1')
   const [imageError, setImageError] = useState(false)
   const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [hidden, setHidden] = useState(() => document.hidden)
   const [sound, setSound] = useState(false)
   const handleSoundBlocked = useCallback(() => setSound(false), [])
-  const dismissLoading = useCallback(() => setLoading(false), [])
+  const dismissLoading = useCallback(() => { setLoading(false); sessionStorage.setItem('plum-booted', '1') }, [])
+
+  useEffect(() => {
+    if (held) return
+    const timeout = window.setTimeout(() => setHeld(true), 1800)
+    return () => window.clearTimeout(timeout)
+  }, [held])
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -28,7 +37,7 @@ function App() {
 
   return (
     <>
-    {loading && <LoadingScreen progress={progress} complete={progress === 100} onExited={dismissLoading} />}
+    {loading && <LoadingScreen progress={progress} complete={progress === 100 && held} onExited={dismissLoading} />}
     <main className="opening" inert={loading} aria-busy={loading} data-motion="paused">
       <div className="room" aria-hidden="true">
         <div className="window-light" />
