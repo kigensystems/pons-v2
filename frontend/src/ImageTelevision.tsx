@@ -4,6 +4,9 @@ import { deriveTvLighting } from './tvLighting'
 
 type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void }
 
+// Lift dark footage while retaining separation near white instead of clipping at 1 / exposure.
+const CRT_EXPOSURE = '0 .18 .4 .58 .72 .82 .89 .94 .97 .99 1'
+
 /** Original pixels stay intact; registered shading and CRT light integrate the artwork. */
 export default function ImageTelevision({ active, sound, onSoundBlocked }: Props) {
   const clipId = useId()
@@ -114,13 +117,25 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
         <filter id={`${clipId}-edge`} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
           <feGaussianBlur stdDeviation="5" />
         </filter>
-        <filter id={`${clipId}-phosphor`} x="-15%" y="-20%" width="130%" height="140%" colorInterpolationFilters="sRGB">
+        <filter id={`${clipId}-exposure`} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
           <feComponentTransfer>
+            <feFuncR type="table" tableValues={CRT_EXPOSURE} />
+            <feFuncG type="table" tableValues={CRT_EXPOSURE} />
+            <feFuncB type="table" tableValues={CRT_EXPOSURE} />
+          </feComponentTransfer>
+        </filter>
+        <filter id={`${clipId}-phosphor`} x="-25%" y="-30%" width="150%" height="160%" colorInterpolationFilters="sRGB">
+          <feComponentTransfer result="highlights">
             <feFuncR type="linear" slope="2.2" intercept="-.4" />
             <feFuncG type="linear" slope="2.2" intercept="-.4" />
             <feFuncB type="linear" slope="2.2" intercept="-.4" />
           </feComponentTransfer>
-          <feGaussianBlur stdDeviation="7" />
+          <feGaussianBlur in="highlights" stdDeviation="18" result="halo" />
+          <feGaussianBlur in="highlights" stdDeviation="4" result="core" />
+          <feMerge>
+            <feMergeNode in="halo" />
+            <feMergeNode in="core" />
+          </feMerge>
         </filter>
         <radialGradient id={`${clipId}-reflection`}>
           <stop offset="0" stopColor="var(--tv-light)" stopOpacity="1" />
@@ -146,19 +161,25 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
       </defs>
       {/* Shade the original alpha silhouette; the CRT and its light are added above it. */}
       <rect width="1536" height="1024" fill={`url(#${clipId}-room-shadow)`} mask={`url(#${clipId}-artwork)`} aria-hidden="true" />
+      {/* Diffuse screen light fades across the bezel without lighting the empty room. */}
+      <g className="image-tv-reflection" mask={`url(#${clipId}-artwork)`} aria-hidden="true">
+        <ellipse cx="740" cy="385" rx="255" ry="195" fill={`url(#${clipId}-reflection)`} />
+      </g>
       <g className="image-tv-emission">
         <path d="M 596 143 L 917 161 L 909 435 L 580 412 Z" fill="var(--tv-light)" filter={`url(#${clipId}-halo)`} />
         {/* Light catches the inward-facing lower lip, not the whole front casing. */}
-        <path d="M 573 428 Q 737 462 922 448" fill="none" stroke={`url(#${clipId}-bezel-reflection)`} strokeWidth="14" filter={`url(#${clipId}-edge)`} />
-        <path d="M 930 187 Q 935 310 922 424" fill="none" stroke="var(--tv-light)" strokeOpacity=".45" strokeWidth="7" filter={`url(#${clipId}-edge)`} />
+        <path d="M 573 428 Q 737 462 922 448" fill="none" stroke={`url(#${clipId}-bezel-reflection)`} strokeWidth="22" filter={`url(#${clipId}-edge)`} />
+        <path d="M 930 187 Q 935 310 922 424" fill="none" stroke="var(--tv-light)" strokeOpacity=".65" strokeWidth="10" filter={`url(#${clipId}-edge)`} />
       </g>
       <g className="image-tv-reflection" clipPath={`url(#${clipId}-keyboard)`}>
         <ellipse cx="632" cy="708" rx="230" ry="70" transform="rotate(10 632 708)" fill={`url(#${clipId}-reflection)`} />
       </g>
       <g className="image-tv-picture" clipPath={`url(#${clipId})`}>
-        <foreignObject width="640" height="480" transform="matrix(.585 .031 -.025 .638 570 129)">
-          <canvas ref={canvasRef} className="image-tv-canvas" width="640" height="480" role="img" aria-label="TV cycling four video channels with brief static between them" />
-        </foreignObject>
+        <g filter={`url(#${clipId}-exposure)`}>
+          <foreignObject width="640" height="480" transform="matrix(.585 .031 -.025 .638 570 129)">
+            <canvas ref={canvasRef} className="image-tv-canvas" width="640" height="480" role="img" aria-label="TV cycling four video channels with brief static between them" />
+          </foreignObject>
+        </g>
       </g>
       {/* Restrained room reflection and edge falloff give the moving picture glass depth. */}
       <g clipPath={`url(#${clipId})`} aria-hidden="true">

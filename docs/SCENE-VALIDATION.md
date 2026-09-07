@@ -1,5 +1,12 @@
 # Macintosh opening scene validation
 
+## Brighter CRT and reflected light — September 7, 2026
+
+- Replaced the 1.4 brightness multiplier with an SVG exposure curve that lifts shadows/midtones and compresses highlights without an early hard white cutoff. An initial 1.85 multiplier washed out caption text in bright footage and was replaced. The existing 160 x 120 highlight copy now supplies both a tight 4-unit bloom and a softer 18-unit halo, composited together in the existing SVG filter. Increased the inner lower/right bezel catch and added diffuse light masked to the artwork. Strengthened the existing rear-keyboard reflection, retaining its compact footprint and footage-driven hue/intensity. Reflection opacity remains capped at .46. Directional shading, room, and original sources are unchanged.
+- Compared the same paused opening frame at 1440 x 900 and 390 x 844. Highlights are more luminous, the lower bezel and rear keys visibly receive light, and the picture and controls remain readable. No horizontal overflow at either viewport. Evidence: [desktop before](screenshots/crt-before-desktop.png), [desktop after](screenshots/crt-after-desktop.png), [mobile before](screenshots/crt-before-mobile.png), [mobile after](screenshots/crt-after-mobile.png). User assessment remains pending.
+- Manual playback showed changing footage/reflection color and readable dark text on a bright white banner after the exposure-curve correction. Play/Pause worked with sound off; no browser warnings/errors were captured.
+- Build, lint, all 24 existing tests, and whitespace checks passed. No new canvas, update loop, sampling work, or dependency; added a small-screen color-transfer filter, one additional low-resolution blur, and a masked gradient. Performance has not been newly benchmarked. Playback lifecycle, audio, source media, hidden-tab/reduced-motion handling, and failure handling code are unchanged. No deployment.
+
 ## Directional shading after rejected atmosphere pass — September 7, 2026
 
 - User rejected the previous pass as looking unchanged. Read the inspected preview's loaded stylesheet and computed artwork filter: it was the current `5ede4e9` implementation. Changed technique from global grading alone to a directional SVG shade masked by the original artwork's alpha. This preserves the lit front and darkens the right side, cables, and peripherals. The television and reflected light are composited above the shade. Original source pixels and playback code remain unchanged.

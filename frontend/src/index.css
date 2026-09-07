@@ -338,10 +338,10 @@ h1 em { font-weight: 400; }
 .image-grounding { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; mix-blend-mode: multiply; }
 .image-television { --tv-light: #b4beff; --tv-glow: 0; --tv-spill: 0; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .image-tv-picture { opacity: .94; }
-.image-tv-canvas { display: block; width: 640px; height: 480px; filter: brightness(1.4) saturate(1.1); }
+.image-tv-canvas { display: block; width: 640px; height: 480px; }
 .image-tv-emission { mix-blend-mode: screen; opacity: min(.85, calc(var(--tv-glow) * 1.7)); }
-.image-tv-reflection { mix-blend-mode: screen; opacity: min(.3, calc(var(--tv-spill) * 1.3)); }
-.image-tv-bloom { mix-blend-mode: screen; opacity: .55; }
+.image-tv-reflection { mix-blend-mode: screen; opacity: min(.46, calc(var(--tv-spill) * 2.2)); }
+.image-tv-bloom { mix-blend-mode: screen; opacity: .82; }
 .image-tv-bloom-canvas { display: block; width: 640px; height: 480px; }
 @media (min-aspect-ratio: 19/10) and (min-width: 901px) {
   .scene-object--still { width: 69%; left: 31%; top: 9%; height: 85%; }
