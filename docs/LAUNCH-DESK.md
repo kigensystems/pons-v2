@@ -18,9 +18,11 @@ The user subsequently selected **Plum** as the name, asked for refinement of bot
 
 ## Design decisions
 
+The later user-requested Apple Garamond update supersedes the original Georgia/Instrument Serif treatment below; see [Typography](TYPOGRAPHY.md) for current comparisons and font provenance.
+
 Retain the six-column desktop card layout and two-column mobile layout. Give it calmer spacing, clear name/ticker hierarchy, square muted placeholder art, and comfortable search/filter controls. The mobile hero omits the decorative image to bring the collection closer.
 
-Use Georgia for the main headlines and italic Plum name, self-hosted Instrument Serif for editorial details/cards, and VT323 for terminal labels, with Georgia body text, warm paper, green ink, restrained plum accents, and a thin muted color rule. Static grain, very faint scanlines, and restrained color fringing support the material without distorting controls. About's asymmetric Macintosh scene connects to our existing opening; its editorial layout and copy are original. The [live Shader About reference](https://www.shader.se/#about-us) and the repository's [user favorites](../reviews/2026-09-06/USER-FAVORITES.md) informed the review.
+Use self-hosted Apple Garamond for headlines, the italic Plum name, body copy and editorial details/cards, and VT323 for terminal labels, with warm paper, green ink, restrained plum accents, and a thin muted color rule. Static grain, very faint scanlines, and restrained color fringing support the material without distorting controls. About's asymmetric Macintosh scene connects to our existing opening; its editorial layout and copy are original. The [live Shader About reference](https://www.shader.se/#about-us) and the repository's [user favorites](../reviews/2026-09-06/USER-FAVORITES.md) informed the review.
 
 The first rendered pass was revised to compact Explore's hero, improve small-label legibility using our existing terminal font, and focus the Name field when the dialog opens. The final cross-page comparison aligned the main headlines and Plum name with the opening's Georgia treatment. Desktop and mobile were inspected at normal size. Existing artwork/fonts are reused without file edits; [provenance](../frontend/public/ASSETS.md) records the CSS treatment.
 

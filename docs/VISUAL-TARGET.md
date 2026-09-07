@@ -2,6 +2,8 @@
 
 ## Reference and current state
 
+- Current typography: [Apple Garamond update and matching before/after screenshots](TYPOGRAPHY.md). Applies across the opening, Explore and About; VT323 terminal labels remain.
+
 - Opening-to-Explore scroll transition: [behavior and validation](SCROLL-TRANSITION.md), [desktop through the glass](screenshots/scroll-through-desktop.jpg), [mobile through the glass](screenshots/scroll-through-mobile.jpg). Native scroll zooms toward the CRT and reveals Explore; reverse scrolling restores the opening. This is separate from the unresolved lighting feedback below.
 
 - Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and identity. This document covers the opening; the separately authorized Explore and About pages are documented in [LAUNCH-DESK.md](LAUNCH-DESK.md).
