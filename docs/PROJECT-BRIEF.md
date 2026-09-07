@@ -43,6 +43,8 @@ September 7 refinement after the user found the first loader too clean: a heavie
 
 ## Current opening study
 
+September 7 correction: preserve the existing green atmosphere, background artwork, model lighting/materials, and composition. The requested landing-page refinement is typography only: a fuller Georgia serif with warm luminous edges and VT323 for the small technical labels. Do not infer permission to redesign the background or relight the Macintosh from typography feedback. The loading screen remains as previously built.
+
 The opening renders the purchased model in real 3D, with warmer cream housing, broad baked softbox reflections, lavender side light, and a dark glossy CRT. The greeting texture drives emission separately from the reflective glass and clearcoat. Geometry and licensed texture files are unchanged. The headline is quieter, and foreground mist/grain is reduced so the housing and keyboard remain clear. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
 
 The earlier generated artwork is retained as a loading/error fallback, including failure to download the separate scene module. A reload action appears only on failure. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled with Space while the scene has keyboard focus, and pauses in hidden tabs. No scroll, logo, or API work was added.
@@ -62,7 +64,7 @@ Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint 
 
 ## Current handoff and next visual pass
 
-Private GitHub remote: [kigensystems/pons-v2](https://github.com/kigensystems/pons-v2), configured as `origin` with `main` tracking `origin/main`. Committed project history is stored there. The licensed source/GLB, Blender studies, and untracked research folders remain local; cloning the repository alone does not restore those files. Hosting remains deferred.
+Private GitHub remote: [kigensystems/pons-v2](https://github.com/kigensystems/pons-v2), configured as `origin` with `main` tracking `origin/main`. At the user's September 7 request, all 379 report/review files, purchased model source copies, current Blender studies, and the runtime GLB are included for their other PC. Only redundant numbered Blender backups remain local. See [other-PC setup](OTHER-PC-SETUP.md). Hosting remains deferred.
 
 The implementation checkpoint is not final visual approval. The user still prefers the generated image, and passing technical checks does not resolve that feedback. The September 6 follow-up fixes an unintended native browser outline on mouse/touch selection; keyboard navigation retains its focus indicator, including after leaving and returning to the scene.
 
@@ -90,7 +92,7 @@ The user's strongest model choice is [Mac 512K Computer 1984 by shrednector](htt
 
 Blender 5.2.1 LTS imported the FBX. Materials were reconnected and visually checked in a studio render. The editable source retains original geometry and full-resolution textures. A separate 4.41-MiB GLB keeps 25,146 triangles, merges static pieces into four model draws, and uses 2K color / 1K normal and packed data maps. The curved Screen mesh remains independent. Rebuild and inspection scripts live in `assets/tools/`.
 
-Purchased source, working blends, and the GLB are ignored by Git. A clean checkout must restore/rebuild the licensed asset before displaying live 3D. Public deployment and asset distribution packaging are deferred with Netlify hosting.
+Purchased source, current working blends/study renders, and the GLB are tracked for the owner's private other-PC transfer. A clean checkout can display live 3D without rebuilding the model. Public deployment and asset distribution packaging are deferred with Netlify hosting.
 
 ## Reference context
 

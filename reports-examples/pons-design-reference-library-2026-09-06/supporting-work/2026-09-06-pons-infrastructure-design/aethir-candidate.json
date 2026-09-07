@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-infrastructure-design.aethir",
+  "rank": null,
+  "project": "Aethir",
+  "ticker": "ATH",
+  "chain": "Ethereum / Arbitrum",
+  "sourceIdentity": "Ethereum ATH 0xbe0Ed4138121EcFC5c0E56B40517da27E6c5226B",
+  "successSignal": "Official mainnet announcement states ATH live June 12, 2024: https://ecosystem.aethir.com/blog-posts/aethirs-mainnet-launch-claim-stake-ath . Observed 2026-09-06.",
+  "presentedUrl": "https://aethir.com/",
+  "resolvedUrl": "https://aethir.com/",
+  "redirectPath": [
+    "https://aethir.com/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/aethir.png",
+    "fullPage": "full-page-screenshots/aethir-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Scrolled complete homepage; overlapping viewport captures stitched by recorded scrollY",
+  "visuallyInspected": true,
+  "limitations": [
+    "Initial hero blank while loading; recovered with normal scrolling. Second capture pass resolved initially faded section reveals.",
+    "13 stitched viewports preserve static animation frames; minor seams/transport resizing remain. Mobile, uptime and compute service operation not tested."
+  ],
+  "outcomeNote": null
+}

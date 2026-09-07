@@ -1,0 +1,74 @@
+[
+  {
+    "Path": "Mac512k.fbx",
+    "Bytes": 1134928,
+    "SHA256": "49DFFEDD1BA8B912862271311E9412A1F0184119E0435648BD87A3EBA5024B34",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Mac512k.obj",
+    "Bytes": 2223827,
+    "SHA256": "1F088A9CA6FF83613C9B54FEA5B9D28DD3960E34A85F22010CA768E471DB449F",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_Body_AO.png",
+    "Bytes": 2412367,
+    "SHA256": "296450F9FC58173D32BE4D2034A4FD04B2431D66028005A44C339F99EB5D65DD",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_Body_BaseColor.png",
+    "Bytes": 8543951,
+    "SHA256": "7A0AD8C9AF518FF33F064DC53D4782A451A1CD6DCC16D1047F1468A4783CFD94",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_Body_Metallic.png",
+    "Bytes": 937273,
+    "SHA256": "F6CF7C86E3144EC23167B3F45E2B865C14B9D43380525496BBF17391922665EE",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_Body_Normal.png",
+    "Bytes": 5928461,
+    "SHA256": "6A26A2A692D042FBF0A49971BDCA79E198A48FD38D86E4FB36CF15EA69F22D40",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_Body_Roughness.png",
+    "Bytes": 3489908,
+    "SHA256": "FF815A237538F4DE5B6910E6AA235CFE721AE7B0A4C078DBDEC2C1634CEE1DDD",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_KeyboardMouse_AO.png",
+    "Bytes": 6282787,
+    "SHA256": "6B697B94FE45DDB477EA28696284A58483978C6D0D58E57D251E45BCCEA8DDA5",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_KeyboardMouse_BaseColor.png",
+    "Bytes": 6388125,
+    "SHA256": "19673E3A68658784375AC7874A0094E6DF7F0FA503E412D3B580121237A1F18E",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_KeyboardMouse_Metallic.png",
+    "Bytes": 116366,
+    "SHA256": "EA53ECA18E79372B13183D8AAF4A8B6A9F639479C6E7DFA96135000108FA4228",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_KeyboardMouse_Normal.png",
+    "Bytes": 8218119,
+    "SHA256": "2564532194C91F8102013A8D328BE412A8A08F3BAE0C69F557883FB35AD9CBFA",
+    "CopyMatches": true
+  },
+  {
+    "Path": "Textures\\Textures\\Mac512k_KeyboardMouse_Roughness.png",
+    "Bytes": 2134831,
+    "SHA256": "487D00E2A6CF3973CCC42329FFC6ECBBB6210A4AEF8D344A1400CDF706A536BF",
+    "CopyMatches": true
+  }
+]

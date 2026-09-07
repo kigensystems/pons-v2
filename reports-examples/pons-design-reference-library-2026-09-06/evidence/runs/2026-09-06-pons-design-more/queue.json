@@ -1,0 +1,92 @@
+[
+  {
+    "slug": "sui",
+    "project": "Sui",
+    "ticker": "SUI",
+    "chain": "Sui",
+    "url": "https://sui.io/",
+    "source": "https://www.sui.io/blog/mainnet-90-day-metrics-peaks",
+    "signal": "Official 90-day retrospective confirms Sui mainnet launched May 3, 2023; native SUI network token."
+  },
+  {
+    "slug": "sei",
+    "project": "Sei",
+    "ticker": "SEI",
+    "chain": "Sei",
+    "url": "https://www.sei.io/",
+    "source": "https://www.prnewswire.com/news-releases/sei-launches-mainnet-301900263.html",
+    "signal": "Sei Labs release dated August 15, 2023 confirms mainnet live; current official staking docs describe native SEI network staking."
+  },
+  {
+    "slug": "pyth",
+    "project": "Pyth Network",
+    "ticker": "PYTH",
+    "chain": "Solana / Pythnet",
+    "url": "https://www.pyth.network/",
+    "source": "https://www.pyth.network/blog/where-pyth-is-now-looking-towards-2024",
+    "signal": "Official 2023 retrospective confirms successful November PYTH airdrop and token-led governance launch."
+  },
+  {
+    "slug": "ondo",
+    "project": "Ondo Finance",
+    "ticker": "ONDO",
+    "chain": "Ethereum",
+    "url": "https://ondo.finance/",
+    "source": "https://www.mexc.com/announcements/article/initial-listing-mexc-will-list-ondo-foundation-ondo-in-assessment-zone-17827791512880",
+    "signal": "Exchange initial listing dated January 18, 2024 specifies ONDO trading; official Ondo Foundation describes token sale and governance allocation."
+  },
+  {
+    "slug": "ethena",
+    "project": "Ethena",
+    "ticker": "ENA",
+    "chain": "Ethereum",
+    "url": "https://ethena.fi/",
+    "source": "https://paragraph.com/@ethena-labs/ena-token-launch",
+    "signal": "Official Ethena Labs announcement specifies ENA launch April 2, 2024; current official tokenomics document its distribution."
+  },
+  {
+    "slug": "render",
+    "project": "Render Network",
+    "ticker": "RENDER",
+    "chain": "Solana (legacy RNDR Ethereum)",
+    "url": "https://rendernetwork.com/",
+    "source": "https://know.rendernetwork.com/general-render-network/rndr-to-render-what-you-need-to-know/render-network-upgrade-portal-faq",
+    "signal": "Official upgrade FAQ confirms existing RNDR and launched Solana RENDER migration, with October 30, 2023 snapshot and upgrade support."
+  },
+  {
+    "slug": "akash",
+    "project": "Akash Network",
+    "ticker": "AKT",
+    "chain": "Akash",
+    "url": "https://akash.network/",
+    "source": "https://akash.network/blog/announcing-akash-mainnet-live-and-bitmax-ieo/",
+    "signal": "Official September 25, 2020 announcement confirms mainnet and AKT staking/governance live."
+  },
+  {
+    "slug": "bittensor",
+    "project": "Bittensor",
+    "ticker": "TAO",
+    "chain": "Bittensor",
+    "url": "https://www.bittensor.com/",
+    "source": "https://www.bittensor.com/docs/concepts/emissions",
+    "signal": "Current official documentation describes TAO mainnet issuance and circulating emission snapshot, establishing an existing launched token."
+  },
+  {
+    "slug": "eigencloud",
+    "project": "EigenCloud",
+    "ticker": "EIGEN",
+    "chain": "Ethereum",
+    "url": "https://www.eigencloud.xyz/",
+    "source": "https://blog.eigenfoundation.org/unlock-eigen/",
+    "signal": "Official Eigen Foundation October 1, 2024 announcement confirms EIGEN unlocking and transferability."
+  },
+  {
+    "slug": "pendle",
+    "project": "Pendle",
+    "ticker": "PENDLE",
+    "chain": "Ethereum / multichain",
+    "url": "https://pendle.finance/",
+    "source": "https://docs.pendle.finance/pendle-v2/ProtocolMechanics/Mechanisms/Tokenomics",
+    "signal": "Official tokenomics records circulating PENDLE and full team/investor vesting by September 2024, confirming launched token."
+  }
+]

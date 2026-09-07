@@ -1,0 +1,413 @@
+[
+  {
+    "slug": "sui",
+    "visual": "Electric blue radial slab tunnel behind oversized white typography; black-and-white editorial sections; modular stack diagrams and audience paths.",
+    "judgment": "A strong cinematic entry with an unusually concrete infrastructure stack underneath.",
+    "role": "Layer-1 infrastructure for builders and autonomous systems. Native SUI pays gas and supports staking/governance.",
+    "routes": "Go to docs, Get a wallet, Get started and ecosystem/content links.",
+    "loop": "Builder resources, ecosystem tools and events offer reasons to revisit; usage not measured.",
+    "trust": "Docs and named stack components are visible; promotional claims remain project claims.",
+    "counter": "Heavy motion and large scroll distances could hurt clarity and low-powered devices.",
+    "principle": "Pair one memorable spatial metaphor with a clear modular explanation.",
+    "avoid": "Do not borrow the exact blue tunnel, proprietary component artwork or unverified performance figures.",
+    "idea": "Show independent PONS launch tools as a connected stack beneath a distinctive hero.",
+    "limitations": [
+      "Full-page composite has a marked 95px scroll gap, 2px uncaptured tail, repeated fixed promotion, and motion/lazy-load seams; suitable for layout reference only."
+    ],
+    "project": "Sui",
+    "ticker": "SUI",
+    "chain": "Sui",
+    "url": "https://sui.io/",
+    "source": "https://www.sui.io/blog/mainnet-90-day-metrics-peaks",
+    "signal": "Official 90-day retrospective confirms Sui mainnet launched May 3, 2023; native SUI network token.",
+    "sources": [
+      "https://docs.sui.io/develop/sui-architecture/tokenomics-overview"
+    ],
+    "style": "Cinematic blue geometry",
+    "category": "Dark / cinematic",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/sui.png"
+  },
+  {
+    "slug": "sei",
+    "visual": "Full-bleed green-gold city photography, condensed uppercase hero, restrained burgundy CTAs, alternating white editorial and dark data sections.",
+    "judgment": "Best added reference for institutional confidence and connecting abstract infrastructure to real economic activity.",
+    "role": "Trading-focused L1; native SEI gas, staking and governance.",
+    "routes": "Explore Sei, docs, ecosystem, research, bridge and wallet routes.",
+    "loop": "Builders, ecosystem discovery and research create recurring utility.",
+    "trust": "Research/docs/explorer accessible; logos and quoted public figures are not independently verified endorsements.",
+    "counter": "Hero could belong to a financial company; differentiation relies on the lower network story. Giga performance must be separated from current deployed capacity.",
+    "principle": "Use real-world imagery and editorial typography to make infrastructure feel established.",
+    "avoid": "Do not copy partner marks or present roadmap benchmarks as current performance.",
+    "idea": "Present a PONS infrastructure product with precise operational screens and architecture-led photography.",
+    "limitations": [
+      "Static stitch may show animation transitions; site performance and network metrics not validated."
+    ],
+    "project": "Sei",
+    "ticker": "SEI",
+    "chain": "Sei",
+    "url": "https://www.sei.io/",
+    "source": "https://www.prnewswire.com/news-releases/sei-launches-mainnet-301900263.html",
+    "signal": "Sei Labs release dated August 15, 2023 confirms mainnet live; current official staking docs describe native SEI network staking.",
+    "sources": [
+      "https://docs.sei.io/learn/general-staking",
+      "https://docs.sei.io/evm/precompiles/governance",
+      "https://docs.sei.io/learn/sei-giga"
+    ],
+    "style": "Institutional photography",
+    "category": "Light / editorial",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/sei.png"
+  },
+  {
+    "slug": "pyth",
+    "visual": "Black background with multicolour radial data bars, thin white type, softly lit dark cards, four compact growth charts and a purple closing section.",
+    "judgment": "One of the strongest references for making infrastructure tangible through visible data and developer entry points.",
+    "role": "Oracle/data network. PYTH governance and oracle-integrity collateral staking; not the required currency for ordinary feed payments.",
+    "routes": "Terminal, price feeds, docs, code examples, applications and demo links.",
+    "loop": "Feed exploration and integration resources connect marketing to recurring practical work.",
+    "trust": "Public data and developer routes support inspection; metrics and customer claims unverified.",
+    "counter": "Glowing cards and award badges add clutter; some live charts loaded incompletely in capture.",
+    "principle": "Let the product's data supply the visual identity and the proof below the hero.",
+    "avoid": "Do not fabricate live metrics or copy the branded radial mark.",
+    "idea": "A PONS tools site could preview launch activity, graduation progress and integration examples with clearly sourced data.",
+    "limitations": [
+      "Some dynamic price charts remained partially drawn; static capture does not establish live feed reliability."
+    ],
+    "project": "Pyth Network",
+    "ticker": "PYTH",
+    "chain": "Solana / Pythnet",
+    "url": "https://www.pyth.network/",
+    "source": "https://www.pyth.network/blog/where-pyth-is-now-looking-towards-2024",
+    "signal": "Official 2023 retrospective confirms successful November PYTH airdrop and token-led governance launch.",
+    "sources": [
+      "https://docs.pyth.network/pyth-token",
+      "https://docs.pyth.network/price-feeds/core/current-fees"
+    ],
+    "style": "Brand built around product data",
+    "category": "Dark / product",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/pyth.png"
+  },
+  {
+    "slug": "ondo",
+    "visual": "White editorial canvas, nested rounded city-image frames splitting the hero headline, serif supporting copy, pastel product charts, black trust/technology panels and oversized footer wordmark.",
+    "judgment": "Excellent premium finance reference: memorable composition without relying on neon or science-fiction styling.",
+    "role": "Tokenized finance platform; ONDO governs Ondo DAO/Flux Finance, not a required payment token for these products. Official token docs confirm restrictions lifted January 18, 2024.",
+    "routes": "Launch App, product discovery, trust/security, docs and ecosystem links.",
+    "loop": "Multiple asset products and operational mint/redemption use cases; product availability and financial claims not tested.",
+    "trust": "Eligibility disclosures and security routes visible; presence is not independent assurance.",
+    "counter": "Long page and persistent disclosure obscure parts of the design; governance token is a weaker product-utility match.",
+    "principle": "Use restrained type contrast, architectural framing and product-specific visual evidence.",
+    "avoid": "Do not imply ONDO ownership grants product revenue or universal access; do not reuse skyline framing identically.",
+    "idea": "A polished PONS infrastructure brand could use a calm light theme and clear tool-specific data cards.",
+    "limitations": [
+      "Persistent disclosure overlay obscures left portions of full-page composite; no acknowledgment or terms accepted. Hero navigation was still transitioning in initial capture."
+    ],
+    "project": "Ondo Finance",
+    "ticker": "ONDO",
+    "chain": "Ethereum",
+    "url": "https://ondo.finance/",
+    "source": "https://www.mexc.com/announcements/article/initial-listing-mexc-will-list-ondo-foundation-ondo-in-assessment-zone-17827791512880",
+    "signal": "Exchange initial listing dated January 18, 2024 specifies ONDO trading; official Ondo Foundation describes token sale and governance allocation.",
+    "sources": [
+      "https://docs.ondo.foundation/ondo-token",
+      "https://docs.ondo.foundation/ondo-dao"
+    ],
+    "style": "Premium editorial finance",
+    "category": "Light / editorial",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/ondo.png"
+  },
+  {
+    "slug": "ethena",
+    "checkpointDue": true,
+    "visual": "Near-black and silver-blue palette; luminous globe, wide centered headline, pill navigation, softly rounded metallic cards and consistent 3D illustration language.",
+    "judgment": "Strongest added reference for a cohesive premium dark interface across the entire page.",
+    "role": "Digital-dollar platform; ENA governance plus locking/restaking security roles; USDe and sUSDe are distinct assets.",
+    "routes": "Earn with USDe, Launch App, transparency dashboards, docs and integrations.",
+    "loop": "Product access and transparency reports create recurring use and inspection routes.",
+    "trust": "Reserve/attestation routes and yield-comparison qualification visible; economic equivalence to bank savings not established.",
+    "counter": "Low text contrast and globe imagery can feel generic without specific useful product screens.",
+    "principle": "Repeat one material, light direction and restrained palette across every illustration and card.",
+    "avoid": "Do not transplant yield claims or compare unlike financial risks as if interchangeable.",
+    "idea": "A PONS dashboard brand could use steel-blue materials and one coherent set of 3D infrastructure modules.",
+    "limitations": [
+      "Static desktop comparison only; reported supply, rates and reserves not independently verified."
+    ],
+    "project": "Ethena",
+    "ticker": "ENA",
+    "chain": "Ethereum",
+    "url": "https://ethena.fi/",
+    "source": "https://paragraph.com/@ethena-labs/ena-token-launch",
+    "signal": "Official Ethena Labs announcement specifies ENA launch April 2, 2024; current official tokenomics document its distribution.",
+    "sources": [
+      "https://docs.ethena.fi/ena",
+      "https://docs.ethena.fi/ena/tokenomics"
+    ],
+    "style": "Cohesive silver-blue materials",
+    "category": "Dark / cinematic",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/ethena.png"
+  },
+  {
+    "slug": "render",
+    "visual": "Moving GPU-render showreel in hero; white lower canvas; vivid credited artist work and monochrome sculptural art; rounded benefit cards and red accents.",
+    "judgment": "Best reference here for demonstrating a creative infrastructure service through the work it enables. Lower page is conventional.",
+    "role": "GPU rendering/compute network. Solana RENDER replaced legacy Ethereum RNDR; completed-job receipts burn RENDER, operators receive emissions, holders vote.",
+    "routes": "Try Render, pricing, integrations, getting started, artist/operator/client paths.",
+    "loop": "Rendering jobs and capacity provision are tangible repeat-use mechanisms; no jobs executed.",
+    "trust": "Named artists and pricing/docs routes; capability/performance not independently tested.",
+    "counter": "Hero impact depends heavily on third-party artwork; layout alone is less distinctive than the other shortlisted sites.",
+    "principle": "Show compelling outputs enabled by the infrastructure.",
+    "avoid": "Do not reuse artist footage or confuse legacy RNDR and current RENDER.",
+    "idea": "Demonstrate launches or useful tools enabled by PONS infrastructure in a curated product reel.",
+    "limitations": [
+      "Video stitched at different frames; one-pixel uncaptured tail. Optional cookies declined before final capture."
+    ],
+    "project": "Render Network",
+    "ticker": "RENDER",
+    "chain": "Solana (legacy RNDR Ethereum)",
+    "url": "https://rendernetwork.com/",
+    "source": "https://know.rendernetwork.com/general-render-network/rndr-to-render-what-you-need-to-know/render-network-upgrade-portal-faq",
+    "signal": "Official upgrade FAQ confirms existing RNDR and launched Solana RENDER migration, with October 30, 2023 snapshot and upgrade support.",
+    "sources": [
+      "https://renderfoundation.com/faq"
+    ],
+    "style": "Creative output as the hero",
+    "category": "Light / product",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/render.png"
+  },
+  {
+    "slug": "akash",
+    "visual": "Minimal black hero with enormous white type, lime-highlighted price comparison, realistic console previews, editorial feature imagery and provider globe.",
+    "judgment": "Useful product-clarity benchmark; visual interest comes from the product sections more than the sparse hero.",
+    "role": "Decentralized compute marketplace. AKT staking/governance and current documented burn/mint mechanism for stable deployment credits.",
+    "routes": "Deploy Now, pricing, console, docs and provider entry points.",
+    "loop": "Workload deployments and provider participation offer repeat utility; deployment and economics not tested.",
+    "trust": "Public pricing, workflow examples, network counts and case study routes; comparisons remain project claims.",
+    "counter": "Sparse hero is less visually distinctive; scroll-driven horizontal feature section produces repetition in static stitching.",
+    "principle": "Show the practical workflow and cost proposition immediately after the brand statement.",
+    "avoid": "Do not copy unverifiable savings claims or imply heterogeneous cloud instances are directly equivalent.",
+    "idea": "Give the PONS concept a short interactive product preview and an explicit step-by-step creator workflow.",
+    "limitations": [
+      "Scroll-driven horizontal cards repeat in the vertical composite; some hero assets may be minimal by design or not rendered. No pricing controls or deployment controls activated."
+    ],
+    "project": "Akash Network",
+    "ticker": "AKT",
+    "chain": "Akash",
+    "url": "https://akash.network/",
+    "source": "https://akash.network/blog/announcing-akash-mainnet-live-and-bitmax-ieo/",
+    "signal": "Official September 25, 2020 announcement confirms mainnet and AKT staking/governance live.",
+    "sources": [
+      "https://akash.network/token/"
+    ],
+    "style": "Concrete workflows and pricing",
+    "category": "Dark / product",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/akash.png"
+  },
+  {
+    "slug": "bittensor",
+    "visual": "A single white viewport, tiny monochrome navigation, tau mark and a dense animated black wire network suspended in the middle.",
+    "judgment": "Distinctive scientific minimalism and a useful art-direction reference, but a weak standalone product explanation.",
+    "role": "Decentralized intelligence/subnet network. TAO supports transaction fees, staking and subnet economic pools; subnet alpha tokens also exist.",
+    "routes": "About, whitepaper, docs, wallet and Explore.",
+    "loop": "Homepage supplies entry routes; staking/mining/validation described in accessible text, not exercised.",
+    "trust": "Whitepaper/docs routes available; a sparse homepage offers little immediately visible proof.",
+    "counter": "No visible headline or product demonstration in screenshot; too cryptic for a new PONS product with no established reputation.",
+    "principle": "One restrained generative object can communicate technical identity without decorative clutter.",
+    "avoid": "Do not copy the exact tau symbol or hide the product explanation behind aesthetics.",
+    "idea": "Use a thin-line network visualization as a supporting diagram alongside a plain description of the PONS tool.",
+    "limitations": [
+      "Homepage is one viewport; full-page and hero are consequently identical. Canvas motion represented by one frame."
+    ],
+    "project": "Bittensor",
+    "ticker": "TAO",
+    "chain": "Bittensor",
+    "url": "https://www.bittensor.com/",
+    "source": "https://www.bittensor.com/docs/concepts/emissions",
+    "signal": "Current official documentation describes TAO mainnet issuance and circulating emission snapshot, establishing an existing launched token.",
+    "sources": [
+      "https://www.bittensor.com/docs/concepts/emissions",
+      "https://www.bittensor.com/docs/concepts/money"
+    ],
+    "style": "Scientific minimalism",
+    "category": "Light / minimal",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/bittensor.png"
+  },
+  {
+    "slug": "eigencloud",
+    "visual": "Huge bold white headings, softly shaded blue/purple block sculptures, monospace navigation and supporting text, dramatic oversized serif footer on deep violet.",
+    "judgment": "One of the strongest direct infrastructure art-direction references: sculptural modules map onto a product stack.",
+    "role": "EigenCloud platform builds on EigenLayer/EIGEN. Existing EIGEN staking provides security; not established as required service-payment currency.",
+    "routes": "Start building, four primitives, docs, quickstart and ecosystem.",
+    "loop": "Builder integrations and security participation; service operation not tested.",
+    "trust": "Docs, code and research routes visible. Strong trust claims and current emission notice require source-specific checking.",
+    "counter": "Animation and dark low-contrast supporting copy can hide the practical product explanation.",
+    "principle": "Give each infrastructure component a coherent object within one visual family.",
+    "avoid": "Do not reproduce proprietary sculptures or imply blanket guarantees from cryptographic verification.",
+    "idea": "Represent PONS tools as a small family of distinct, connected modules with actual feature explanations.",
+    "limitations": [
+      "Browser reported invalid 1x1 geometry. Native full-page capture is defective with large gaps/repetition and unusable as layout evidence. Hero and separately inspected scroll frames support observations; do not use full-page output as faithful reference."
+    ],
+    "project": "EigenCloud",
+    "ticker": "EIGEN",
+    "chain": "Ethereum",
+    "url": "https://www.eigencloud.xyz/",
+    "source": "https://blog.eigenfoundation.org/unlock-eigen/",
+    "signal": "Official Eigen Foundation October 1, 2024 announcement confirms EIGEN unlocking and transferability.",
+    "sources": [
+      "https://www.eigenlabs.org/blog/introducing-eigencloud/",
+      "https://blog.eigenfoundation.org/unlock-eigen/"
+    ],
+    "style": "Sculptural infrastructure modules",
+    "category": "Dark / cinematic",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/eigencloud.png"
+  },
+  {
+    "slug": "pendle",
+    "checkpointDue": true,
+    "visual": "Large fine-wire sphere on black, rotating yield verbs, blue and teal orbital illustrations for two product branches, thin outlined controls and dark statistic cards.",
+    "judgment": "Strong visual system for separating related tools while keeping a single technical brand.",
+    "role": "Yield trading protocol. PENDLE governance/eligible staking rewards; current sPENDLE replaces winding-down vePENDLE. Not required payment currency.",
+    "routes": "Boros margin and V2 spot routes each pair app access with explanation; docs/education/analytics in footer.",
+    "loop": "Yield markets and governance participation create reasons to return; no trades or reward flows tested.",
+    "trust": "Education, public code and external analytics links visible; marketing superlatives unverified.",
+    "counter": "Thin lines and low-contrast type can reduce accessibility; animated counters and logos captured before fully settling.",
+    "principle": "Assign each product a consistent accent and related geometric form, with a clear two-path choice.",
+    "avoid": "Do not assume animated statistics are settled values or repeat risk claims outside their specific context.",
+    "idea": "Separate PONS creator tools and market intelligence with two related colours and clearly different user journeys.",
+    "limitations": [
+      "Product titles, metric counters and partner logos show animation/stitch seams. Static composite should not be used as a metrics record."
+    ],
+    "project": "Pendle",
+    "ticker": "PENDLE",
+    "chain": "Ethereum / multichain",
+    "url": "https://pendle.finance/",
+    "source": "https://docs.pendle.finance/pendle-v2/ProtocolMechanics/Mechanisms/Tokenomics",
+    "signal": "Official tokenomics records circulating PENDLE and full team/investor vesting by September 2024, confirming launched token.",
+    "sources": [
+      "https://docs.pendle.finance/pendle-v2/ProtocolMechanics/Mechanisms/sPENDLE"
+    ],
+    "style": "Two products, one visual family",
+    "category": "Dark / product",
+    "batch": "New 10",
+    "base": "evidence/runs/2026-09-06-pons-design-more",
+    "hero": "evidence/runs/2026-09-06-pons-design-more/screenshots/pendle.png"
+  },
+  {
+    "slug": "celestia",
+    "project": "Celestia",
+    "ticker": "TIA",
+    "url": "https://celestia.org/",
+    "style": "Cinematic fibre sculpture",
+    "category": "Dark / cinematic",
+    "visual": "Luminous fibre hardware, spacious dark compositions and white evidence sections.",
+    "principle": "Connect the visual object to the infrastructure service.",
+    "role": "See original report and primary-source launch evidence.",
+    "judgment": "Cinematic fibre sculpture.",
+    "limitations": [
+      "First view lacks navigation at capture time; full page covered in 13 overlapping segments.",
+      "One-shot image duplicated sections and CDP PNG was corrupt; stitched replacement visually inspected. Minor transport rescaling, scrollbar and motion seams remain.",
+      "Current website is not established as launch-era design; performance claims unaudited; mobile and transactions not tested."
+    ],
+    "batch": "Original 5",
+    "base": "evidence/runs/2026-09-06-pons-infrastructure-design",
+    "hero": "evidence/runs/2026-09-06-pons-infrastructure-design/screenshots/celestia.png",
+    "source": "Official October 31, 2023 mainnet deployment and genesis TIA distribution documented at https://blog.celestia.org/celestia-mainnet-is-live/ and https://blog.celestia.org/genesis-drop/; observed 2026-09-06. Meets launched-token inclusion only."
+  },
+  {
+    "slug": "layerzero",
+    "project": "LayerZero",
+    "ticker": "ZRO",
+    "url": "https://layerzero.network/",
+    "style": "Institutional restraint",
+    "category": "Light / minimal",
+    "visual": "Fine converging lines, monochrome styling, exceptional whitespace and numbered products.",
+    "principle": "Use precise hierarchy and a repeatable geometric language.",
+    "role": "See original report and primary-source launch evidence.",
+    "judgment": "Institutional restraint.",
+    "limitations": [
+      "Scroll-pinned product accordion repeats while its state changes; stitched image records the scroll sequence, not a seamless static layout.",
+      "Cookie notice declined before final captures. Motion seams/transport rescaling remain; mobile and product operation not tested."
+    ],
+    "batch": "Original 5",
+    "base": "evidence/runs/2026-09-06-pons-infrastructure-design",
+    "hero": "evidence/runs/2026-09-06-pons-infrastructure-design/screenshots/layerzero.png",
+    "source": "Official https://layerzero.network/blog/the-zro-token records ZRO launch and unlocked supply; Poloniex dated June 20, 2024 listing corroborates launched token. Observed 2026-09-06."
+  },
+  {
+    "slug": "wormhole",
+    "project": "Wormhole",
+    "ticker": "W",
+    "url": "https://wormhole.com/",
+    "style": "Isometric connection diagrams",
+    "category": "Light / product",
+    "visual": "Lavender palette, isometric modules and a concrete Portal workflow preview.",
+    "principle": "Explain how the infrastructure connects things and show one action.",
+    "role": "See original report and primary-source launch evidence.",
+    "judgment": "Isometric connection diagrams.",
+    "limitations": [
+      "Static capture preserves one frame of animated Portal illustration; projected-market chart bars were not visible in stitched capture.",
+      "14 overlapping viewport images; transport rescaling and scrollbar remain. Mobile, metrics and transfer operation not tested."
+    ],
+    "batch": "Original 5",
+    "base": "evidence/runs/2026-09-06-pons-infrastructure-design",
+    "hero": "evidence/runs/2026-09-06-pons-infrastructure-design/screenshots/wormhole.png",
+    "source": "Official April 25, 2024 notice confirms native W available on Solana, Ethereum, Arbitrum, Optimism and Base: https://wormhole.com/blog/w-is-now-natively-multichain-on-ethereum-and-layer-2s . Observed 2026-09-06."
+  },
+  {
+    "slug": "aethir",
+    "project": "Aethir",
+    "ticker": "ATH",
+    "url": "https://aethir.com/",
+    "style": "Expressive serif identity",
+    "category": "Dark / cinematic",
+    "visual": "Forest green, oversized serif type and luminous particle forms.",
+    "principle": "Use a distinctive typographic voice with a coherent material metaphor.",
+    "role": "See original report and primary-source launch evidence.",
+    "judgment": "Expressive serif identity.",
+    "limitations": [
+      "Initial hero blank while loading; recovered with normal scrolling. Second capture pass resolved initially faded section reveals.",
+      "13 stitched viewports preserve static animation frames; minor seams/transport resizing remain. Mobile, uptime and compute service operation not tested."
+    ],
+    "batch": "Original 5",
+    "base": "evidence/runs/2026-09-06-pons-infrastructure-design",
+    "hero": "evidence/runs/2026-09-06-pons-infrastructure-design/screenshots/aethir.png",
+    "source": "Official mainnet announcement states ATH live June 12, 2024: https://ecosystem.aethir.com/blog-posts/aethirs-mainnet-launch-claim-stake-ath . Observed 2026-09-06."
+  },
+  {
+    "slug": "ionet",
+    "project": "io.net",
+    "ticker": "IO",
+    "url": "https://io.net/",
+    "style": "Concrete product presentation",
+    "category": "Light / product",
+    "visual": "Dimensional white tiles, GPU configurations, prices and deployment cards.",
+    "principle": "Show a specific product object or workflow early.",
+    "role": "See original report and primary-source launch evidence.",
+    "judgment": "Concrete product presentation.",
+    "limitations": [
+      "Full-page browser artifact has duplicate bands, excessive whitespace, partial footer and sticky-header effects; use first view and live site for design judgement. It is not a clean archival full-page rendering.",
+      "DOM geometry returned zeros; direct capture fallback also imperfect. Inquiry modal appeared and was dismissed without entry or submission.",
+      "Homepage price comparison explicitly dated July 30, 2025; not treated as current verified pricing. Product functionality and mobile untested."
+    ],
+    "batch": "Original 5",
+    "base": "evidence/runs/2026-09-06-pons-infrastructure-design",
+    "hero": "evidence/runs/2026-09-06-pons-infrastructure-design/screenshots/ionet.png",
+    "source": "Binance dated June 6, 2024 listing notice specifies first IO trading June 11, 2024; current official IO Coin docs describe operating token payment and supplier roles. https://www.binance.com/en/support/announcement/detail/6556e3b5aae54c76adb0fd267b105a15 and https://io.net/docs/guides/coin/io-coin . Observed 2026-09-06."
+  }
+]

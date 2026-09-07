@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const run='2026-09-06-pons-infrastructure-design';
+const root=`outputs/token-research/runs/${run}`;
+const journal='outputs/token-research/research-journal.md';
+const d=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+const id=`${run}.${d.slug}`;
+const record={id,rank:null,project:d.project,ticker:d.ticker,chain:d.chain,sourceIdentity:d.identity,successSignal:d.signal,presentedUrl:d.url,resolvedUrl:d.resolved||d.url,redirectPath:d.resolved&&d.resolved!==d.url?[d.url,d.resolved]:[d.url],outcome:'captured',timeBasis:'date-only',observedDate:'2026-09-06',observedAt:null,timeNote:null,screenshots:{firstView:`screenshots/${d.slug}.png`,fullPage:`full-page-screenshots/${d.slug}-stitched.png`},viewport:'1280x720',deviceMode:'desktop',loadState:'Scrolled complete homepage; overlapping viewport captures stitched by recorded scrollY',visuallyInspected:true,limitations:d.limitations||['Static capture does not preserve animation; mobile and product operation not tested.'],outcomeNote:null};
+if(d.loadState) record.loadState=d.loadState;
+const f=`work/${run}/${d.slug}-candidate.json`;
+fs.writeFileSync(f,JSON.stringify(record,null,2));
+const cli=(op,extra=[])=>process.stdout.write(execFileSync(process.execPath,['work/research-record.mjs',op,'--manifest',`${root}/capture-manifest.jsonl`,'--journal',journal,...extra],{encoding:'utf8'}));
+cli('add',['--record-file',f]);
+const fields={'Template':'journal-entry/v4','Evidence record':`${root}/capture-manifest.jsonl / ${id}`,'Timestamp basis':'date-only',...d.fields};
+fs.appendFileSync(journal,`\n\n### ${d.project} - 2026-09-06\n\n<!-- research-record/v4: ${id} -->\n\n`+Object.entries(fields).map(([k,v])=>`- **${k}:** ${v}`).join('\n')+`\n\n<!-- /research-record/v4: ${id} -->\n`);
+cli('ready');

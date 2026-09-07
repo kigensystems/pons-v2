@@ -1,0 +1,26 @@
+{
+  "slug": "wormhole",
+  "project": "Wormhole",
+  "ticker": "W",
+  "chain": "Solana / EVM",
+  "identity": "W native multichain token of Wormhole",
+  "url": "https://wormhole.com/",
+  "signal": "Official April 25, 2024 notice confirms native W available on Solana, Ethereum, Arbitrum, Optimism and Base: https://wormhole.com/blog/w-is-now-natively-multichain-on-ethereum-and-layer-2s . Observed 2026-09-06.",
+  "limitations": [
+    "Static capture preserves one frame of animated Portal illustration; projected-market chart bars were not visible in stitched capture.",
+    "14 overlapping viewport images; transport rescaling and scrollbar remain. Mobile, metrics and transfer operation not tested."
+  ],
+  "fields": {
+    "Distinctive evidence": "Observed: lavender isometric tiles form a consistent system across the hero, connection diagram, token illustration and a visible Portal transfer preview.",
+    "Why it matters and strongest judgment": "Interpretation: strongest reference for explaining connective infrastructure with a restrained, cohesive visual vocabulary. Origin, catalyst and reason for attention Unknown.",
+    "Project, audience, and token role": "Multichain assets/data infrastructure serving developers and transfer users; W is a launched protocol token with governance documented in the official multichain launch article.",
+    "Attention and buyer conversion": "Product and developer CTAs split routes clearly; W dashboard and a token information section expose ownership-related investigation. Routes observed; conversion outcome Unknown.",
+    "Participation and return value": "A public Portal preview demonstrates the intended transfer job, while docs and community links serve non-buyers. Repeat transfer/developer usage is a plausible loop, not tested operation.",
+    "Trust and free choice": "Docs, security, explorer and GitHub links allow investigation. Large displayed metrics and institutional marks were not independently verified; market-growth scenarios are projections.",
+    "Unknowns and untested behavior": "Transfer accuracy, displayed metrics, current W economics and responsive behavior untested.",
+    "Counterevidence or what would change the judgment": "The very pale visual contrast and chart that did not finish rendering weaken the static experience; no usability measurements taken.",
+    "Borrowable principle, not protected expression": "Explain the service with a coherent network diagram and show one concrete user workflow below it.",
+    "Avoid or no material avoid finding": "Avoid fake transaction success notifications, copied partner marks and market projections presented as current traction.",
+    "Useful idea or no useful idea from this evidence": "Original idea: connect launch records, graduation events and creator tools into a PONS activity view, using clearly labelled sample data until integrated."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.pyth",
+  "rank": null,
+  "project": "Pyth Network",
+  "ticker": "PYTH",
+  "chain": "Solana / Pythnet",
+  "sourceIdentity": "Pyth Network / PYTH / https://www.pyth.network/blog/where-pyth-is-now-looking-towards-2024",
+  "successSignal": "Official 2023 retrospective confirms successful November PYTH airdrop and token-led governance launch. Source: https://www.pyth.network/blog/where-pyth-is-now-looking-towards-2024 Observed 2026-09-06.",
+  "presentedUrl": "https://www.pyth.network/",
+  "resolvedUrl": "https://www.pyth.network/",
+  "redirectPath": [
+    "https://www.pyth.network/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/pyth.png",
+    "fullPage": "full-page-screenshots/pyth-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Some dynamic price charts remained partially drawn; static capture does not establish live feed reliability.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

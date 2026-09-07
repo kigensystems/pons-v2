@@ -1,0 +1,26 @@
+{
+  "slug": "layerzero",
+  "project": "LayerZero",
+  "ticker": "ZRO",
+  "chain": "Ethereum / multichain",
+  "identity": "ZRO 0x6985884C4392D348587B19cb9eAAf157F13271cd",
+  "url": "https://layerzero.network/",
+  "signal": "Official https://layerzero.network/blog/the-zro-token records ZRO launch and unlocked supply; Poloniex dated June 20, 2024 listing corroborates launched token. Observed 2026-09-06.",
+  "limitations": [
+    "Scroll-pinned product accordion repeats while its state changes; stitched image records the scroll sequence, not a seamless static layout.",
+    "Cookie notice declined before final captures. Motion seams/transport rescaling remain; mobile and product operation not tested."
+  ],
+  "fields": {
+    "Distinctive evidence": "Observed: sparse black-on-white typography and converging line geometry carry from the hero into a numbered product accordion and ATLAS section.",
+    "Why it matters and strongest judgment": "Interpretation: strongest restrained institutional design in this sample so far; extensive scroll pinning adds friction. Origin, catalyst and reason for attention Unknown.",
+    "Project, audience, and token role": "Interoperability and finance infrastructure for issuers/developers; ZRO is launched, while the official token article distinguishes future Zero network economics from present products.",
+    "Attention and buyer conversion": "Geometric motion, recognizable company marks and developer/documentation routes are prominent; social links present. Homepage purchase path not prominent; conversion outcome Unknown.",
+    "Participation and return value": "Public docs, GitHub and explorer links support a developer build-and-monitor loop without buying merely to browse. Runtime integration not tested.",
+    "Trust and free choice": "Whitepaper, docs and code links are investigation routes. Console and ATLAS explicitly say launching later this year; logos and broad global-finance copy are claims, not verification.",
+    "Unknowns and untested behavior": "Products, token value mechanisms, affiliation claims, mobile and reduced motion not tested.",
+    "Counterevidence or what would change the judgment": "Some hero-level ambitions exceed what is established here; scroll-pinned sections complicate static reading and could weaken usability.",
+    "Borrowable principle, not protected expression": "Use precise typography and a single family of geometric diagrams to make a complex product suite coherent.",
+    "Avoid or no material avoid finding": "Avoid copying its line geometry, company logos or language implying institutional adoption the new project lacks.",
+    "Useful idea or no useful idea from this evidence": "Original idea: a white PONS developer-tools site with three clearly staged offerings and a diagram linking each to its user workflow."
+  }
+}

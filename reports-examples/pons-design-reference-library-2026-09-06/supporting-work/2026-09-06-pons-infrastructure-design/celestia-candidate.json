@@ -1,0 +1,33 @@
+{
+  "id": "2026-09-06-pons-infrastructure-design.celestia",
+  "rank": null,
+  "project": "Celestia",
+  "ticker": "TIA",
+  "chain": "Celestia",
+  "sourceIdentity": "Celestia native TIA",
+  "successSignal": "Official October 31, 2023 mainnet deployment and genesis TIA distribution documented at https://blog.celestia.org/celestia-mainnet-is-live/ and https://blog.celestia.org/genesis-drop/; observed 2026-09-06. Meets launched-token inclusion only.",
+  "presentedUrl": "https://celestia.org/",
+  "resolvedUrl": "https://celestia.org/",
+  "redirectPath": [
+    "https://celestia.org/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/celestia.png",
+    "fullPage": "full-page-screenshots/celestia-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Scrolled complete homepage; overlapping viewport captures stitched by recorded scrollY",
+  "visuallyInspected": true,
+  "limitations": [
+    "First view lacks navigation at capture time; full page covered in 13 overlapping segments.",
+    "One-shot image duplicated sections and CDP PNG was corrupt; stitched replacement visually inspected. Minor transport rescaling, scrollbar and motion seams remain.",
+    "Current website is not established as launch-era design; performance claims unaudited; mobile and transactions not tested."
+  ],
+  "outcomeNote": null
+}

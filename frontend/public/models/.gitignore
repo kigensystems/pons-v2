@@ -1,4 +1,6 @@
-# Licensed local web exports are generated from the user's purchased source.
+# Keep the selected runtime export in the private repository for other-PC use.
+# Other generated model exports remain ignored.
 *.glb
+!macintosh-512k.glb
 *.gltf
 *.bin

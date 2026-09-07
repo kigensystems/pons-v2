@@ -5,7 +5,7 @@
 This is a separate product that complements the Pons launchpad. Its name and feature set remain open. Logo work is deferred; the user may develop it separately. Resume logo and identity development only when requested.
 
 - `frontend/`: React + TypeScript + Vite application. `MacintoshScene.tsx` owns the Three.js renderer and its resource lifecycle; the shell and practical controls remain in the DOM.
-- `assets/tools/`: reproducible Blender import and GLB inspection scripts. `assets/source/macintosh-512k/` contains licensed local source/working files excluded from Git. Never move or modify the user's originals on the desktop.
+- `assets/tools/`: reproducible Blender import and GLB inspection scripts. `assets/source/macintosh-512k/` contains licensed source copies and current working files tracked in this private repository for the owner's other-PC use; numbered Blender save backups remain ignored. The runtime GLB is tracked too. Never move or modify the user's originals on the desktop. Public deployment and distribution remain deferred.
 - `reports-examples/` and `reviews/`: original research, visual references, and reviews. Preserve these files.
 - `docs/PROJECT-BRIEF.md`: current scope, selected direction, and deferred decisions. Read it before design or implementation work.
 - `netlify.toml`: intended Netlify build configuration. Hosting is deferred; do not deploy as part of local development.

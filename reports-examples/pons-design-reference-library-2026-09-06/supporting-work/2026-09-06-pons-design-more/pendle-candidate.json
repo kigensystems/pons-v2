@@ -1,0 +1,33 @@
+{
+  "id": "2026-09-06-pons-design-more.pendle",
+  "rank": null,
+  "project": "Pendle",
+  "ticker": "PENDLE",
+  "chain": "Ethereum / multichain",
+  "sourceIdentity": "Pendle / PENDLE / https://docs.pendle.finance/pendle-v2/ProtocolMechanics/Mechanisms/Tokenomics",
+  "successSignal": "Official tokenomics records circulating PENDLE and full team/investor vesting by September 2024, confirming launched token. Source: https://docs.pendle.finance/pendle-v2/ProtocolMechanics/Mechanisms/Tokenomics Observed 2026-09-06.",
+  "presentedUrl": "https://pendle.finance/",
+  "resolvedUrl": "https://www.pendle.finance/",
+  "redirectPath": [
+    "https://pendle.finance/",
+    "https://www.pendle.finance/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/pendle.png",
+    "fullPage": "full-page-screenshots/pendle-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Product titles, metric counters and partner logos show animation/stitch seams. Static composite should not be used as a metrics record.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

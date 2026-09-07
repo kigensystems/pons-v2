@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.bittensor",
+  "rank": null,
+  "project": "Bittensor",
+  "ticker": "TAO",
+  "chain": "Bittensor",
+  "sourceIdentity": "Bittensor / TAO / https://www.bittensor.com/docs/concepts/emissions",
+  "successSignal": "Current official documentation describes TAO mainnet issuance and circulating emission snapshot, establishing an existing launched token. Source: https://www.bittensor.com/docs/concepts/emissions Observed 2026-09-06.",
+  "presentedUrl": "https://www.bittensor.com/",
+  "resolvedUrl": "https://www.bittensor.com/",
+  "redirectPath": [
+    "https://www.bittensor.com/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/bittensor.png",
+    "fullPage": "full-page-screenshots/bittensor-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Homepage is one viewport; full-page and hero are consequently identical. Canvas motion represented by one frame.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

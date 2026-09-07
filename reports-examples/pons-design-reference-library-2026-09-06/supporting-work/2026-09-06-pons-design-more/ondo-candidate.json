@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.ondo",
+  "rank": null,
+  "project": "Ondo Finance",
+  "ticker": "ONDO",
+  "chain": "Ethereum",
+  "sourceIdentity": "Ondo Finance / ONDO / https://www.mexc.com/announcements/article/initial-listing-mexc-will-list-ondo-foundation-ondo-in-assessment-zone-17827791512880",
+  "successSignal": "Exchange initial listing dated January 18, 2024 specifies ONDO trading; official Ondo Foundation describes token sale and governance allocation. Source: https://www.mexc.com/announcements/article/initial-listing-mexc-will-list-ondo-foundation-ondo-in-assessment-zone-17827791512880 Observed 2026-09-06.",
+  "presentedUrl": "https://ondo.finance/",
+  "resolvedUrl": "https://ondo.finance/",
+  "redirectPath": [
+    "https://ondo.finance/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/ondo.png",
+    "fullPage": "full-page-screenshots/ondo-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Persistent disclosure overlay obscures left portions of full-page composite; no acknowledgment or terms accepted. Hero navigation was still transitioning in initial capture.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

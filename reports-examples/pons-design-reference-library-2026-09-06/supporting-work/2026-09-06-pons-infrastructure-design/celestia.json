@@ -1,0 +1,27 @@
+{
+  "slug": "celestia",
+  "project": "Celestia",
+  "ticker": "TIA",
+  "chain": "Celestia",
+  "identity": "Celestia native TIA",
+  "url": "https://celestia.org/",
+  "signal": "Official October 31, 2023 mainnet deployment and genesis TIA distribution documented at https://blog.celestia.org/celestia-mainnet-is-live/ and https://blog.celestia.org/genesis-drop/; observed 2026-09-06. Meets launched-token inclusion only.",
+  "limitations": [
+    "First view lacks navigation at capture time; full page covered in 13 overlapping segments.",
+    "One-shot image duplicated sections and CDP PNG was corrupt; stitched replacement visually inspected. Minor transport rescaling, scrollbar and motion seams remain.",
+    "Current website is not established as launch-era design; performance claims unaudited; mobile and transactions not tested."
+  ],
+  "fields": {
+    "Distinctive evidence": "Observed: luminous fibre hardware on black introduces a sequence of white ecosystem/proof panels and dark technical offerings; the repeated physical metaphor makes otherwise invisible throughput tangible.",
+    "Why it matters and strongest judgment": "Interpretation: strong cinematic infrastructure reference with readable evidence hierarchy. Origin, catalyst, and reason for attention Unknown.",
+    "Project, audience, and token role": "Blockchain infrastructure for exchanges, payments and developers; official genesis material describes TIA for blobspace payments, consensus and governance. Homepage leads with product rather than ownership.",
+    "Attention and buyer conversion": "Hero earns attention; docs, build/contact and social links provide next steps. No dominant token purchase route observed; conversion outcome Unknown.",
+    "Participation and return value": "Developers can explore docs, ecosystem chains, applications and news without purchasing. Building and monitoring applications is a plausible repeat loop; operation not tested.",
+    "Trust and free choice": "Team profiles, use-case links and a live-chain-data link support investigation. Displayed performance and fundraising numbers remain project claims.",
+    "Unknowns and untested behavior": "Measured performance, adoption metrics, mobile/reduced-motion behavior and product functionality untested.",
+    "Counterevidence or what would change the judgment": "Potential throughput is not measured production throughput; evidence disproving claims would reduce the professional credibility judgment.",
+    "Borrowable principle, not protected expression": "Choose one physical metaphor for the service, then make the page explain and substantiate it.",
+    "Avoid or no material avoid finding": "Avoid reusing its fibre sculpture or translating aspirational capacity into fake live PONS metrics.",
+    "Useful idea or no useful idea from this evidence": "Original idea: a PONS activity/data conduit whose points resolve into readable launch records; not claimed to exist."
+  }
+}

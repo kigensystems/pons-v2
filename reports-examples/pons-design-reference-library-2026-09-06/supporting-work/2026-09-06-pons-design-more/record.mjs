@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+const run='2026-09-06-pons-design-more',root=`outputs/token-research/runs/${run}`,journal='outputs/token-research/research-journal.md';
+const d=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+const q=JSON.parse(fs.readFileSync(`${root}/queue.json`,'utf8')).find(x=>x.slug===d.slug);
+const c=JSON.parse(fs.readFileSync(`${root}/segments/${d.slug}/capture-info.json`,'utf8'));
+const id=`${run}.${d.slug}`;
+const record={id,rank:null,project:q.project,ticker:q.ticker,chain:q.chain,sourceIdentity:`${q.project} / ${q.ticker} / ${q.source}`,successSignal:q.signal+' Source: '+q.source+' Observed 2026-09-06.',presentedUrl:q.url,resolvedUrl:c.url,redirectPath:q.url===c.url?[q.url]:[q.url,c.url],outcome:'captured',timeBasis:'date-only',observedDate:'2026-09-06',observedAt:null,timeNote:null,screenshots:{firstView:`screenshots/${d.slug}.png`,fullPage:`full-page-screenshots/${d.slug}-stitched.png`},viewport:`${c.width}x${c.height}`,deviceMode:'desktop',loadState:c.method,visuallyInspected:true,limitations:[...(d.limitations||[]),'Static desktop capture only; motion, mobile, product operation and project claims not independently tested.'],outcomeNote:null};
+fs.writeFileSync(`work/${run}/${d.slug}-candidate.json`,JSON.stringify(record,null,2));
+const cli=(op,extra=[])=>process.stdout.write(execFileSync(process.execPath,['work/research-record.mjs',op,'--manifest',`${root}/capture-manifest.jsonl`,'--journal',journal,...extra],{encoding:'utf8'}));
+cli('add',['--record-file',`work/${run}/${d.slug}-candidate.json`]);
+const fields={'Template':'journal-entry/v4','Evidence record':`${root}/capture-manifest.jsonl / ${id}`,'Timestamp basis':'date-only','Distinctive evidence':'Observed: '+d.visual,'Why it matters and strongest judgment':'Interpretation: '+d.judgment+' Origin, catalyst and reason for attention Unknown.','Project, audience, and token role':d.role,'Attention and buyer conversion':d.routes+' Routes observed; conversion outcome Unknown.','Participation and return value':d.loop,'Trust and free choice':d.trust,'Unknowns and untested behavior':d.unknown||'Product operation, current quantitative claims, token economics and mobile experience not tested.','Counterevidence or what would change the judgment':d.counter,'Borrowable principle, not protected expression':d.principle,'Avoid or no material avoid finding':d.avoid,'Useful idea or no useful idea from this evidence':'Original idea, not observed: '+d.idea};
+fs.appendFileSync(journal,`\n\n### ${q.project} - 2026-09-06\n\n<!-- research-record/v4: ${id} -->\n\n`+Object.entries(fields).map(([k,v])=>`- **${k}:** ${v}`).join('\n')+`\n\n<!-- /research-record/v4: ${id} -->\n`);
+if(!d.checkpointDue)cli('ready');

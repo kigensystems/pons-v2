@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.ethena",
+  "rank": null,
+  "project": "Ethena",
+  "ticker": "ENA",
+  "chain": "Ethereum",
+  "sourceIdentity": "Ethena / ENA / https://paragraph.com/@ethena-labs/ena-token-launch",
+  "successSignal": "Official Ethena Labs announcement specifies ENA launch April 2, 2024; current official tokenomics document its distribution. Source: https://paragraph.com/@ethena-labs/ena-token-launch Observed 2026-09-06.",
+  "presentedUrl": "https://ethena.fi/",
+  "resolvedUrl": "https://ethena.fi/",
+  "redirectPath": [
+    "https://ethena.fi/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/ethena.png",
+    "fullPage": "full-page-screenshots/ethena-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Static desktop comparison only; reported supply, rates and reserves not independently verified.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

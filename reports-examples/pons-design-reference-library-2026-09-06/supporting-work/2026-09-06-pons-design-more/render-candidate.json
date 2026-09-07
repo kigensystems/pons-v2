@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.render",
+  "rank": null,
+  "project": "Render Network",
+  "ticker": "RENDER",
+  "chain": "Solana (legacy RNDR Ethereum)",
+  "sourceIdentity": "Render Network / RENDER / https://know.rendernetwork.com/general-render-network/rndr-to-render-what-you-need-to-know/render-network-upgrade-portal-faq",
+  "successSignal": "Official upgrade FAQ confirms existing RNDR and launched Solana RENDER migration, with October 30, 2023 snapshot and upgrade support. Source: https://know.rendernetwork.com/general-render-network/rndr-to-render-what-you-need-to-know/render-network-upgrade-portal-faq Observed 2026-09-06.",
+  "presentedUrl": "https://rendernetwork.com/",
+  "resolvedUrl": "https://rendernetwork.com/",
+  "redirectPath": [
+    "https://rendernetwork.com/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/render.png",
+    "fullPage": "full-page-screenshots/render-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Video stitched at different frames; one-pixel uncaptured tail. Optional cookies declined before final capture.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

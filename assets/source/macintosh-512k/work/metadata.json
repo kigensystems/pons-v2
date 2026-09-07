@@ -1,0 +1,110 @@
+{
+  "coordinate_system": "glTF Y-up, meters, front +Z",
+  "source_mesh_count": 65,
+  "optimization": "No mesh decimation. Static parts joined into four meshes; base color 2048px JPEG, normal and ORM 1024px lossless PNG.",
+  "meshes": [
+    {
+      "name": "MacintoshBody",
+      "vertices": 4107,
+      "triangles": 7210,
+      "bounds": [
+        [
+          -0.12265483289957047,
+          4.207327219774015e-05,
+          -0.13446985185146332
+        ],
+        [
+          0.12265483289957047,
+          0.325664222240448,
+          0.18850429356098175
+        ]
+      ],
+      "materials": [
+        "Macintosh_Body"
+      ]
+    },
+    {
+      "name": "Keyboard",
+      "vertices": 7243,
+      "triangles": 13184,
+      "bounds": [
+        [
+          -0.17049583792686462,
+          -8.598162094131112e-05,
+          0.13832436501979828
+        ],
+        [
+          0.1667502224445343,
+          0.052130620926618576,
+          0.35342323780059814
+        ]
+      ],
+      "materials": [
+        "Macintosh_KeyboardMouse"
+      ]
+    },
+    {
+      "name": "Mouse",
+      "vertices": 2574,
+      "triangles": 4702,
+      "bounds": [
+        [
+          0.05625825747847557,
+          -0.0021705718245357275,
+          -0.21174316108226776
+        ],
+        [
+          0.3014864921569824,
+          0.03603045269846916,
+          0.37059858441352844
+        ]
+      ],
+      "materials": [
+        "Macintosh_KeyboardMouse"
+      ]
+    },
+    {
+      "name": "Screen",
+      "vertices": 36,
+      "triangles": 50,
+      "bounds": [
+        [
+          -0.09622657299041748,
+          0.1458786129951477,
+          0.14833778142929077
+        ],
+        [
+          0.0915156900882721,
+          0.2883518934249878,
+          0.16437585651874542
+        ]
+      ],
+      "materials": [
+        "CRT_Glass"
+      ]
+    }
+  ],
+  "bounds": [
+    [
+      -0.17049583792686462,
+      -0.0021705718245357275,
+      -0.21174316108226776
+    ],
+    [
+      0.3014864921569824,
+      0.325664222240448,
+      0.37059858441352844
+    ]
+  ],
+  "screen": {
+    "name": "Screen",
+    "material": "CRT_Glass",
+    "normal": [
+      2.98023217215615e-10,
+      0.08598668873310089,
+      0.9938318133354187
+    ],
+    "uv": "Normalized projection: U increases model X, V increases model Y; texture.flipY=false for Three GLTFLoader replacement map."
+  },
+  "glb_bytes": 4623224
+}

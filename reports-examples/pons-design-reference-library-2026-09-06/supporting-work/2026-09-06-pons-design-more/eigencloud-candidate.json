@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.eigencloud",
+  "rank": null,
+  "project": "EigenCloud",
+  "ticker": "EIGEN",
+  "chain": "Ethereum",
+  "sourceIdentity": "EigenCloud / EIGEN / https://blog.eigenfoundation.org/unlock-eigen/",
+  "successSignal": "Official Eigen Foundation October 1, 2024 announcement confirms EIGEN unlocking and transferability. Source: https://blog.eigenfoundation.org/unlock-eigen/ Observed 2026-09-06.",
+  "presentedUrl": "https://www.eigencloud.xyz/",
+  "resolvedUrl": "https://www.eigencloud.xyz/",
+  "redirectPath": [
+    "https://www.eigencloud.xyz/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/eigencloud.png",
+    "fullPage": "full-page-screenshots/eigencloud-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Native full-page attempt after viewport geometry returned invalid 1x1 values; supplementary ordered scroll frames saved but cannot be reliably stitched.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Browser reported invalid 1x1 geometry. Native full-page capture is defective with large gaps/repetition and unusable as layout evidence. Hero and separately inspected scroll frames support observations; do not use full-page output as faithful reference.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

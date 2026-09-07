@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-infrastructure-design.wormhole",
+  "rank": null,
+  "project": "Wormhole",
+  "ticker": "W",
+  "chain": "Solana / EVM",
+  "sourceIdentity": "W native multichain token of Wormhole",
+  "successSignal": "Official April 25, 2024 notice confirms native W available on Solana, Ethereum, Arbitrum, Optimism and Base: https://wormhole.com/blog/w-is-now-natively-multichain-on-ethereum-and-layer-2s . Observed 2026-09-06.",
+  "presentedUrl": "https://wormhole.com/",
+  "resolvedUrl": "https://wormhole.com/",
+  "redirectPath": [
+    "https://wormhole.com/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/wormhole.png",
+    "fullPage": "full-page-screenshots/wormhole-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Scrolled complete homepage; overlapping viewport captures stitched by recorded scrollY",
+  "visuallyInspected": true,
+  "limitations": [
+    "Static capture preserves one frame of animated Portal illustration; projected-market chart bars were not visible in stitched capture.",
+    "14 overlapping viewport images; transport rescaling and scrollbar remain. Mobile, metrics and transfer operation not tested."
+  ],
+  "outcomeNote": null
+}

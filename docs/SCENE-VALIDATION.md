@@ -1,5 +1,11 @@
 # Macintosh opening scene validation
 
+## Landing-page typography and private transfer — September 7, 2026
+
+- Final scope follows the user's correction: typography only. The green room, fog artwork, lights/materials, camera layout, and scene code match the preceding committed version. The fuller serif and luminous text edges were compared against the live Shader reference; small technical labels use the already bundled VT323. No new font download or runtime dependency.
+- Visually inspected the production build at 1440 × 900 and 390 × 844. Confirmed text fits, the original green scene is restored, and live 3D loads. Screenshots: [desktop](screenshots/landing-font-desktop.jpg), [mobile](screenshots/landing-font-mobile.jpg). Build/TypeScript and lint pass. The existing six framing tests passed during this work; they do not validate typography. No new GPU performance claim is made for this CSS-only result.
+- For the authorized private other-PC transfer, staged all 379 report/review files plus 12 original model source copies, 20 current working/study files, and the runtime GLB. Verified all 412 staged file blobs against their local bytes (201,648,170 bytes / 192.31 MiB). Git attributes preserve these original bytes across operating systems. The two redundant numbered Blender backups remain ignored. All 12 source-manifest hashes/sizes and the GLB structural inspector passed. See [setup instructions](OTHER-PC-SETUP.md).
+
 ## Retro loading-screen refinement — September 7, 2026
 
 - Compared the live Shader loader and hero against our production loader. Specific differences: heavier italic display type and terminal lettering, bowed rather than straight screen edges, irregular grain over the whole picture, brighter blue midtones, soft color fringes, and broad glow around cream elements. The creator's [implementation account](https://tympanus.net/codrops/2026/05/19/80s-business-tech-seamless-scene-transitions-inside-shader-ses-scroll-driven-webgpu-pipeline/) corroborates post-processing the complete UI. Our DOM/SVG treatment remains an approximation; the title is cleaner than Shader's raster graphics.

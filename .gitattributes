@@ -1,0 +1,5 @@
+# Preserve original reference/source bytes across operating systems.
+reports-examples/** -text
+reviews/** -text
+assets/source/macintosh-512k/original/** -text
+assets/source/macintosh-512k/work/** -text

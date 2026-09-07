@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.akash",
+  "rank": null,
+  "project": "Akash Network",
+  "ticker": "AKT",
+  "chain": "Akash",
+  "sourceIdentity": "Akash Network / AKT / https://akash.network/blog/announcing-akash-mainnet-live-and-bitmax-ieo/",
+  "successSignal": "Official September 25, 2020 announcement confirms mainnet and AKT staking/governance live. Source: https://akash.network/blog/announcing-akash-mainnet-live-and-bitmax-ieo/ Observed 2026-09-06.",
+  "presentedUrl": "https://akash.network/",
+  "resolvedUrl": "https://akash.network/",
+  "redirectPath": [
+    "https://akash.network/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/akash.png",
+    "fullPage": "full-page-screenshots/akash-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Scroll-driven horizontal cards repeat in the vertical composite; some hero assets may be minimal by design or not rendered. No pricing controls or deployment controls activated.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

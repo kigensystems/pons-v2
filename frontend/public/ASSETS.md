@@ -2,7 +2,7 @@
 
 ## Live Macintosh 512K
 
-- File: `models/macintosh-512k.glb` (licensed local export; excluded from Git).
+- File: `models/macintosh-512k.glb` (licensed export tracked in this private repository for the owner's other-PC use).
 - Author: Shrednector / Shane Deptula.
 - Purchased source: [Mac Computer 1984](https://www.cgtrader.com/3d-models/electronics/computer/retro-mac-computer-80s), supplied by the user as FBX/OBJ and ten texture files.
 - Listing license: Royalty Free License (no AI). Model files were used locally for Blender processing and application rendering. They were not uploaded to an image generator or shared as source assets. The listing/source record is in `assets/source/macintosh-512k/README.md`; no license document was included in the supplied folder.

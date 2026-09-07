@@ -1,0 +1,32 @@
+{
+  "id": "2026-09-06-pons-design-more.sei",
+  "rank": null,
+  "project": "Sei",
+  "ticker": "SEI",
+  "chain": "Sei",
+  "sourceIdentity": "Sei / SEI / https://www.prnewswire.com/news-releases/sei-launches-mainnet-301900263.html",
+  "successSignal": "Sei Labs release dated August 15, 2023 confirms mainnet live; current official staking docs describe native SEI network staking. Source: https://www.prnewswire.com/news-releases/sei-launches-mainnet-301900263.html Observed 2026-09-06.",
+  "presentedUrl": "https://www.sei.io/",
+  "resolvedUrl": "https://www.sei.io/",
+  "redirectPath": [
+    "https://www.sei.io/"
+  ],
+  "outcome": "captured",
+  "timeBasis": "date-only",
+  "observedDate": "2026-09-06",
+  "observedAt": null,
+  "timeNote": null,
+  "screenshots": {
+    "firstView": "screenshots/sei.png",
+    "fullPage": "full-page-screenshots/sei-stitched.png"
+  },
+  "viewport": "1280x720",
+  "deviceMode": "desktop",
+  "loadState": "Overlapping viewport screenshots with recorded scroll positions; static capture of a moving site.",
+  "visuallyInspected": true,
+  "limitations": [
+    "Static stitch may show animation transitions; site performance and network metrics not validated.",
+    "Static desktop capture only; motion, mobile, product operation and project claims not independently tested."
+  ],
+  "outcomeNote": null
+}

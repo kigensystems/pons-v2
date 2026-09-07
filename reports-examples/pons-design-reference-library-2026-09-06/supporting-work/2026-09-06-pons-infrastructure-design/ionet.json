@@ -1,0 +1,28 @@
+{
+  "slug": "ionet",
+  "project": "io.net",
+  "ticker": "IO",
+  "chain": "Solana",
+  "identity": "io.net IO token; https://io.net/docs/guides/coin/io-coin",
+  "url": "https://io.net/",
+  "signal": "Binance dated June 6, 2024 listing notice specifies first IO trading June 11, 2024; current official IO Coin docs describe operating token payment and supplier roles. https://www.binance.com/en/support/announcement/detail/6556e3b5aae54c76adb0fd267b105a15 and https://io.net/docs/guides/coin/io-coin . Observed 2026-09-06.",
+  "loadState": "Complete homepage scrolled to footer; browser full-page capture visually inspected with defects retained and explicitly limited.",
+  "limitations": [
+    "Full-page browser artifact has duplicate bands, excessive whitespace, partial footer and sticky-header effects; use first view and live site for design judgement. It is not a clean archival full-page rendering.",
+    "DOM geometry returned zeros; direct capture fallback also imperfect. Inquiry modal appeared and was dismissed without entry or submission.",
+    "Homepage price comparison explicitly dated July 30, 2025; not treated as current verified pricing. Product functionality and mobile untested."
+  ],
+  "fields": {
+    "Distinctive evidence": "Observed: white dimensional infrastructure tiles with blue/purple edge accents introduce a concrete GPU catalogue, comparison table and deployment-mode cards.",
+    "Why it matters and strongest judgment": "Interpretation: strongest reference for making infrastructure feel purchasable and understandable, although its brand is less distinctive than Aethir or Celestia. Origin, catalyst and reason for attention Unknown.",
+    "Project, audience, and token role": "GPU cloud for AI teams and suppliers. Official IO Coin docs describe service payments, supplier compensation and staking; customers can pay using fiat/USDC, per project documentation.",
+    "Attention and buyer conversion": "Savings/waitlist claims lead to Get Started and deployment routes; IO Coin/staking are footer routes. No checkout attempted; conversion outcome Unknown.",
+    "Participation and return value": "Public catalogue, deployment explanations and docs help non-buyers evaluate; continued compute usage is a concrete proposed return loop, operation not tested.",
+    "Trust and free choice": "Hardware configurations and prices expose detail, but comparator table is explicitly dated July 30, 2025. SOC2/GDPR badges, service status and savings claims were not audited.",
+    "Unknowns and untested behavior": "GPU availability, savings calculations, service operation, compliance claims, token payment implementation and mobile untested.",
+    "Counterevidence or what would change the judgment": "Dated comparator prices and mixed per-card/cluster rates need care; the inquiry overlay interrupts browsing. A cleaner current price basis would strengthen trust.",
+    "Borrowable principle, not protected expression": "Show actual objects a customer can use, then organize the page around concrete actions and constraints.",
+    "Avoid or no material avoid finding": "Avoid copying integration logos or making unsupported availability/savings claims; do not substitute a decorated mock dashboard for a defined product.",
+    "Useful idea or no useful idea from this evidence": "Original idea: a PONS infrastructure homepage with a launch-record preview and clearly staged data/creator modules before token mechanics."
+  }
+}
