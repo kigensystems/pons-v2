@@ -8,13 +8,13 @@ A ChatGPT session commits directly to `main` and owns the landing page: `fronten
 
 This session works on separate features. Rules:
 
-- Create `feature/<name>` off `origin/main` for each feature. Never commit to `main` directly except for this file and `.claude/` config.
+- Work in a git worktree under `.claude/worktrees/`, never in the main checkout, which ChatGPT is editing. Create `feature/<name>` off `origin/main` for each feature. Never commit to `main` directly except for this file and `.claude/` config.
 - Before every push and before opening a PR: `git fetch origin` then `git rebase origin/main`. Resolve conflicts here, never on `main`.
 - Never force-push, rebase, reset, or amend anything already on `origin/main`.
 - Keep new work in new files or components. Shared files are the conflict risk: `App.tsx`, `main.tsx`, `index.css`, `index.html`, `package.json`, `vite.config.ts`. Touch them with the smallest possible hunk, ideally one import plus one JSX line, and say so in the PR.
 - Add new styles in a new stylesheet imported from the new component, not in `index.css`.
 - Add new docs as new files under `docs/`, not as edits to `PROJECT-BRIEF.md`.
-- Open a PR to `main` when a feature is done and rebased. Do not merge it without the user's go-ahead.
+- Open a PR to `main` when a feature is done and rebased. The user merges PRs; never merge one yourself.
 - Keep pushing the feature branch at each verified working state so the other PC and the other session can see it.
 
 ## Commands
