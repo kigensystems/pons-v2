@@ -27,7 +27,12 @@ npm --prefix frontend run dev
 npm --prefix frontend run build
 npm --prefix frontend run lint
 npm --prefix frontend test
+npm --prefix backend ci
+npm --prefix backend run dev
+npm --prefix backend test
 ```
+
+The backend reads the repository-root `.env` (see `.env.example`) and binds 127.0.0.1:8787; Vite proxies `/api` to it. Open the app at `http://127.0.0.1:5173`, not `localhost`, because the API refuses other origins. Details and the deferred checks: `docs/LAUNCH-API.md`, `docs/LAUNCH-API-HANDOFF.md`.
 
 Build, lint, and the Node test runner are scaffold checks. Visual work is validated in a browser against the live Shader site and the documented targets, as `AGENTS.md` requires. Report the two separately.
 
@@ -36,4 +41,4 @@ Build, lint, and the Node test runner are scaffold checks. Visual work is valida
 - `origin` is SSH via the `github-kigensystems` host alias. Git network commands fail inside the Bash sandbox; run fetch, pull, and push with the sandbox disabled.
 - Git prints a harmless `xcrun_db` cache warning inside the sandbox. Ignore it.
 - Do not deploy. Netlify config exists but hosting is deferred.
-- Keep the future crypto API out of the scene. No API clients, keys, or Vite-exposed secrets.
+- The launch API lives in `backend/` and `frontend/src/launch/`. Keep it out of the landing scene. No keys or secrets reach the browser; the only `VITE_` value is the public Reown project id.

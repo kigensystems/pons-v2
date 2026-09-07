@@ -1,6 +1,6 @@
 # Plum — an independent Pons companion
 
-A separate product complementing Pons, currently called Plum. The opening features a classic compact Macintosh; Explore and About extend the same visual identity. This is a prototype with sample token data and no wallet or chain integration.
+A separate product complementing Pons, currently called Plum. The opening features a classic compact Macintosh; Explore and About extend the same visual identity. Explore is backed by the launch API in `backend/`: wallet sign-in through Reown AppKit, a creation desk that prepares real pons launches on Robinhood Chain, and a registry of Plum launches. No launch has been made through it yet.
 
 Read [the project brief](docs/PROJECT-BRIEF.md) for the selected direction and [AGENTS.md](AGENTS.md) for working instructions.
 
@@ -38,4 +38,4 @@ The build includes TypeScript checks. Lint uses Oxlint. Node's test runner check
 
 ## Hosting and future data
 
-`netlify.toml` configures Netlify to build `frontend/` and publish its `dist/` output with Node.js 24. No deployment has been performed. Alchemy mainnet/testnet access has been checked and Mobula is the initial market-data candidate; the application integration remains to be built. See the [launch API report](docs/PLUM-INTEGRATION.md) for verified results, Plum-only Explore membership, provider costs and implementation requirements. Credentials belong only in the ignored root `.env`; [.env.example](.env.example) is a blank template.
+`netlify.toml` configures Netlify to build `frontend/` and publish its `dist/` output with Node.js 24. No deployment has been performed. The launch API is documented in [LAUNCH-API.md](docs/LAUNCH-API.md); its current state and deferred checks are in [LAUNCH-API-HANDOFF.md](docs/LAUNCH-API-HANDOFF.md). The earlier [integration report](docs/PLUM-INTEGRATION.md) holds the provider evidence, Plum-only Explore membership and cost notes. Credentials belong only in the ignored root `.env`; [.env.example](.env.example) is a blank template.

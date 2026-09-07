@@ -1,11 +1,13 @@
 # Next session: real wallet sign-in and simulation
 
-Prepared September 7, 2026 at the end of the session that built the launch API. Technical reference: [LAUNCH-API.md](LAUNCH-API.md). Decisions and evidence: [PLUM-INTEGRATION.md](PLUM-INTEGRATION.md).
+Prepared September 7, 2026 at the end of the session that built the launch API; updated the same day after the work merged. Technical reference: [LAUNCH-API.md](LAUNCH-API.md). Decisions and evidence: [PLUM-INTEGRATION.md](PLUM-INTEGRATION.md).
+
+**Status:** merged into `main` on September 7, 2026 through [PR #2](https://github.com/kigensystems/pons-v2/pull/2) (merge commit `d099255`). The user has moved on to other parts of the site; the deferred checks below wait for a later session and should start from a fresh `feature/<name>` branch off `origin/main`.
 
 ## Where things are
 
-- Branch `feature/launch-api`, pushed to `origin`, based on `main` at `f94d211`. Worktree: `.claude/worktrees/launch-api-handoff-docs-945be2` (the older `plum-integration-api-d69724` worktree also points at this branch and can be removed). No PR is open yet; open one to `main` when the wallet flow is verified, rebased first.
-- Commits: backend and tests; docs, null-session fix, preview config; frontend wallet flow and registry-backed Explore. The frontend commit was made to preserve the work; the user has not reviewed the rendered creation desk. Show it before opening the PR.
+- Everything below is on `main`. The `feature/launch-api` branch and the two worktrees that pointed at it (`launch-api-handoff-docs-945be2`, `plum-integration-api-d69724`) are finished and can be deleted.
+- The user reviewed and approved the Explore header, the AppKit picker and the Disconnect path in the browser. The rendered creation desk itself has not been walked through with the user; show it when the launch test happens.
 - Credentials: the root `.env` sits in the **main checkout** (`/Users/error/Claude Projects/Code/pons-v2/.env`); a copy sits in the worktree root (Git ignores both). It sets `ALCHEMY_API_KEY`, `MOBULA_API_KEY`, `ROBINHOOD_RPC_URL`, `ROBINHOOD_TESTNET_RPC_URL`, `SESSION_SECRET` and `VITE_REOWN_PROJECT_ID` (the Reown AppKit project id, a public value). No `PLUM_*` variable is set. Never print the file.
 - **No pons testnet deployment exists.** Checked September 7: the pons v2 docs, the pons docs root, the Mobula pons almanac, Robinhood's network page and Alchemy's overview list mainnet (4663) addresses only, and the mainnet factory and router have no code on 46630. Creation testing therefore needs a mainnet fork (`anvil --fork-url`, impersonated creator; Foundry is not installed on this Mac) or a real whitelisted mainnet launch. If pons ever publishes testnet addresses, run with `PLUM_CHAIN_ID=46630`, `PLUM_FACTORY_ADDRESS` and `PLUM_ROUTER_ADDRESS`; the backend refuses testnet without them.
 - Wallets connect through **Reown AppKit** over wagmi (`frontend/src/launch/appkit.ts`), the same modal pons uses, with the stock look and Plum's ink as accent. Plum's SIWE challenge and verify are unchanged. Header states: Connect wallet → picker; connected but unsigned → Disconnect plus "Sign in · 0x…"; signed in → address plus Sign out (which also disconnects). The creation desk is a top-layer dialog, so it closes while the picker is open and reopens after sign-in.
