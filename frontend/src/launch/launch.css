@@ -51,8 +51,20 @@
 .pad-hero h1 em { color: #54614e; }
 .pad-hero-sub { margin: 16px 0 19px; color: var(--ink-2); font-size: 17px; line-height: 1.6; }
 .pad-hero-actions { display: flex; align-items: center; gap: 26px; }
-.pad-hero-figure { grid-area: mac; position: relative; margin: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px 13px; border: 1px solid var(--line); background: #dfdfcc45; }
-.pad-hero-mac { display: block; width: 100%; max-width: 350px; height: auto; margin: -2px auto -5px; filter: sepia(.18) saturate(.65); mix-blend-mode: multiply; }
+/* The CRT close-up. The bezel photograph multiplies into the paper; the glass is the only thing on Explore that emits light. */
+.pad-crt { --phosphor: #f2e7d6; --phosphor-glow: -.6px 0 #a7c9f58c, .7px .3px #f2a3788c, 0 0 5px #f4dfb552, 0 0 20px #e6c99d33; grid-area: mac; position: relative; width: 100%; max-width: 470px; margin: 0; justify-self: end; }
+.pad-crt-bezel { display: block; width: 100%; height: auto; border: 1px solid var(--line); mix-blend-mode: multiply; filter: sepia(.12) saturate(.8); }
+/* The glass is the size container: Chrome stops painting the blended bezel when the figure itself is one. */
+.pad-crt-glass { position: absolute; inset: 11.3% 7.9% 11.3% 8.3%; display: grid; place-items: center; border-radius: 4% / 5%; overflow: hidden; container-type: inline-size; }
+/* Powered on: a lifted phosphor field on the glass, and its light spilling onto the bezel recess. */
+.pad-crt-glass::before { content: ''; position: absolute; inset: 0; mix-blend-mode: screen; background: radial-gradient(ellipse 78% 72% at 50% 50%, #f7ead078 0%, #d6cdb45c 36%, #a5a5943d 66%, #8f927f2e 100%), linear-gradient(#a8a69142 0 0); }
+.pad-crt[data-signal='coin'] .pad-crt-glass::before { background: radial-gradient(ellipse 78% 72% at 50% 50%, #f7e8c88c 0%, #d6cdb466 38%, #a5a59442 66%, #8f927f30 100%), linear-gradient(#a8a69142 0 0); }
+.pad-crt::after { content: ''; position: absolute; inset: 11.3% 7.9% 11.3% 8.3%; border-radius: 4% / 5%; box-shadow: 0 0 30px 6px #f6e9cc85, 0 0 84px 26px #eddcb852; mix-blend-mode: screen; pointer-events: none; }
+.pad-crt-initials { position: relative; font: italic 36cqw/1 var(--serif); letter-spacing: -.03em; color: var(--phosphor); text-shadow: var(--phosphor-glow); }
+.pad-crt-logo { position: relative; width: 42%; aspect-ratio: 1; object-fit: cover; border-radius: 3px; filter: saturate(.85) contrast(.95); box-shadow: 0 0 18px #f4dfb540, 0 0 64px #e6c99d33; }
+.pad-crt-nosignal { position: relative; font: 5.2cqw/1 var(--mono); letter-spacing: .08em; color: var(--phosphor); text-shadow: var(--phosphor-glow); }
+.pad-crt-caption { margin: 10px 0 0; font: 12px/1.5 var(--font-body); text-transform: uppercase; letter-spacing: .14em; color: var(--ink-2); }
+.pad-crt-caption strong { font-weight: 400; color: var(--ink); }
 .pad-stripe-rule { height: 39px; mix-blend-mode: multiply; background: linear-gradient(180deg, #3b6fe0 0px 4px, transparent 4px 5px, #45c2de 5px 9px, transparent 9px 10px, #a94fd0 10px 14px, transparent 14px 15px, #e8475a 15px 19px, transparent 19px 20px, #f28a3a 20px 24px, transparent 24px 25px, #f4d43a 25px 29px, transparent 29px 30px, #55c06a 30px 34px, transparent 34px 35px, #3f8fe0 35px 39px); }
 .pad-explore { max-width: 1248px; margin: auto; padding: 34px 24px 48px; }
 .pad-explore-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
@@ -151,8 +163,8 @@
   .pad-bar-actions .pad-btn { padding: 9px 12px; min-height: 40px; font-size: 14px; gap: 10px; }
   .pad-nav { order: 3; width: 100%; justify-content: flex-start; gap: 26px; }
   .pad-nav a { font-size: 15px; padding: 8px 0; }
-  .pad-hero { grid-template-columns: 1fr; grid-template-areas: 'copy' 'stats'; padding: 30px 20px 24px; gap: 25px; }
-  .pad-hero-figure { display: none; }
+  .pad-hero { grid-template-columns: 1fr; grid-template-areas: 'copy' 'mac' 'stats'; padding: 30px 20px 24px; gap: 25px; }
+  .pad-crt { max-width: none; justify-self: stretch; }
   .pad-hero h1 { font-size: clamp(36px, 10vw, 56px); }
   .pad-hero-sub { font-size: 16px; margin: 17px 0 20px; }
   .pad-explore { padding: 28px 20px 34px; }

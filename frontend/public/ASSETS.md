@@ -42,6 +42,13 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - Source: the user's own logo render, `assets/reference/plum-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. The glow is baked into the pixels; pages add a CSS halo on dark ground and multiply it on paper.
 - Authored for this project by the user. No third-party mark or Shader asset was copied.
 
+## CRT close-up (Explore)
+
+- File: `images/crt-close.jpg`, 983 × 780, sRGB JPEG (quality 84), 151,703 bytes.
+- Source: the user's `explore-monitor.png` (1448 × 1086 RGB render of a compact Macintosh front on a checkerboard), supplied at the repository root on September 7, 2026 and kept there untracked. Cropped with sips to the screen and bezel (offset 232, 62 from the top left) and re-encoded as JPEG; no other pixel edits.
+- Author, generator, and license were not supplied and remain unknown. No public-use license is asserted; public deployment remains deferred.
+- Use: the Explore hero. The bezel multiplies onto the paper; the newest coin's logo or initials are drawn over the glass in CSS. Nothing in the file itself changes at runtime.
+
 ## Macintosh artwork
 
 - File: `images/macintosh-render.png`, 1536 × 1024, RGBA, 1,770,883 bytes.
