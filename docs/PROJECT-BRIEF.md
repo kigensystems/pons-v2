@@ -25,7 +25,9 @@ Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance
 
 The user finds the added light/reflections barely noticeable and the shadows fake. The computer still needs convincing surface contact and better integration with the dreamy environment. Technical validation and past completion messages are not aesthetic approval.
 
-The September 7 contact revision removed the detached keyboard-side shadow strip and placed overlapping, filled footprints beneath the objects. The following atmosphere pass darkens the floor and casing, reduces the purple baked tint, and adds CRT edge falloff, a soft glass reflection, inner-bezel light, and a smaller rear-keyboard spill. Desktop and mobile comparisons are in the visual target. This is an inspected iteration awaiting user assessment, not aesthetic approval.
+The September 7 contact revision removed the detached keyboard-side shadow strip and placed overlapping, filled footprints beneath the objects. The following atmosphere pass added grading and localized CRT reflections, but the user rejected its impact: "It looks the exact same." The existing preview was verified to have that build; it was not a stale-build issue in the inspected tab.
+
+The latest iteration changes technique: an alpha-masked directional shade crosses the casing into a dark right side while preserving the lit front. The foreground floor and fog fall into deeper darkness. The TV and its localized light remain above this shading. Desktop/mobile comparisons are in the visual target; the iteration awaits user assessment.
 
 Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. Use the existing Pause TV control for comparisons. The proposed timestamp-lock preview was declined as overcomplicated; no code was added. A Blender pre-render was suggested but has not been selected.
 

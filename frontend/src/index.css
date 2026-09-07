@@ -139,7 +139,7 @@ body:has(.loading-screen) { overflow: hidden; }
   background: #10120f;
 }
 .room, .vignette, .grain { position: absolute; inset: 0; pointer-events: none; }
-.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 72% 74%, #30332f 0%, #202623 30%, #171c1a 53%, #111413 80%); }
+.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 66% 48%, #262d27 0%, #151c18 33%, #0b100d 70%); }
 .window-light {
   position: absolute;
   width: 44%;
@@ -165,7 +165,7 @@ body:has(.loading-screen) { overflow: hidden; }
 .desk {
   position: absolute;
   inset: 60% -20% -30%;
-  background: radial-gradient(ellipse at 65% 48%, #a29b8e20, #767a7010 45%, transparent 70%);
+  background: radial-gradient(ellipse at 65% 48%, #a29b8e10, transparent 65%);
   filter: blur(24px);
 }
 .room-haze {
@@ -175,7 +175,7 @@ body:has(.loading-screen) { overflow: hidden; }
   right: -15%;
   bottom: -18%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, #c4b9b032, #9b9c8618 40%, transparent 70%);
+  background: radial-gradient(ellipse, #c4b9b012, transparent 65%);
   filter: blur(45px);
   animation: haze-drift 24s ease-in-out infinite alternate;
 }
@@ -250,10 +250,10 @@ body:has(.loading-screen) { overflow: hidden; }
 }
 .mist--back {
   width: 120%;
-  height: 74%;
+  height: 54%;
   left: -3%;
   top: 31%;
-  opacity: .3;
+  opacity: .16;
   transform: rotate(-5deg);
   -webkit-mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
   mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
@@ -264,12 +264,12 @@ body:has(.loading-screen) { overflow: hidden; }
   height: 49%;
   left: -5%;
   bottom: -8%;
-  opacity: .09;
+  opacity: .025;
   animation-direction: alternate-reverse;
   -webkit-mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
   mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
 }
-.vignette { z-index: 2; background: linear-gradient(0deg, #10141273, transparent 17%, transparent 80%, #1014134d), radial-gradient(ellipse at 60% 54%, transparent 34%, #0c120e26 79%, #0c100d66); }
+.vignette { z-index: 2; background: linear-gradient(0deg, #060b08e6, #080e0b55 25%, transparent 48%, transparent 80%, #0b100d4d), radial-gradient(ellipse at 60% 48%, transparent 24%, #08100b40 66%, #060b0899); }
 .intro { position: absolute; z-index: 3; left: 6%; top: 38%; max-width: 33%; pointer-events: none; }
 .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 28px; font-size: 16px; text-transform: uppercase; letter-spacing: .12em; color: #ded4c5; font-family: 'VT323', monospace; text-shadow: 0 0 7px #f4dfb54d; }
 .signal { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #eadc9f; box-shadow: 0 0 8px #e5e79866; }
@@ -324,8 +324,8 @@ h1 em { font-weight: 400; }
   .motion-button { font-size: 10px; gap: 8px; padding: 0 11px; }
   .scene-controls { flex-direction: column; align-items: flex-end; gap: 6px; }
   .foreground-haze { inset: 60% -50% -20% -50%; }
-  .mist--back { top: 40%; height: 60%; width: 160%; left: -30%; }
-  .mist--front { height: 38%; bottom: 0; opacity: .07; }
+  .mist--back { top: 40%; height: 44%; width: 160%; left: -30%; }
+  .mist--front { height: 38%; bottom: 0; opacity: .025; }
   .window-light { width: 90%; right: -20%; top: -10%; opacity: .1; }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -4,7 +4,7 @@ import { deriveTvLighting } from './tvLighting'
 
 type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void }
 
-/** The original artwork stays intact; only its glass receives a 2D video layer. */
+/** Original pixels stay intact; registered shading and CRT light integrate the artwork. */
 export default function ImageTelevision({ active, sound, onSoundBlocked }: Props) {
   const clipId = useId()
   const svgRef = useRef<SVGSVGElement>(null)
@@ -92,6 +92,15 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
   return (
     <svg ref={svgRef} className="image-television" viewBox="0 0 1536 1024" aria-label="Television screen">
       <defs>
+        <mask id={`${clipId}-artwork`} maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024" style={{ maskType: 'alpha' }}>
+          <image href="/images/macintosh-render.png" width="1536" height="1024" />
+        </mask>
+        <linearGradient id={`${clipId}-room-shadow`} gradientUnits="userSpaceOnUse" x1="490" y1="170" x2="1190" y2="560">
+          <stop offset="0" stopColor="#080e0c" stopOpacity="0" />
+          <stop offset=".35" stopColor="#080e0c" stopOpacity=".12" />
+          <stop offset=".7" stopColor="#080e0c" stopOpacity=".5" />
+          <stop offset="1" stopColor="#080e0c" stopOpacity=".68" />
+        </linearGradient>
         {/* Coordinates follow the inside of the original image's curved glass. */}
         <clipPath id={clipId}>
           <path d="M 596 138 C 691 137 824 146 912 154 Q 929 156 929 178 L 920 428 Q 919 445 901 446 C 801 446 655 434 588 423 Q 570 420 567 399 C 557 311 562 213 574 161 Q 578 138 596 138 Z" />
@@ -135,6 +144,8 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
           <stop offset="1" stopColor="#dfe9e5" stopOpacity="0" />
         </radialGradient>
       </defs>
+      {/* Shade the original alpha silhouette; the CRT and its light are added above it. */}
+      <rect width="1536" height="1024" fill={`url(#${clipId}-room-shadow)`} mask={`url(#${clipId}-artwork)`} aria-hidden="true" />
       <g className="image-tv-emission">
         <path d="M 596 143 L 917 161 L 909 435 L 580 412 Z" fill="var(--tv-light)" filter={`url(#${clipId}-halo)`} />
         {/* Light catches the inward-facing lower lip, not the whole front casing. */}

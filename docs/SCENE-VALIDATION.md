@@ -1,6 +1,15 @@
 # Macintosh opening scene validation
 
+## Directional shading after rejected atmosphere pass — September 7, 2026
+
+- User rejected the previous pass as looking unchanged. Read the inspected preview's loaded stylesheet and computed artwork filter: it was the current `5ede4e9` implementation. Changed technique from global grading alone to a directional SVG shade masked by the original artwork's alpha. This preserves the lit front and darkens the right side, cables, and peripherals. The television and reflected light are composited above the shade. Original source pixels and playback code remain unchanged.
+- Darkened the room gradient and foreground falloff, reduced floor haze, and shortened rear mist. Compared at 1440 x 900 with the same paused opening picture, then checked 390 x 844. The first directional trial obscured the mouse too much; reduced maximum artwork shade from .8 to .68 before final capture. Final views retain the mouse/keyboard silhouette, readable controls, and no horizontal overflow. This is an inspected revision awaiting user assessment, not approved design.
+- Evidence: [desktop before](screenshots/directional-before-desktop.png), [desktop after](screenshots/directional-after-desktop.png), [mobile before](screenshots/directional-before-mobile.png), [mobile after](screenshots/directional-after-mobile.png). Earlier evidence remains preserved.
+- Build, lint, all 24 tests, and whitespace checks passed. TV Play/Pause smoke-tested. No new rendering loop, dependencies, or source asset; the mask reuses the existing PNG. No physical-phone/performance benchmark or fresh failure/audio/background-tab audit. No deployment.
+
 ## Darker atmosphere and localized CRT light — September 7, 2026
+
+User subsequently rejected this pass as looking unchanged. The observations below record implementation checks, not aesthetic acceptance.
 
 - Reduced room/floor illumination and foreground/rear mist, subdued the artwork's brightness and saturation, and deepened only the broad cast-shadow layer. Contact footprints and artwork coordinates are unchanged. Added curved-screen edge shading and a faint room reflection, light on the inner lower/right bezel, and a smaller reflection over the rear keyboard. Emission/spill remain driven by existing sampled footage, with CSS opacity caps of .85/.3; black input still yields zero emission. Source artwork and videos are unchanged.
 - Revisited live Shader and compared before/after at 1440 x 900 and 390 x 844 with the same paused opening picture. Casing and landscape are visibly quieter, the lower bezel carries a localized tint, and keys, contact edges, copy, and controls remain readable. No horizontal overflow at either size. Evidence: [desktop before](screenshots/atmosphere-before-desktop.png), [desktop after](screenshots/atmosphere-after-desktop.png), [mobile before](screenshots/atmosphere-before-mobile.png), [mobile after](screenshots/atmosphere-after-mobile.png). This remains an image composite awaiting user assessment, not a physical-lighting render.
