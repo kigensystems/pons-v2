@@ -1,6 +1,9 @@
-export function PaperHeader({ page, wallet, onConnect, onCreate }: {
-  page: 'explore' | 'about'; wallet?: boolean; onConnect?: () => void; onCreate?: () => void
-}) {
+import { shortAddress } from './launchModel'
+
+// address is the connected account; signedIn says whether Plum holds a session for it.
+export type WalletControl = { address: string | null; signedIn: boolean; connecting: boolean; onConnect: () => void; onDisconnect: () => void }
+
+export function PaperHeader({ page, wallet, onCreate }: { page: 'explore' | 'about'; wallet?: WalletControl; onCreate?: () => void }) {
   return <>
     <a className="pad-skip" href="#paper-main">Skip to content</a>
     <header className="pad-bar">
@@ -12,7 +15,14 @@ export function PaperHeader({ page, wallet, onConnect, onCreate }: {
       </nav>
       <div className="pad-bar-actions">
         {onCreate ? <button type="button" className="pad-btn pad-btn--quiet" onClick={onCreate}>+ Create</button> : <span className="pad-header-note">An independent companion.</span>}
-        {onConnect ? <button type="button" className="pad-btn pad-btn--dark" aria-pressed={wallet} onClick={onConnect}>{wallet ? 'Demo connected ✓' : 'Connect demo'}</button> : <a className="pad-btn pad-btn--dark" href="/explore">Explore coins <span aria-hidden="true">↗</span></a>}
+        {wallet
+          ? wallet.signedIn && wallet.address
+            ? <button type="button" className="pad-btn pad-btn--dark" onClick={wallet.onDisconnect} title={wallet.address}>{shortAddress(wallet.address)} · Sign out</button>
+            : <>
+              {wallet.address && <button type="button" className="pad-btn pad-btn--quiet" onClick={wallet.onDisconnect} disabled={wallet.connecting}>Disconnect</button>}
+              <button type="button" className="pad-btn pad-btn--dark" onClick={wallet.onConnect} disabled={wallet.connecting} aria-busy={wallet.connecting} title={wallet.address ?? undefined}>{wallet.connecting ? 'Check your wallet…' : wallet.address ? `Sign in · ${shortAddress(wallet.address)}` : 'Connect wallet'}</button>
+            </>
+          : <a className="pad-btn pad-btn--dark" href="/explore">Explore coins <span aria-hidden="true">↗</span></a>}
       </div>
     </header>
   </>
