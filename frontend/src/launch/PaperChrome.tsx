@@ -7,7 +7,7 @@ export function PaperHeader({ page, wallet, onCreate }: { page: 'explore' | 'abo
   return <>
     <a className="pad-skip" href="#paper-main">Skip to content</a>
     <header className="pad-bar">
-      <a className="pad-brand" href="/" aria-label="Plum — opening">Plum<span className="pad-brand-period">.</span></a>
+      <a className="pad-brand" href="/" aria-label="Plum — opening"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum<span className="pad-brand-period">.</span></a>
       <nav className="pad-nav" aria-label="Primary">
         <a href="/explore" aria-current={page === 'explore' ? 'page' : undefined}>Explore</a>
         <a href="/about" aria-current={page === 'about' ? 'page' : undefined}>About us</a>
@@ -30,7 +30,7 @@ export function PaperHeader({ page, wallet, onCreate }: { page: 'explore' | 'abo
 
 export function PaperFooter() {
   return <footer className="pad-footer">
-    <div><a className="pad-brand" href="/">Plum<span className="pad-brand-period">.</span></a><p>A familiar feeling. A new window.</p></div>
+    <div><a className="pad-brand" href="/"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum<span className="pad-brand-period">.</span></a><p>A familiar feeling. A new window.</p></div>
     <div className="pad-footer-note"><p>Prototype edition · 2026<br />Not affiliated with Pons or Robinhood.</p></div>
     <a className="pad-back-top" href="#paper-main">Back to top ↑</a>
   </footer>

@@ -6,7 +6,9 @@ The written point of view. Read before any visual work; the `frontend-design` sk
 
 Plum is a quiet second window on Pons launches. The world is a compact Macintosh on a desk at night: warm ivory plastic, a CRT that is the only light source, dark green room, paper documents. Everything is lit, printed, or typed. Nothing is a SaaS dashboard.
 
-Signature element: the working Macintosh TV and the light it throws. Every page borrows from it (phosphor glow on titles, VT323 labels, paper texture); no page competes with it.
+Signature element: the working Macintosh TV and the light it throws. Every page borrows from it (phosphor glow on titles, tracked Garamond labels, paper texture); no page competes with it.
+
+Wordmark: the rainbow plum mark at cap height beside bold italic Garamond "Plum", the same lockup on every page (44px opening, 40px paper, 32px mobile). On the opening it glows; on paper it multiplies into the grain. The mark's colours appear elsewhere only as the Explore banner's printed bands.
 
 ## Palette
 

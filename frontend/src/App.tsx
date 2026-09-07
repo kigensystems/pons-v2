@@ -39,7 +39,7 @@ function App() {
       </div>
 
       <header className="masthead">
-        <span className="working-name">Plum<span className="name-note">A companion to Pons</span></span>
+        <span className="working-name"><span className="working-name-row"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</span><span className="name-note">A companion to Pons</span></span>
         <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
       </header>
 

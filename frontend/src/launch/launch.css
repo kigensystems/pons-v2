@@ -35,7 +35,8 @@
 .pad-link { display: inline-flex; align-items: center; gap: 16px; padding: 9px 0 4px; border-bottom: 1px solid #39433480; font-size: 16px; text-decoration: none; }
 .pad-link:hover { color: var(--plum); }
 .pad-bar { display: flex; align-items: center; gap: 48px; max-width: 1440px; padding: 19px 48px; margin: auto; border-bottom: 1px solid var(--line); }
-.pad-brand { text-decoration: none; font: italic 32px/1 var(--font-body); letter-spacing: -.045em; white-space: nowrap; }
+.pad-brand { display: inline-flex; align-items: center; text-decoration: none; font: italic 700 40px/1 var(--font-body); letter-spacing: -.035em; white-space: nowrap; }
+.pad-brand .plum-mark { width: 1.15em; height: 1.15em; margin-right: 12px; mix-blend-mode: multiply; filter: saturate(.85); }
 .pad-brand-period { color: var(--plum); }
 .pad-nav { display: flex; align-items: center; gap: 28px; margin-right: auto; }
 .pad-nav a { position: relative; padding: 10px 0; font-size: 16px; text-decoration: none; white-space: nowrap; }
@@ -52,7 +53,7 @@
 .pad-hero-actions { display: flex; align-items: center; gap: 26px; }
 .pad-hero-figure { grid-area: mac; position: relative; margin: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px 13px; border: 1px solid var(--line); background: #dfdfcc45; }
 .pad-hero-mac { display: block; width: 100%; max-width: 350px; height: auto; margin: -2px auto -5px; filter: sepia(.18) saturate(.65); mix-blend-mode: multiply; }
-.pad-stripe-rule { height: 7px; opacity: .7; background: linear-gradient(90deg, #796677 0 17%, #a97265 17% 34%, #c6aa73 34% 51%, #839071 51% 68%, #6c8782 68% 84%, #79808e 84%); }
+.pad-stripe-rule { height: 39px; mix-blend-mode: multiply; background: linear-gradient(180deg, #3b6fe0 0px 4px, transparent 4px 5px, #45c2de 5px 9px, transparent 9px 10px, #a94fd0 10px 14px, transparent 14px 15px, #e8475a 15px 19px, transparent 19px 20px, #f28a3a 20px 24px, transparent 24px 25px, #f4d43a 25px 29px, transparent 29px 30px, #55c06a 30px 34px, transparent 34px 35px, #3f8fe0 35px 39px); }
 .pad-explore { max-width: 1248px; margin: auto; padding: 34px 24px 48px; }
 .pad-explore-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
 .pad-explore-head .pad-kicker { margin-bottom: 8px; }
@@ -94,7 +95,7 @@
 .pad-empty h3 { font-size: 32px; }
 .pad-empty p { color: var(--ink-2); }
 .pad-footer { max-width: 1440px; display: flex; align-items: center; justify-content: space-between; gap: 32px; margin: auto; padding: 30px 48px 36px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 14px; }
-.pad-footer .pad-brand { color: var(--ink); font-size: 38px; }
+.pad-footer .pad-brand { color: var(--ink); }
 .pad-footer p { margin: 12px 0 0; }
 .pad-footer-note > span { font-style: italic; }
 .pad-back-top { text-decoration: none; font: 14px var(--mono); }
@@ -145,7 +146,7 @@
 }
 @media (max-width: 760px) {
   .pad-bar { flex-wrap: wrap; gap: 14px; padding: 18px 20px 12px; }
-  .pad-brand { font-size: 29px; }
+  .pad-brand { font-size: 32px; }
   .pad-bar-actions { margin-left: auto; gap: 8px; }
   .pad-bar-actions .pad-btn { padding: 9px 12px; min-height: 40px; font-size: 14px; gap: 10px; }
   .pad-nav { order: 3; width: 100%; justify-content: flex-start; gap: 26px; }

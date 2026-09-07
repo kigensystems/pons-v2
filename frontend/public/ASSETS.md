@@ -36,6 +36,12 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - CRT screen: separate `Screen` mesh with normalized UVs. Its runtime material uses an authored canvas texture for emission, with independent dark reflective glass and clearcoat. Runtime softboxes are baked into a small environment map; licensed source geometry and maps are unchanged.
 - Keep licensed source files out of public asset folders. Public deployment and distribution packaging remain deferred with Netlify hosting.
 
+## Plum mark
+
+- File: `images/plum-mark.png`, 256 × 256, RGBA, 99,446 bytes.
+- Source: the user's own logo render, `assets/reference/plum-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. The glow is baked into the pixels; pages add a CSS halo on dark ground and multiply it on paper.
+- Authored for this project by the user. No third-party mark or Shader asset was copied.
+
 ## Macintosh artwork
 
 - File: `images/macintosh-render.png`, 1536 × 1024, RGBA, 1,770,883 bytes.
