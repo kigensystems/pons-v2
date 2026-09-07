@@ -8,10 +8,12 @@ import {
   Group,
   HemisphereLight,
   Mesh,
+  MeshBasicMaterial,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   PerspectiveCamera,
   PMREMGenerator,
-  PointLight,
+  PlaneGeometry,
   RenderPipeline,
   Scene,
   SRGBColorSpace,
@@ -22,18 +24,36 @@ import type { Material, Texture } from 'three/webgpu'
 import { pass, vec4 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
+
+// Baked once at startup: broad studio reflections without extra per-frame lights.
+function makeStudioEnvironment() {
+  const studio = new Scene()
+  studio.background = new Color('#17151e')
+  const softbox = (position: Vector3, width: number, height: number, color: string, intensity: number) => {
+    const panel = new Mesh(new PlaneGeometry(width, height), new MeshBasicMaterial({
+      color: new Color(color).multiplyScalar(intensity),
+    }))
+    panel.position.copy(position)
+    panel.lookAt(0, 1, 0)
+    studio.add(panel)
+  }
+  softbox(new Vector3(-3.8, 4, 5), 4, 5, '#fff0d9', 5)
+  softbox(new Vector3(-3, 1.6, 6), 2.4, 2.8, '#e9edff', 6)
+  softbox(new Vector3(4, 2.5, -2), 3, 5, '#b5a7ff', 3.5)
+  softbox(new Vector3(0, 6, 0), 4, 3, '#fff2e2', 2)
+  return studio
+}
 
 function makeScreenTexture() {
   const screen = document.createElement('canvas')
   screen.width = 768
   screen.height = 576
   const ctx = screen.getContext('2d')!
-  ctx.fillStyle = '#173b3e'
+  ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, 768, 576)
   const light = ctx.createRadialGradient(384, 280, 60, 384, 280, 430)
-  light.addColorStop(0, '#428c85')
-  light.addColorStop(1, '#091f25')
+  light.addColorStop(0, '#102724')
+  light.addColorStop(1, '#000000')
   ctx.fillStyle = light
   ctx.fillRect(0, 0, 768, 576)
   ctx.strokeStyle = '#bbe4ce'
@@ -113,7 +133,7 @@ export default function MacintoshScene({ active }: { active: boolean }) {
       camera.lookAt(lookAt)
       renderer.setClearColor(0x000000, 0)
       renderer.toneMapping = ACESFilmicToneMapping
-      renderer.toneMappingExposure = 0.76
+      renderer.toneMappingExposure = 0.95
       renderer.shadowMap.enabled = true
       let frame = 0
       let lastFrame = 0
@@ -134,7 +154,8 @@ export default function MacintoshScene({ active }: { active: boolean }) {
       const resize = () => {
         const width = canvas.parentElement!.clientWidth
         const height = canvas.parentElement!.clientHeight
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 540 ? 1.25 : 1.5))
+        if (width < 1 || height < 1) return
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 540 ? 1.25 : 1.5, 4096 / Math.max(width, height)))
         renderer.setSize(width, height, false)
         camera.aspect = width / height
         camera.updateProjectionMatrix()
@@ -158,7 +179,7 @@ export default function MacintoshScene({ active }: { active: boolean }) {
         camera.position.x += (baseCamera.x + pointer.x * 0.16 - camera.position.x) * 0.045
         camera.position.y += (baseCamera.y - pointer.y * 0.09 - camera.position.y) * 0.045
         camera.lookAt(lookAt)
-        if (screenMaterial) screenMaterial.emissiveIntensity = 1.5 + Math.sin(ambientTime * 0.8) * 0.06
+        if (screenMaterial) screenMaterial.emissiveIntensity = 1.15 + Math.sin(ambientTime * 0.8) * 0.025
         try {
           pipeline?.render()
           if (import.meta.env.DEV) {
@@ -203,18 +224,18 @@ export default function MacintoshScene({ active }: { active: boolean }) {
         canvas.dataset.renderer = 'isWebGPUBackend' in renderer.backend ? 'webgpu' : 'webgl2'
         resize()
 
-        const room = new RoomEnvironment()
+        const room = makeStudioEnvironment()
         const environmentGenerator = new PMREMGenerator(renderer)
         const environment = environmentGenerator.fromScene(room, 0.04, 0.1, 100, { size: 128 })
         scene.environment = environment.texture
-        scene.environmentIntensity = 0.22
-        room.dispose()
+        scene.environmentIntensity = 0.9
+        disposeObject(room)
         environmentGenerator.dispose()
         disposeEnvironment = () => environment.dispose()
 
-        const hemisphere = new HemisphereLight('#ced9e3', '#181923', 0.35)
-        const warm = new DirectionalLight('#ffe3bd', 2.0)
-        warm.position.set(-3, 6, 4)
+        const hemisphere = new HemisphereLight('#e0dcea', '#211923', 0.45)
+        const warm = new DirectionalLight('#ffe7c5', 2.2)
+        warm.position.set(-3.5, 5, 4)
         warm.castShadow = true
         warm.shadow.mapSize.set(1024, 1024)
         warm.shadow.camera.left = -4
@@ -222,11 +243,9 @@ export default function MacintoshScene({ active }: { active: boolean }) {
         warm.shadow.camera.top = 4
         warm.shadow.camera.bottom = -4
         warm.shadow.normalBias = 0.025
-        const rim = new DirectionalLight('#aba6ed', 1.8)
+        const rim = new DirectionalLight('#b7b0ff', 1.8)
         rim.position.set(4, 3, -3)
-        const screenLight = new PointLight('#87dfd1', 0.28, 3, 2)
-        screenLight.position.set(-0.4, 1.1, 1.4)
-        scene.add(hemisphere, warm, rim, screenLight)
+        scene.add(hemisphere, warm, rim)
 
         const gltf = await new GLTFLoader().loadAsync('/models/macintosh-512k.glb')
         if (cancelled || cleaned) { disposeObject(gltf.scene); cleanup(); return }
@@ -247,19 +266,31 @@ export default function MacintoshScene({ active }: { active: boolean }) {
           object.castShadow = true
           object.receiveShadow = true
           if (object.name === 'Screen') {
-            screenMaterial = new MeshStandardMaterial({
-              color: new Color('#bce4da'),
-              map: screenTexture,
-              emissive: new Color('#b9eee1'),
+            // The content drives emission only. Dark glass and its coat reflect
+            // the softboxes independently; no glowing diffuse screen texture.
+            screenMaterial = new MeshPhysicalMaterial({
+              color: new Color('#080e12'),
+              emissive: new Color('#c7ead9'),
               emissiveMap: screenTexture,
-              emissiveIntensity: 1.5,
-              roughness: 0.42,
-              metalness: 0.05,
+              emissiveIntensity: 1.15,
+              roughness: 0.14,
+              metalness: 0,
+              clearcoat: 0.25,
+              clearcoatRoughness: 0.12,
+              envMapIntensity: 2,
             })
             const oldMaterials = Array.isArray(object.material) ? object.material : [object.material]
             oldMaterials.forEach((material) => material.dispose())
             object.material = screenMaterial
             object.castShadow = false
+          } else {
+            for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+              if (!(material instanceof MeshStandardMaterial)) continue
+              // Preserve the purchased color, normal, and packed detail maps.
+              material.color.set('#fff5e7')
+              material.roughness = 0.82
+              material.metalness = 0.25
+            }
           }
         })
         const scenePass = pass(scene, camera)
