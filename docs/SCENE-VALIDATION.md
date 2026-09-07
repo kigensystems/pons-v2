@@ -1,5 +1,12 @@
 # Macintosh opening scene validation
 
+## Retro loading-screen refinement — September 7, 2026
+
+- Compared the live Shader loader and hero against our production loader. Specific differences: heavier italic display type and terminal lettering, bowed rather than straight screen edges, irregular grain over the whole picture, brighter blue midtones, soft color fringes, and broad glow around cream elements. The creator's [implementation account](https://tympanus.net/codrops/2026/05/19/80s-business-tech-seamless-scene-transitions-inside-shader-ses-scroll-driven-webgpu-pipeline/) corroborates post-processing the complete UI. Our DOM/SVG treatment remains an approximation; the title is cleaner than Shader's raster graphics.
+- Iterated from overly coarse noise to fine static grain, reduced mobile displacement/blur, and enlarged terminal copy. Checked desktop, 390 × 844 portrait, and 600 × 400 compact landscape. Fixed title/copy overlap risk in short mobile layouts and removed the underlying page scrollbar while the loader covers it. Screenshots: [desktop](screenshots/loading-retro-desktop.jpg), [mobile](screenshots/loading-retro-mobile.jpg).
+- Held the actual GLB request for visual inspection, preserving milestone progress and inert behavior. Released it under reduced motion: progress advanced, the scene reached ready, the overlay and inert attribute cleared, and atmosphere remained paused. Cleared interception, media, and viewport overrides afterward. The loading lifecycle, first-frame readiness, failure callbacks, and GPU scene are unchanged. Filters/noise are static and introduce no animation loop. Device GPU cost and physical-phone behavior were not newly measured.
+- Production build/TypeScript, lint, and diff whitespace checks passed. Loader shell is about 62.32 KB gzip; scene remains 258.16 KB gzip with its existing large-chunk warning. VT323 is an unchanged 153,116-byte self-hosted font with its OFL license retained. No new JavaScript dependency.
+
 ## Loading screen — September 6 request
 
 - Visually inspected Shader's live blue CRT loading screen and compared it with the local production loader at the default desktop viewport (2015 × 1027) and an emulated 390 × 844 portrait viewport. Retained its simple title/copy/bar/footer composition; used the provisional project title and existing font instead of Shader's logo. Portrait title wraps into two lines. Static scanlines and subtle color separation avoid an additional animation loop.

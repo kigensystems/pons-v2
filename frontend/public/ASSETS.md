@@ -27,6 +27,8 @@
 - License: SIL Open Font License 1.1; accompanying copyright and license are preserved in `fonts/OFL.txt`.
 - Self-hosted. The page makes no Google Fonts network requests.
 
+- Loading-screen terminal copy: `fonts/VT323-Regular.ttf`, by The VT323 Project Authors (Peter Hull). Source: [Google Fonts VT323 directory](https://github.com/google/fonts/tree/main/ofl/vt323), downloaded unchanged for the September 6 loading-screen refinement (153,116 bytes). SIL Open Font License 1.1; copyright and redistribution terms retained in `fonts/VT323-OFL.txt`. Self-hosted and preloaded. The loader's heavier italic title uses the platform Georgia/Times serif stack; no Shader font or logo was copied.
+
 ## Procedural graphics
 
 `images/mist.svg`, the inline grain filter, CRT content, softbox environment, and the small Macintosh line drawing are authored in this repository. The mist filter is static; CSS animates layer transforms rather than regenerating noise every frame. Motion starts paused for reduced-motion users and can be explicitly enabled with Space while the scene has keyboard focus. There is no visible atmosphere button.

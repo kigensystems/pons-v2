@@ -1,4 +1,11 @@
 @font-face {
+  font-family: 'VT323';
+  src: url('/fonts/VT323-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Instrument Serif';
   src: url('/fonts/InstrumentSerif-Regular.ttf') format('truetype');
   font-weight: 400;
@@ -30,80 +37,97 @@ button:focus-visible { outline: 2px solid #f7e5b8; outline-offset: 5px; }
   position: fixed;
   z-index: 100;
   inset: 0;
-  padding: clamp(10px, 2.6vh, 28px) clamp(10px, 2.8vw, 56px);
-  background: #020203;
+  padding: clamp(5px, 1.2vh, 14px) clamp(8px, 2.1vw, 42px);
+  background: #05050b;
   opacity: 1;
   transition: opacity .6s ease;
 }
 .loading-screen[data-complete='true'] { opacity: 0; }
+body:has(.loading-screen) { overflow: hidden; }
+.loading-filters { position: absolute; pointer-events: none; }
 .loading-crt {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 5% / 8%;
-  border: 1px solid #434092;
-  background: radial-gradient(ellipse at 50% 46%, #363398 0%, #292582 54%, #17115a 89%, #0d0936 100%);
-  box-shadow: inset 0 0 36px #080324, 0 2px 3px #b56d3438, 0 -1px 4px #2445cd80;
-  color: #e6ddbd;
-  font-family: 'Courier New', monospace;
-  font-weight: 700;
+  clip-path: url('#loading-glass');
+  background: radial-gradient(ellipse at 50% 47%, #403998 0%, #352b89 42%, #2b207b 73%, #181049 100%);
+  color: #ece2bb;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-weight: 400;
   text-align: center;
-  text-shadow: -1px 0 #8dc3ae80, 1px 1px #ed957680, 0 0 8px #ece2bd4d;
+  text-shadow: -1.3px -.3px #79c5b3a6, 1.4px .7px #ec956fa6, 0 0 3px #f5e8baa6, 0 0 15px #f0d8ae66;
+}
+.loading-content { position: absolute; inset: 0; filter: url('#loading-phosphor'); }
+.loading-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .2;
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.94' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
 }
 .loading-crt::after {
   content: '';
   position: absolute;
   z-index: 1;
   inset: 0;
-  border-radius: inherit;
   pointer-events: none;
-  background: repeating-linear-gradient(0deg, #03001a12 0 1px, transparent 1px 3px);
-  box-shadow: inset 0 0 80px #07022550;
+  background: repeating-linear-gradient(0deg, #0700220a 0 1px, transparent 1px 3px);
+  box-shadow: inset 0 0 65px #07022550;
 }
 .loading-title {
   position: absolute;
-  top: 9%;
+  top: 10%;
   left: 6%;
   width: 88%;
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: clamp(48px, 10.5vw, 220px);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(42px, 8.3vw, 180px);
   font-style: italic;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -.035em;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
   white-space: nowrap;
-  text-shadow: -1px -1px #8dc3ae90, 2px 1px #ed957690, 0 0 18px #ece2bd50;
+  text-shadow: -1.5px -1px #78c5afae, 2px 1px #f19a70b3, 0 0 5px #f4e2b870, 0 0 28px #e8cd9c66;
 }
-.loading-copy { position: absolute; top: 39%; left: 6%; width: 88%; font-size: clamp(13px, 1.9vw, 38px); line-height: 1.25; letter-spacing: .025em; }
+.loading-copy { position: absolute; top: 39%; left: 6%; width: 88%; font-size: clamp(16px, 2.35vw, 44px); line-height: .95; letter-spacing: .025em; }
 .loading-copy p { margin: 0; }
 .loading-bar {
   position: absolute;
-  top: 67%;
-  left: 29%;
-  width: 42%;
+  top: 65.5%;
+  left: 31.5%;
+  width: 37%;
   height: clamp(28px, 7.2vh, 76px);
   display: grid;
   grid-template-columns: repeat(21, 1fr);
   gap: clamp(3px, .48vw, 10px);
   padding: clamp(3px, .35vw, 7px);
-  border: 2px solid #e6ddbd;
-  box-shadow: -1px 0 #8dc3ae90, 1px 1px #ed957690, 0 0 14px #ece2bd40, inset 0 0 10px #ece2bd20;
+  border: 3px solid #ece2bb;
+  box-shadow: -1px -1px #78c5afae, 1px 1px #f19a70b3, 0 0 5px #f4e2b880, 0 0 20px #e8cd9c4d, inset 0 0 14px #e8cd9c33;
 }
-.loading-bar span[data-filled='true'] { background: #e6ddbd; box-shadow: 0 0 6px #ece2bd40; }
-.loading-footer { position: absolute; bottom: 5%; left: 7%; width: 86%; margin: 0; font-size: clamp(10px, 1.55vw, 30px); line-height: 1.5; letter-spacing: .025em; }
+.loading-bar span[data-filled='true'] { background: #ece2bb; box-shadow: -1px 0 #78c5af80, 1px 0 #f19a7090, 0 0 10px #f4e2b866; }
+.loading-footer { position: absolute; bottom: 5%; left: 7%; width: 86%; margin: 0; font-size: clamp(13px, 2vw, 36px); line-height: 1.15; letter-spacing: .025em; }
 @media (max-width: 600px) {
-  .loading-crt { border-radius: 8% / 4%; }
-  .loading-title { top: 17%; left: 10%; width: 80%; font-size: clamp(56px, 16vw, 90px); white-space: normal; line-height: .95; }
-  .loading-copy { top: 43%; font-size: clamp(12px, 3.5vw, 20px); }
+  .loading-content { filter: url('#loading-phosphor-small'); }
+  .loading-crt { text-shadow: -.5px 0 #79c5b3a6, .6px .3px #ec956fa6, 0 0 4px #f0d8ae66; }
+  .loading-title { top: 19%; left: 6%; width: 88%; font-size: clamp(34px, 12vw, 72px); white-space: normal; line-height: 1.05; }
+  .loading-copy { top: 43%; font-size: clamp(19px, 5.1vw, 27px); }
   .loading-bar { left: 12%; width: 76%; height: 36px; top: 64%; gap: 4px; }
-  .loading-footer { font-size: 11px; bottom: 7%; }
+  .loading-footer { font-size: 18px; bottom: 7%; }
   .loading-footer span { display: block; }
 }
 @media (max-height: 500px) and (min-width: 601px) {
-  .loading-title { font-size: min(10.5vw, 23vh); }
-  .loading-copy { font-size: min(1.9vw, 4.5vh); }
-  .loading-footer { font-size: min(1.55vw, 3.5vh); }
+  .loading-title { font-size: min(8.3vw, 23vh); }
+  .loading-copy { font-size: min(2.35vw, 5.5vh); }
+  .loading-footer { font-size: min(2vw, 4.5vh); }
+}
+@media (max-height: 500px) and (max-width: 600px) {
+  .loading-title { top: 11%; font-size: min(12vw, 12vh); }
+  .loading-copy { font-size: clamp(14px, 4.8vh, 19px); }
+  .loading-bar { height: clamp(22px, 7vh, 36px); }
+  .loading-footer { font-size: clamp(13px, 4vh, 18px); }
 }
 .opening {
   isolation: isolate;

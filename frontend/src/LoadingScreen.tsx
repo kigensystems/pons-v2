@@ -12,7 +12,25 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
 
   return (
     <div className="loading-screen" data-complete={complete}>
+      <svg className="loading-filters" aria-hidden="true" width="0" height="0">
+        <defs>
+          <clipPath id="loading-glass" clipPathUnits="objectBoundingBox">
+            <path d="M .065 .025 Q .5 -.015 .935 .025 Q .975 .028 .982 .085 Q 1.015 .5 .982 .915 Q .976 .975 .935 .978 Q .5 1.015 .065 .978 Q .023 .975 .018 .915 Q -.015 .5 .018 .085 Q .025 .028 .065 .025 Z" />
+          </clipPath>
+          <filter id="loading-phosphor" x="-10%" y="-15%" width="120%" height="130%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency=".008 .65" numOctaves="1" seed="12" result="signal" />
+            <feDisplacementMap in="SourceGraphic" in2="signal" scale="1.35" xChannelSelector="R" yChannelSelector="G" />
+            <feGaussianBlur stdDeviation=".3" />
+          </filter>
+          <filter id="loading-phosphor-small" x="-10%" y="-15%" width="120%" height="130%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency=".008 .65" numOctaves="1" seed="12" result="signal" />
+            <feDisplacementMap in="SourceGraphic" in2="signal" scale=".5" xChannelSelector="R" yChannelSelector="G" />
+            <feGaussianBlur stdDeviation=".15" />
+          </filter>
+        </defs>
+      </svg>
       <div className="loading-crt">
+        <div className="loading-content">
         <div className="loading-title" aria-hidden="true">Pons companion</div>
         <div className="loading-copy">
           <p role="status">{complete ? 'Welcome.' : 'Loading your companion...'}</p>
@@ -32,6 +50,7 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
           ))}
         </div>
         <p className="loading-footer">A companion to Pons. <span>A world of its own.</span></p>
+        </div>
       </div>
     </div>
   )
