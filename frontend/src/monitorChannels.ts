@@ -55,8 +55,9 @@ export function createMonitorChannels(invalidate: () => void, soundBlocked: () =
     texture.needsUpdate = true
   }
   const drawPicture = (image: CanvasImageSource, width: number, height: number) => {
-    // Letterbox the source; never stretch faces or crop the supplied footage.
-    const scale = Math.min(640 / width, 480 / height)
+    // Fill the CRT edge to edge; center-crop widescreen footage without
+    // stretching faces. The poster uses the same framing as the live video.
+    const scale = Math.max(640 / width, 480 / height)
     ctx.fillStyle = '#020504'
     ctx.fillRect(0, 0, 640, 480)
     ctx.drawImage(image, (640 - width * scale) / 2, (480 - height * scale) / 2, width * scale, height * scale)
