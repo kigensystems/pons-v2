@@ -8,6 +8,8 @@ The product is called **Plum**, an independent companion to the Pons launchpad. 
 
 Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 
+Scrolling from the opening now zooms through the Macintosh glass into Explore, reversing on upward scroll. Direct page links remain available. Deliberate scrolling always drives the zoom; reduced motion still pauses TV autoplay. See [Opening to Explore](SCROLL-TRANSITION.md) for behavior and desktop/mobile evidence.
+
 Use an accurate compact Macintosh. The user prefers the original image presentation with a working TV. Keep that direction unless the user changes it. Shader informs atmosphere, lighting, material treatment, composition, and luminous typography; retain our Macintosh and identity.
 
 Latest opening-scene direction: a slightly darker, less defined landscape, with the Macintosh sharing the room's lighting. Subdue the casing and fog, preserve surface contact, and favor localized CRT light and small reflections over a broad color wash.

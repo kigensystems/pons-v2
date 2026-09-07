@@ -4,7 +4,7 @@ import TokenGrid, { type Filter } from './TokenGrid'
 import { PaperHeader, PaperFooter } from './PaperChrome'
 import './launch.css'
 
-export default function ExplorePage() {
+export default function ExplorePage({ active = true }: { active?: boolean }) {
   const [wallet, setWallet] = useState(false)
   const [launched, setLaunched] = useState<LaunchedToken[]>([])
   const [filter, setFilter] = useState<Filter>('all')
@@ -12,7 +12,7 @@ export default function ExplorePage() {
   const [creating, setCreating] = useState(false)
   const [notice, setNotice] = useState('')
 
-  useEffect(() => { document.title = 'Explore — Plum' }, [])
+  useEffect(() => { if (active) document.title = 'Explore — Plum' }, [active])
 
   return (
     <div className="pad">

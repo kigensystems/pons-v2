@@ -2,7 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
 import ImageTelevision from './ImageTelevision'
 import ImageGrounding from './ImageGrounding'
+import ExplorePage from './launch/LaunchPage'
+import useScreenJourney from './useScreenJourney'
 import './openingNavigation.css'
+import './screenJourney.css'
 
 function App() {
   const [progress, setProgress] = useState(0)
@@ -13,6 +16,7 @@ function App() {
   const [sound, setSound] = useState(false)
   const handleSoundBlocked = useCallback(() => setSound(false), [])
   const dismissLoading = useCallback(() => setLoading(false), [])
+  const { journeyRef, worldRef, artworkRef, portalRef, entered, tvVisible } = useScreenJourney(!loading, imageError)
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -29,7 +33,10 @@ function App() {
   return (
     <>
     {loading && <LoadingScreen progress={progress} complete={progress === 100} onExited={dismissLoading} />}
-    <main className="opening" inert={loading} aria-busy={loading} data-motion="paused">
+    <div className="opening-journey" ref={journeyRef}>
+    <a className="journey-skip" href="/explore" inert={loading || entered}>Skip to Explore</a>
+    <main className="opening" inert={loading || entered} aria-busy={loading} data-motion="paused">
+      <div className="opening-world" ref={worldRef}>
       <div className="room" aria-hidden="true">
         <div className="window-light" />
         <div className="window-frame" />
@@ -38,12 +45,7 @@ function App() {
         <div className="mist mist--back" />
       </div>
 
-      <header className="masthead">
-        <span className="working-name">Plum<span className="name-note">A companion to Pons</span></span>
-        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
-      </header>
-
-      <div className="scene-object scene-object--still">
+      <div className="scene-object scene-object--still" ref={artworkRef}>
         {!imageError && <ImageGrounding />}
         <img
           className="macintosh macintosh--still"
@@ -57,7 +59,7 @@ function App() {
           onError={() => { setImageError(true); dismissLoading() }}
         />
         {!imageError && <>
-          <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />
+          <ImageTelevision active={!paused && !hidden && !loading && tvVisible} sound={sound} onSoundBlocked={handleSoundBlocked} />
         </>}
         {imageError && <div className="model-status">
           <p role="status">The Macintosh image could not load.</p>
@@ -67,13 +69,20 @@ function App() {
 
       <div className="foreground-haze" aria-hidden="true" />
       <div className="mist mist--front" aria-hidden="true" />
+      </div>
       <div className="grain" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
+
+      <header className="masthead">
+        <span className="working-name">Plum<span className="name-note">A companion to Pons</span></span>
+        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
+      </header>
 
       <section className="intro" aria-labelledby="scene-title">
         <p className="eyebrow"><span className="signal" /> A companion to Pons</p>
         <h1 id="scene-title">A familiar feeling.<br /><em>A new window.</em></h1>
         <p className="intro-description">An independent companion to the Pons launchpad.<br className="desktop-break" /> A world of its own, beginning here.</p>
+        <a className="journey-cue" href="/explore">Scroll to explore <span aria-hidden="true">↓</span><span className="sr-only"> or select to skip the opening</span></a>
       </section>
 
       <footer className="scene-footer">
@@ -91,6 +100,11 @@ function App() {
         </div>
       </footer>
     </main>
+    <div className="journey-runway" aria-hidden="true" />
+    <div className="journey-portal" ref={portalRef} inert={!entered}>
+      <ExplorePage active={entered} />
+    </div>
+    </div>
     </>
   )
 }

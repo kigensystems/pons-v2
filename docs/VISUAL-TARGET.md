@@ -2,6 +2,8 @@
 
 ## Reference and current state
 
+- Opening-to-Explore scroll transition: [behavior and validation](SCROLL-TRANSITION.md), [desktop through the glass](screenshots/scroll-through-desktop.jpg), [mobile through the glass](screenshots/scroll-through-mobile.jpg). Native scroll zooms toward the CRT and reveals Explore; reverse scrolling restores the opening. This is separate from the unresolved lighting feedback below.
+
 - Lead reference: [live Shader opening](https://www.shader.se/). Compare its luminous CRT, contact with the surface, dreamy haze, warm materials, and processed typography. Keep our compact Macintosh and identity. This document covers the opening; the separately authorized Explore and About pages are documented in [LAUNCH-DESK.md](LAUNCH-DESK.md).
 - Current implementation: original Macintosh artwork with live TV, composited glow, and SVG shadows. Preserve working TV and opt-in audio.
 - Latest CRT cleanup: [desktop before](screenshots/crt-clean-before-desktop.png), [desktop after](screenshots/crt-clean-after-desktop.png), [mobile before](screenshots/crt-clean-before-mobile.png), [mobile after](screenshots/crt-clean-after-mobile.png). Same paused opening picture at each viewport. Painted glow outlines and broad washes are removed; small highlight diffusion stays inside the glass, and the key reflection uses a luminance mask. These are implementation evidence awaiting user assessment.
