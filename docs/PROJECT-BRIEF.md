@@ -27,7 +27,7 @@ The earlier treehouse3d Macintosh 128K lead has been superseded by the user's pu
 
 - React + TypeScript + Vite, using npm.
 - Three.js WebGPURenderer and TSL bloom, with WebGL 2 fallback. The single scene is owned by a React component with explicit resource cleanup. React Three Fiber remains installed but is not imported.
-- Bound GPU work: 30-fps ambient cap, desktop/mobile pixel-ratio caps of 1.5/1.25, low-resolution bloom, and rendering only on initial load/resize while paused. A local test is not a guarantee for every device.
+- Bound GPU work: 30-fps draw cap, desktop/mobile pixel-ratio caps of 1.5/1.25, 4096px maximum drawing-buffer dimension, low-resolution bloom, and rendering on load/resize/direct input while paused. A local test is not a guarantee for every device.
 - Eventual hosting: Netlify. Configuration is prepared locally; no site or deployment has been created.
 - A crypto data API will be added later. Mobula is only a possible provider. No API clients, credentials, requests, or speculative endpoints are needed now.
 - Keep rendering and future data access separate. Store future private API credentials on the server, never in browser-exposed Vite variables.
@@ -35,21 +35,30 @@ The earlier treehouse3d Macintosh 128K lead has been superseded by the user's pu
 
 ## Current opening study
 
-The opening now renders the purchased model in real 3D, with a curved emissive CRT, authored greeting texture and scanlines, warm key light, lavender rim light, self shadows, subtle pointer parallax, and TSL bloom. CSS/SVG mist and grain extend the atmosphere around it. Readable typography and the pause/resume control stay in the DOM. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
+The opening renders the purchased model in real 3D, with warmer cream housing, broad baked softbox reflections, lavender side light, and a dark glossy CRT. The greeting texture drives emission separately from the reflective glass and clearcoat. Geometry and licensed texture files are unchanged. The headline is quieter, and foreground mist/grain is reduced so the housing and keyboard remain clear. Copy and working title remain provisional. Asset provenance is in `frontend/public/ASSETS.md`.
 
-The earlier generated artwork is retained as a loading/error fallback. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled by the user, and pauses in hidden tabs. The real 3D implementation is isolated in a separate loaded module. No scroll, logo, or API work was added.
+The earlier generated artwork is retained as a loading/error fallback, including failure to download the separate scene module. A reload action appears only on failure. Atmosphere motion starts paused when the OS requests reduced motion, can be explicitly enabled with Space while the scene has keyboard focus, and pauses in hidden tabs. No scroll, logo, or API work was added.
+
+## Selected interaction, September 6 follow-up
+
+The user's correction supersedes the earlier request for visible manipulation controls. Keep the Macintosh stationary. Drag to orbit the viewpoint through a bounded 3D space; do not rotate the model. No visible interaction toolbar or atmosphere button belongs in the opening.
+
+- Drag anywhere in the scene to change the camera viewpoint. Camera yaw is bounded to ±36° from the opening view, elevation to ±12°.
+- Select the actual CRT mesh to focus; select again to return. The focus is pulled back to retain the bezel and enclosure. Its camera is derived from the mesh's world positions, triangle normal, and UV orientation, and refits when the viewport changes.
+- Double-click resets the view. The focusable DOM canvas supports arrows for viewpoint movement, Enter for focus/return, Escape/Home for reset, and Space for atmosphere pause/resume. Screen-reader instructions and a keyboard focus outline remain; there are no visible buttons during ordinary rendering.
+- Direct input works while atmosphere is paused, including reduced motion. Camera changes are immediate. The fixed model, static lights, and world-space reflection environment remain in place.
 
 The user asked for continual comparison with the real Shader site. Direct comparison informed the CRT glow, textured fog, dramatic scale, and light balance. This is a close atmospheric study with the user's Macintosh choice, not a claim of matching Shader pixel for pixel.
 
 Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint are separate from visual rendering and device checks.
 
-## Paused checkpoint and next pass
+## Historical paused checkpoint
 
 The user requested a pause on September 6. The working real 3D opening is saved and the local preview remains running. The latest visual feedback is unresolved: the user prefers the earlier generated computer image (`frontend/public/images/macintosh-render.png`) to the current live model presentation.
 
 Repository handoff: implementation checkpoint `e90b606` was fast-forwarded from `codex/review-tech-stack` into `main`, which is now checked out. No remote is configured. The research folders remain untracked; licensed source, Blender studies, and the exported model remain local and ignored. Preserve these local files when resuming or transferring the project.
 
-Resume with these priorities, within the opening scene:
+The following priorities described the old checkpoint and have now received the implementation pass above; the interaction correction above governs future work:
 
 1. Match the image's warm cream housing, soft highlights, lavender reflections, and darker glossy CRT. Controlled Blender studies indicate lighting and screen reflections are the main difference; existing authored normals are smooth, and bevel/normal-channel experiments did not improve the result.
 2. Make the computer the main focus through its framing and a quieter headline. Current composition still places a large headline on the left and the computer on the right.
