@@ -47,15 +47,15 @@ The first rendered pass was revised to compact Explore's hero, improve small-lab
 
 ## Screenshots
 
-The Explore before/after pairs use matching viewports. About is newly created, so its screenshots document the implementation rather than a prior-page comparison.
+The Explore before/after pairs use matching CSS viewports (1440 × 900 and 390 × 844). The browser exports JPEG captures with slightly different raster dimensions after scrollbar and display scaling; these are normal-size visual comparisons, not pixel-diff inputs. About is newly created, so its screenshots document the implementation rather than a prior-page comparison.
 
 | View | Before | Current |
 | --- | --- | --- |
-| Explore desktop | [Scaffold](screenshots/explore-before-desktop.png) | [Opening view](screenshots/explore-after-desktop.png) · [Grid](screenshots/explore-grid-desktop.png) |
-| Explore mobile | [Scaffold](screenshots/explore-before-mobile.png) | [Opening view](screenshots/explore-after-mobile.png) · [Grid](screenshots/explore-grid-mobile.png) |
-| About desktop | New page | [Opening view](screenshots/about-after-desktop.png) · [Story](screenshots/about-story-desktop.png) |
-| About mobile | New page | [Opening view](screenshots/about-after-mobile.png) · [Story](screenshots/about-story-mobile.png) |
-| Create | Revised dialog | [Desktop](screenshots/create-desktop.png) · [Mobile](screenshots/create-mobile.png) |
-| Opening | Naming and navigation only | [Desktop](screenshots/plum-opening-desktop.png) · [Mobile](screenshots/plum-opening-mobile.png) |
+| Explore desktop | [Scaffold](screenshots/explore-before-desktop.jpg) | [Opening view](screenshots/explore-after-desktop.jpg) · [Grid](screenshots/explore-grid-desktop.jpg) |
+| Explore mobile | [Scaffold](screenshots/explore-before-mobile.jpg) | [Opening view](screenshots/explore-after-mobile.jpg) · [Grid](screenshots/explore-grid-mobile.jpg) |
+| About desktop | New page | [Opening view](screenshots/about-after-desktop.jpg) · [Story](screenshots/about-story-desktop.jpg) |
+| About mobile | New page | [Opening view](screenshots/about-after-mobile.jpg) · [Story](screenshots/about-story-mobile.jpg) |
+| Create | Revised dialog | [Desktop](screenshots/create-desktop.jpg) · [Mobile](screenshots/create-mobile.jpg) |
+| Opening | Naming and navigation only | [Desktop](screenshots/plum-opening-desktop.jpg) · [Mobile](screenshots/plum-opening-mobile.jpg) |
 
 No deployment was performed. Work continues on `main`; Claude's next feature should branch from the updated remote main.
