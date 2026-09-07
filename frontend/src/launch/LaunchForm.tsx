@@ -4,14 +4,14 @@ import { describeIntent, formatBps, formatEth, gasAllowanceWei, isSettled, short
 import { sendPreparedTransaction, WalletError } from './wallet'
 import './launchLive.css'
 
-type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; walletAvailable: boolean; onConnect: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
+type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; connected: boolean; onConnect: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
 type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 
 const POLL_MS = 3000
 const ZERO = '0x0000000000000000000000000000000000000000'
 const nowSeconds = () => Math.floor(Date.now() / 1000)
 
-export default function LaunchForm({ session, config, connecting, walletAvailable, onConnect, onClose, onLaunched }: Props) {
+export default function LaunchForm({ session, config, connecting, connected, onConnect, onClose, onLaunched }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const nameInput = useRef<HTMLInputElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -180,7 +180,7 @@ export default function LaunchForm({ session, config, connecting, walletAvailabl
       </div>
       <div className="pad-form-foot">
         {!session
-          ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting || !walletAvailable}>{connecting ? 'Check your wallet…' : walletAvailable ? 'Connect wallet' : 'No wallet found'} <span aria-hidden="true">↗</span></button>
+          ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting}>{connecting ? 'Check your wallet…' : connected ? 'Sign in' : 'Connect wallet'} <span aria-hidden="true">↗</span></button>
           : stage === 'form' || stage === 'preparing'
             ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'} <span aria-hidden="true">↗</span></button>
             : stage === 'review' || stage === 'signing'
@@ -190,7 +190,7 @@ export default function LaunchForm({ session, config, connecting, walletAvailabl
               </>
               : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'} <span aria-hidden="true">↗</span></button>}
         <span className="pad-fine">
-          {!session ? walletAvailable ? 'Signing in is a free message signature. Nothing is sent to the chain until you confirm a transaction.' : 'Install a browser wallet such as MetaMask or Rabby, then reload this page.'
+          {!session ? 'Signing in is a free message signature. Nothing is sent to the chain until you confirm a transaction.'
             : stage === 'review' ? 'Your wallet shows the exact transaction. Plum only learns the hash.'
             : stage === 'tracking' ? 'You can close this window; the launch keeps settling on its own.'
             : 'Fees are read live from the Pons factory.'}

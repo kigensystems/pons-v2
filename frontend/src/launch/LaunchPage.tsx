@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
 import { api, type Launch } from './api'
+import { wagmiConfig } from './appkit'
 import LaunchForm from './LaunchForm'
 import TokenGrid, { type Filter } from './TokenGrid'
 import { PaperHeader, PaperFooter } from './PaperChrome'
@@ -7,8 +10,13 @@ import { useSession } from './useSession'
 import './launch.css'
 
 const REFRESH_MS = 30_000
+const queryClient = new QueryClient()
 
 export default function ExplorePage() {
+  return <WagmiProvider config={wagmiConfig}><QueryClientProvider client={queryClient}><ExploreDesk /></QueryClientProvider></WagmiProvider>
+}
+
+function ExploreDesk() {
   const wallet = useSession()
   const [launches, setLaunches] = useState<Launch[]>([])
   const [stats, setStats] = useState({ total: 0, confirmed: 0 })
@@ -18,8 +26,12 @@ export default function ExplorePage() {
   const [search, setSearch] = useState('')
   const [creating, setCreating] = useState(false)
   const [notice, setNotice] = useState('')
+  // The creation desk is a top-layer dialog, so it closes while the wallet picker is open and
+  // reopens once the sign-in it asked for lands.
+  const reopenDesk = useRef(false)
 
   useEffect(() => { document.title = 'Explore — Plum' }, [])
+  useEffect(() => { if (wallet.session && reopenDesk.current) { reopenDesk.current = false; setCreating(true) } }, [wallet.session])
 
   const load = useCallback(async () => {
     try {
@@ -42,7 +54,7 @@ export default function ExplorePage() {
 
   return (
     <div className="pad">
-      <PaperHeader page="explore" wallet={{ address: wallet.session?.address ?? null, connecting: wallet.connecting, available: wallet.walletAvailable, onConnect: () => void wallet.connect(), onDisconnect: () => void wallet.disconnect() }} onCreate={() => setCreating(true)} />
+      <PaperHeader page="explore" wallet={{ address: wallet.session?.address ?? wallet.address, signedIn: Boolean(wallet.session), connecting: wallet.connecting, onConnect: () => void wallet.connect(), onDisconnect: () => void wallet.disconnect() }} onCreate={() => setCreating(true)} />
       <main id="paper-main">
         <section className="pad-hero" aria-labelledby="pad-hero-title">
           <div className="pad-hero-copy">
@@ -97,7 +109,7 @@ export default function ExplorePage() {
         </aside>
       </main>
       <PaperFooter />
-      {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} walletAvailable={wallet.walletAvailable} onConnect={() => void wallet.connect()} onClose={() => setCreating(false)} onLaunched={intent => {
+      {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} connected={Boolean(wallet.address)} onConnect={() => { reopenDesk.current = true; setCreating(false); void wallet.connect() }} onClose={() => setCreating(false)} onLaunched={intent => {
         setNotice(`${intent.tokenParams.name} launched. It is now in the collection.`)
         setSearch(''); setFilter('all')
         void load()
