@@ -26,6 +26,7 @@ The first rendered pass was revised to compact Explore's hero, improve small-lab
 
 ## Prototype behavior
 
+- Future live Explore membership is limited to launches created through **Plum**, per the user's September 7 clarification. Provider recommendations and the proposed verified launch registry are in [Plum integration direction](PLUM-INTEGRATION.md); the current grid is still sample data.
 - All ten coins, prices, changes, curve states, addresses, and statistics are examples. No live market requests, wallet provider, signing, trading, deployment, fee claiming, or chain integration exists.
 - Search matches name, ticker, or displayed sample address, ignoring case and surrounding whitespace. Filters and search combine; empty results offer a working reset.
 - Connect enables a clearly labeled local demo state. Connecting does not submit a completed form. Add demo coin is a separate action.
