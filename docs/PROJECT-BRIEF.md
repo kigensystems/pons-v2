@@ -8,7 +8,7 @@ An independent companion to the Pons launchpad. The first audience, product task
 
 - Lead reference: [Shader](https://www.shader.se/).
 - Visual target: dreamy dark haze, retro computer graphics, warm luminous serif typography, convincing materials, and careful composition. Match the reference closely instead of inventing another visual direction.
-- Required object: the purchased Macintosh 512K by Shrednector, with its accurate upright CRT enclosure, keyboard, and mouse. See the source record below.
+- Current computer presentation: the original Macintosh artwork with live television fitted into its glass. The purchased Macintosh 512K by Shrednector and its 3D implementation remain preserved for comparison. See the source record below.
 - Supporting reference: [Oxigen](https://www.oxigen.sa/) for atmospheric depth; its voxel landscape is not an instruction to add a second scene or voxelize the Mac.
 - Current deliverable: the opening scene only. No scroll behavior or transitions. Subtle ambient movement can be considered within this scene, with a static reduced-motion presentation.
 - Logo: deferred; the user may develop it independently. All project naming in the scaffold is a working label.
@@ -26,7 +26,7 @@ The earlier treehouse3d Macintosh 128K lead has been superseded by the user's pu
 ## Technical decisions
 
 - React + TypeScript + Vite, using npm.
-- Three.js WebGPURenderer and TSL bloom, with WebGL 2 fallback. The single scene is owned by a React component with explicit resource cleanup. React Three Fiber remains installed but is not imported.
+- Active opening: original RGBA artwork plus a 2D canvas TV, aligned through an SVG transform and curved screen clip. No Three.js, GLB, or WebGPU renderer is loaded by this view. The preserved 3D implementation uses Three.js WebGPURenderer and TSL bloom, with WebGL 2 fallback and explicit resource cleanup.
 - Bound GPU work: 30-fps draw cap, desktop/mobile pixel-ratio caps of 1.5/1.25, 4096px maximum drawing-buffer dimension, low-resolution bloom, and rendering on load/resize/direct input while paused. A local test is not a guarantee for every device.
 - Eventual hosting: Netlify. Configuration is prepared locally; no site or deployment has been created.
 - A crypto data API will be added later. Mobula is only a possible provider. No API clients, credentials, requests, or speculative endpoints are needed now.
@@ -43,7 +43,11 @@ September 7 refinement after the user found the first loader too clean: a heavie
 
 ## Current opening study
 
-Latest September 7 request: commit the 3D atmosphere pass, then try the original image again. The 3D checkpoint is saved as `92048f0` and pushed. The active opening now uses the unchanged `frontend/public/images/macintosh-render.png` as the main artwork, with the revised green-charcoal fog and existing typography. It is a static comparison: no camera interaction, video playback, sound controls, live canvas, or scene-module import. Fog motion is paused too. The loader finishes when the image loads; failure exposes an image retry action. Separate image framing keeps the keyboard/mouse visible on desktop and mobile. The purchased model, source files, renderer, and video implementation remain preserved for possible return. This trial does not select a permanent rendering architecture or authorize deployment. Evidence: `docs/screenshots/image-study-desktop.jpg` and `image-study-mobile.jpg`.
+September 7 correction and CRT-light request: the image swap must retain the TV. The original image now contains the same four video channels, 240ms static transitions, and opt-in audio, with Play/Pause TV and sound controls restored. A renderer-independent playback controller supplies a 640 x 480 canvas aligned to the image's curved CRT using SVG. No live 3D model is needed for this version. The old Three.js scene uses a small texture adapter around the same controller, preserving its behavior for later comparison.
+
+The display has brighter phosphor color, bloom from a 160 x 120 copy of the actual video highlights, and light on the bezel and keyboard that follows the footage. An 8 x 6 sample at most five times per second drives bounded hue/intensity, eased between samples. The keyboard effect is a masked image composite, not a physical ray-traced reflection. Video/bloom updates are capped at 30fps; pause, reduced motion, hidden tabs, and unmount stop playback work. A paused image still emits the light of its frozen picture. Fog remains static. Failure of all clips shows NO SIGNAL; failure of the computer image stops/unmounts the TV and exposes Reload image. The loading-screen design, original artwork bytes, and mobile/desktop image framing remain unchanged.
+
+Historical image-only checkpoint: the 3D atmosphere pass was committed as `92048f0`, then the original artwork was restored in `f99363e`. That first swap mistakenly removed TV playback; the correction above restores it. Its static screenshots remain in `docs/screenshots/image-study-desktop.jpg` and `image-study-mobile.jpg`. Original artwork, purchased model/source files, and both presentation approaches remain preserved. No permanent architecture decision or deployment is implied.
 
 September 7 atmosphere checkpoint (supersedes the earlier typography-only restriction below): the user explicitly requested a closer, less angled Macintosh and better blending with Shader-like fog. The opening camera is now 14 degrees from front at 10 degrees elevation, with larger/higher desktop framing and tighter mobile spacing. Warm ivory nonmetallic plastic, neutral fill, restrained lavender rim/reflections, and reduced CRT reflection replace the stronger purple side. The green-charcoal room has stronger rear/foreground mist and a brighter warm-gray lower field; the diagonal desk seam is removed. The existing mist SVG now stretches without letterboxed hard edges. Broader bloom, subpixel red/blue separation, and monochrome grain connect the model and atmosphere. Geometry, source textures, loader, and interaction behavior remain. This is a saved study, not final aesthetic approval. See `SCENE-VALIDATION.md` and the atmosphere screenshots.
 

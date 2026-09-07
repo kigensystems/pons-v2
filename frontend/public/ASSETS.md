@@ -2,6 +2,8 @@
 
 ## Monitor channels
 
+The active image-based opening and preserved 3D scene share the same renderer-independent playback controller. The image version fits its 640 x 480 canvas into the artwork's glass with an SVG clip/transform. A 160 x 120 highlight copy supplies bloom; an 8 x 6 sampled average drives soft bezel and keyboard light. These are runtime composites; no source video or computer-image pixels were rewritten.
+
 - Files: `videos/channels/channel-01.mp4` through `channel-04.mp4`, and `videos/channels/channel-poster.jpg`.
 - Source: four user-supplied MP4 clips from the desktop `vlad-clips` folder, supplied for this local opening-scene study on September 7, 2026. The desktop originals are unchanged.
 - Author, original publication source, license, attribution requirements, and redistribution rights were not supplied and remain unknown. No public-use license is asserted. Public deployment and distribution remain deferred.

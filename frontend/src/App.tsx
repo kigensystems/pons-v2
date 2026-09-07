@@ -1,11 +1,28 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
+import ImageTelevision from './ImageTelevision'
 
 function App() {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(true)
   const [imageError, setImageError] = useState(false)
+  const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [hidden, setHidden] = useState(() => document.hidden)
+  const [sound, setSound] = useState(false)
+  const handleSoundBlocked = useCallback(() => setSound(false), [])
   const dismissLoading = useCallback(() => setLoading(false), [])
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const updateMotion = () => setPaused(preference.matches)
+    const updateVisibility = () => setHidden(document.hidden)
+    preference.addEventListener('change', updateMotion)
+    document.addEventListener('visibilitychange', updateVisibility)
+    return () => {
+      preference.removeEventListener('change', updateMotion)
+      document.removeEventListener('visibilitychange', updateVisibility)
+    }
+  }, [])
 
   return (
     <>
@@ -28,7 +45,7 @@ function App() {
         <img
           className="macintosh macintosh--still"
           src="/images/macintosh-render.png"
-          alt="Warm ivory Macintosh with a dark curved screen, keyboard, and mouse"
+          alt="Warm ivory Macintosh with keyboard and mouse"
           width="1536"
           height="1024"
           fetchPriority="high"
@@ -36,6 +53,7 @@ function App() {
           onLoad={() => setProgress(100)}
           onError={() => { setImageError(true); dismissLoading() }}
         />
+        {!imageError && <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />}
         {imageError && <div className="model-status">
           <p role="status">The Macintosh image could not load.</p>
           <button className="motion-button" type="button" onClick={() => window.location.reload()}>Reload image</button>
@@ -57,6 +75,14 @@ function App() {
         <div className="scene-note">
           <span className="scene-index">001 — THE OPENING</span>
           <span className="scene-caption">Somewhere between then and what’s next.</span>
+        </div>
+        <div className="tv-controls">
+          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>
+            {paused ? 'Play TV' : 'Pause TV'}
+          </button>
+          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={sound} onClick={() => setSound((value) => !value)}>
+            TV sound {sound ? 'on' : 'off'}
+          </button>
         </div>
       </footer>
     </main>
