@@ -4,6 +4,12 @@ A separate product complementing Pons. The working title is temporary. Current w
 
 Read [the project brief](docs/PROJECT-BRIEF.md) for the selected direction and [AGENTS.md](AGENTS.md) for working instructions.
 
+## Repository
+
+Private GitHub repository: [kigensystems/pons-v2](https://github.com/kigensystems/pons-v2). The local `origin` points there, and `main` tracks `origin/main`.
+
+The repository includes the committed application, documentation, and asset preparation scripts. Licensed source files, Blender studies, and the exported GLB remain local and ignored; `reports-examples/` and `reviews/` remain local and untracked. Restore the licensed model separately on a fresh checkout using [the asset instructions](assets/source/macintosh-512k/README.md).
+
 ## Local development
 
 Use Node.js 24 and npm. From this directory:

@@ -54,6 +54,8 @@ Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint 
 
 ## Current handoff and next visual pass
 
+Private GitHub remote: [kigensystems/pons-v2](https://github.com/kigensystems/pons-v2), configured as `origin` with `main` tracking `origin/main`. Committed project history is stored there. The licensed source/GLB, Blender studies, and untracked research folders remain local; cloning the repository alone does not restore those files. Hosting remains deferred.
+
 The implementation checkpoint is not final visual approval. The user still prefers the generated image, and passing technical checks does not resolve that feedback. The September 6 follow-up fixes an unintended native browser outline on mouse/touch selection; keyboard navigation retains its focus indicator, including after leaving and returning to the scene.
 
 The next priority is one focused lighting/material pass against `frontend/public/images/macintosh-render.png`, with the retained Blender `baseline` and `glass` studies and live Shader opening beside the actual browser render. The current CRT has a broad pale reflection across its upper half; refine its placement and intensity so the glass stays dark and the greeting remains readable. Improve the housing's soft highlight falloff and soften the lavender fill, which currently reads as a relatively uniform side color. Keep the purchased geometry and stationary-computer interaction.
@@ -64,7 +66,7 @@ Then refine mobile composition: the current portrait view leaves a large gap bet
 
 The user requested a pause on September 6. The working real 3D opening is saved and the local preview remains running. The latest visual feedback is unresolved: the user prefers the earlier generated computer image (`frontend/public/images/macintosh-render.png`) to the current live model presentation.
 
-Repository handoff: implementation checkpoint `e90b606` was fast-forwarded from `codex/review-tech-stack` into `main`, which is now checked out. No remote is configured. The research folders remain untracked; licensed source, Blender studies, and the exported model remain local and ignored. Preserve these local files when resuming or transferring the project.
+Repository handoff: implementation checkpoint `e90b606` was fast-forwarded from `codex/review-tech-stack` into `main`. No remote was configured at that checkpoint; the current remote is recorded above. The research folders remain untracked; licensed source, Blender studies, and the exported model remain local and ignored. Preserve these local files when resuming or transferring the project.
 
 The following priorities described the old checkpoint and have now received the implementation pass above; the interaction correction above governs future work:
 

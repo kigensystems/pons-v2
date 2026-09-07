@@ -52,7 +52,7 @@ Local development and local production preview only. The user's final interactio
 - Develop: `npm --prefix frontend run dev` at `http://127.0.0.1:5173/`.
 - Production: build, then `npm --prefix frontend run preview`. `?renderer=webgl` explicitly selects the fallback on either server.
 - Drag changes viewpoint; selecting the monitor focuses it and selecting again returns. Double-click resets. Keyboard behavior is described above.
-- Licensed GLB, purchased originals, and Blender studies remain local and ignored. `reports-examples/` and `reviews/` remain untouched and untracked. No remote is configured. No deployment, extra sections, scroll behavior, logo, or API integration was added.
+- Licensed GLB, purchased originals, and Blender studies remain local and ignored. `reports-examples/` and `reviews/` remain untouched and untracked. No remote was configured during this implementation pass; the later GitHub remote is recorded in `PROJECT-BRIEF.md`. No deployment, extra sections, scroll behavior, logo, or API integration was added.
 
 ## Earlier checkpoint — historical checks
 
