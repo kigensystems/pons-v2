@@ -1,0 +1,227 @@
+{
+  "checkedAt": "2026-09-07T12:07:57.224Z",
+  "mode": "read-only",
+  "networks": {
+    "mainnet": {
+      "expectedChainId": 4663,
+      "checks": [
+        {
+          "label": "eth_chainId",
+          "ok": true,
+          "elapsedMs": 88,
+          "value": 4663
+        },
+        {
+          "label": "latest block",
+          "ok": true,
+          "elapsedMs": 36,
+          "value": {
+            "number": 56821996,
+            "hex": "0x36308ec",
+            "hash": "0x74d4bdded7ff7b1d98d4afb8c725c2a17664b21fa3e80ae290b2f62378bc6492",
+            "timestamp": "2026-09-07T12:07:59.000Z",
+            "transactionCount": 9
+          }
+        },
+        {
+          "label": "eth_gasPrice",
+          "ok": true,
+          "elapsedMs": 35,
+          "value": {
+            "wei": "309050000"
+          }
+        },
+        {
+          "label": "code at documented mainnet factory address",
+          "ok": true,
+          "elapsedMs": 26,
+          "value": {
+            "address": "0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e",
+            "block": "0x36308ec",
+            "present": true,
+            "bytes": 24177,
+            "note": "Presence is not source-code verification"
+          }
+        },
+        {
+          "label": "code at documented mainnet launchAndBuy address",
+          "ok": true,
+          "elapsedMs": 21,
+          "value": {
+            "address": "0xe33E9E479dF8802cb0866d5d05258bEc4cF62948",
+            "block": "0x36308ec",
+            "present": true,
+            "bytes": 4416,
+            "note": "Presence is not source-code verification"
+          }
+        },
+        {
+          "label": "launchFee()",
+          "ok": true,
+          "elapsedMs": 30,
+          "value": {
+            "block": "0x36308ec",
+            "raw": "500000000000000"
+          }
+        },
+        {
+          "label": "launchEnabled()",
+          "ok": true,
+          "elapsedMs": 30,
+          "value": {
+            "block": "0x36308ec",
+            "raw": "1"
+          }
+        },
+        {
+          "label": "maxCreatorTaxBps()",
+          "ok": true,
+          "elapsedMs": 31,
+          "value": {
+            "block": "0x36308ec",
+            "raw": "1000"
+          }
+        },
+        {
+          "label": "launchConfigCount()",
+          "ok": true,
+          "elapsedMs": 32,
+          "value": {
+            "block": "0x36308ec",
+            "raw": "1"
+          }
+        },
+        {
+          "label": "canLaunch(arbitrary probe address)",
+          "ok": true,
+          "elapsedMs": 36,
+          "value": {
+            "block": "0x36308ec",
+            "probeAddress": "0x000000000000000000000000000000000000dEaD",
+            "raw": "1",
+            "note": "Read-only probe, not the user wallet; launch simulation remains untested"
+          }
+        },
+        {
+          "label": "getLaunchConfig(0)",
+          "ok": true,
+          "elapsedMs": 56,
+          "value": {
+            "block": "0x36308ec",
+            "configId": 0,
+            "supply": "1000000000000000000000000000",
+            "curveFeeBps": "100",
+            "phantomQuote": "1680000000000000000",
+            "graduationThreshold": "4200000000000000000",
+            "poolFee": "0",
+            "tickSpacing": "200",
+            "enabled": "1"
+          }
+        },
+        {
+          "label": "previewLaunchEconomics(0, native ETH)",
+          "ok": true,
+          "elapsedMs": 29,
+          "value": {
+            "block": "0x36308ec",
+            "expectedEconomics": "0xa9fc75d4203a33fe660e8fa32c74c3aa41c1fda4bf23d3a39b6bc22a1f8b1ca7"
+          }
+        },
+        {
+          "label": "reference legacy launch receipt",
+          "ok": true,
+          "elapsedMs": 17,
+          "value": {
+            "transactionHash": "0x1f54f25fec2d963dcb338ecb8b46a6eb123198a5c7a746d34cb2dbe78d074af8",
+            "blockNumber": "0x88c44e",
+            "blockHash": "0xd18718d02fe1da449333e477bc588a41e59b1fd169a2b945a14fb17339d684a3",
+            "status": "0x1",
+            "gasUsed": "7026539",
+            "logCount": 18
+          }
+        },
+        {
+          "label": "one-block historical factory logs",
+          "ok": true,
+          "elapsedMs": 17,
+          "value": {
+            "blockNumber": "0x88c44e",
+            "totalLogs": 2,
+            "matchingReferenceLogs": 2
+          }
+        }
+      ],
+      "httpRequests": 21,
+      "websocket": {
+        "ok": true,
+        "chainId": 4663,
+        "blockNumber": 56822001,
+        "blockHash": "0x566cd0a1e3ecaa38d4910d0c86188b699fcb83181e294ee7bbaa50e02d217ba3",
+        "elapsedMs": 97
+      }
+    },
+    "testnet": {
+      "expectedChainId": 46630,
+      "checks": [
+        {
+          "label": "eth_chainId",
+          "ok": true,
+          "elapsedMs": 53,
+          "value": 46630
+        },
+        {
+          "label": "latest block",
+          "ok": true,
+          "elapsedMs": 32,
+          "value": {
+            "number": 114842097,
+            "hex": "0x6d859f1",
+            "hash": "0x2a03184cd01f108552969984ddcc2b7e99a01717d3c5ac23f96529bc02adf831",
+            "timestamp": "2026-09-07T12:08:00.000Z",
+            "transactionCount": 2
+          }
+        },
+        {
+          "label": "eth_gasPrice",
+          "ok": true,
+          "elapsedMs": 35,
+          "value": {
+            "wei": "10000000"
+          }
+        },
+        {
+          "label": "code at documented mainnet factory address",
+          "ok": true,
+          "elapsedMs": 30,
+          "value": {
+            "address": "0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e",
+            "block": "0x6d859f1",
+            "present": false,
+            "bytes": 0,
+            "note": "Address reuse check; not a claimed testnet deployment"
+          }
+        },
+        {
+          "label": "code at documented mainnet launchAndBuy address",
+          "ok": true,
+          "elapsedMs": 30,
+          "value": {
+            "address": "0xe33E9E479dF8802cb0866d5d05258bEc4cF62948",
+            "block": "0x6d859f1",
+            "present": false,
+            "bytes": 0,
+            "note": "Address reuse check; not a claimed testnet deployment"
+          }
+        }
+      ],
+      "httpRequests": 5,
+      "websocket": {
+        "ok": true,
+        "chainId": 46630,
+        "blockNumber": 114842099,
+        "blockHash": "0xb0548a57e370ae56646cca4d3da4cbfc305b48196ce34ca4d7eb07fea17a8058",
+        "elapsedMs": 104
+      }
+    }
+  }
+}

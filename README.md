@@ -38,4 +38,4 @@ The build includes TypeScript checks. Lint uses Oxlint. Node's test runner check
 
 ## Hosting and future data
 
-`netlify.toml` configures Netlify to build `frontend/` and publish its `dist/` output with Node.js 24. No deployment has been performed. A future crypto API is planned, with provider selection and integration deferred.
+`netlify.toml` configures Netlify to build `frontend/` and publish its `dist/` output with Node.js 24. No deployment has been performed. Alchemy mainnet/testnet access has been checked and Mobula is the initial market-data candidate; the application integration remains to be built. See the [launch API report](docs/PLUM-INTEGRATION.md) for verified results, Plum-only Explore membership, provider costs and implementation requirements. Credentials belong only in the ignored root `.env`; [.env.example](.env.example) is a blank template.
