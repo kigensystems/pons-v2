@@ -1,7 +1,7 @@
-.about-intro { position: relative; isolation: isolate; overflow: hidden; color: #eae6d4; background: #080c09; }
-.about-lens-defs { position: absolute; width: 0; height: 0; }
-.about-tube { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 35px; min-height: 600px; padding: 72px max(48px, calc((100vw - 1200px) / 2)) 105px; border-radius: 0 0 34px 34px / 0 0 26px 26px; background: #17221b; filter: url(#about-lens); }
-.about-tube::before { content: ''; position: absolute; z-index: -2; inset: 0; border-radius: inherit; background: radial-gradient(ellipse at 75% 38%, #69705a5e 0, #263b2b60 31%, transparent 65%), linear-gradient(140deg, #1b2920, #101a14); }
+.about-intro { position: relative; isolation: isolate; overflow: hidden; color: #eae6d4; background: #17221b; }
+.about.pad::after { background: radial-gradient(ellipse at 50% 35%, transparent 55%, #4335280a); }
+.about-tube { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 35px; min-height: 600px; padding: 72px max(48px, calc((100vw - 1200px) / 2)) 105px; background: #17221b; }
+.about-tube::before { content: ''; position: absolute; z-index: -2; inset: 0; background: radial-gradient(ellipse at 75% 38%, #69705a5e 0, #263b2b60 31%, transparent 65%), linear-gradient(140deg, #1b2920, #101a14); }
 .about-intro .pad-kicker { color: #bbc4a6; font-size: 14px; margin-bottom: 25px; }
 .about-intro .pad-dot { background: #c2c9a0; box-shadow: 0 0 8px #d5e6b05c; }
 .about-intro h1 { font: 400 clamp(44px, 4.1vw, 62px)/1.14 var(--font-title); color: #efe9d7; letter-spacing: -.035em; text-shadow: 0 -.7px #a7c9f58c, 0 .8px #f2a3788c, 0 0 5px #f4dfb552, 0 0 22px #e6c99d38; }
@@ -14,11 +14,11 @@
 .about-computer-surface img { display: block; width: 100%; height: auto; filter: brightness(.77) saturate(.65) sepia(.08); }
 .about-computer-surface[data-ready] img { visibility: hidden; }
 .about-computer-surface canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.about-computer-bloom { mix-blend-mode: screen; opacity: .66; }
+.about-computer-bloom { inset: -12%; width: 124%; height: 124%; mix-blend-mode: screen; opacity: .6; }
 .about-computer figcaption { margin-top: 5px; text-align: center; color: #a1ab96; font: 13px/1.4 var(--mono); letter-spacing: .1em; }
 .about-hero-foot { position: absolute; bottom: 28px; left: max(48px, calc((100vw - 1200px) / 2)); right: max(48px, calc((100vw - 1200px) / 2)); display: flex; justify-content: space-between; padding-top: 18px; border-top: 1px solid #c4d1b32b; font: 13px/1.5 var(--mono); letter-spacing: .06em; color: #a5af9a; }
-.about-atmosphere { position: absolute; z-index: -1; pointer-events: none; inset: 0; border-radius: inherit; background: linear-gradient(175deg, transparent 15%, #b1bba309 45%, transparent 67%), radial-gradient(ellipse at 100% 15%, #c4ceb510, transparent 56%), radial-gradient(ellipse at 50% 50%, transparent 52%, #04070566 100%); }
-.about-grain { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; opacity: .5; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.about-atmosphere { position: absolute; z-index: -1; pointer-events: none; inset: 0; background: linear-gradient(175deg, transparent 15%, #b1bba309 45%, transparent 67%), radial-gradient(ellipse at 100% 15%, #c4ceb510, transparent 56%), radial-gradient(ellipse at 50% 50%, transparent 55%, #04070548 100%); }
+.about-grain { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; opacity: .38; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
 .about-editorial, .about-principles, .about-desk { max-width: 1248px; margin: auto; padding: 55px 24px 70px; }
 .about-section-label { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); margin-bottom: 44px; }
 .about-section-label .pad-kicker { font-size: 13px; }
@@ -66,7 +66,7 @@
   .about-edition-number { display: none; }
 }
 @media (max-width: 760px) {
-  .about-tube { grid-template-columns: 1fr; gap: 12px; padding: 36px 24px 90px; min-height: 0; border-radius: 0 0 22px 22px / 0 0 16px 16px; }
+  .about-tube { grid-template-columns: 1fr; gap: 12px; padding: 36px 24px 90px; min-height: 0; }
   .about-intro .pad-kicker { margin-bottom: 20px; font-size: 13px; }
   .about-intro h1 { font-size: clamp(30px, 8.3vw, 49px); }
   .about-intro-sub { font-size: 14px; margin: 20px 0 16px; }

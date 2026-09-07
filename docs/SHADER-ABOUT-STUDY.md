@@ -43,13 +43,18 @@ Reading: the dark reveal is loud (heavy grain, strong fringe, deep vignette, mot
 
 ## What transfers to Plum, and what does not
 
-Transfers as technique:
+Kept, after the user's review on September 7 ("grain, blur, dreamy retro vintage, nothing crazy"):
 
-- One shared surface for grain, so text and image feel like the same screen. Plum's `.pad` grain is a static overlay; a slow-moving noise that multiplies by (1 − luminance) would keep the paper clean and put grain in the dark hero.
-- Vertical-only chromatic fringe that grows with distance² from centre and is halved on type. Plum currently fakes this on the hero headline only, with fixed CSS text-shadows.
-- Loud effects on the dark hero, near-clean on the reading sections, with a real interpolation between the two rather than a hard section edge.
-- A slight warm bloom on highlights only, not a colour wash.
-- Lens curvature and vignette applied to the whole hero surface, including the headline, not just the image.
+- Fine gaussian grain over the dark hero, screen-blended so it stays in the shadows, low amplitude, drifting at 24fps from one device-resolution tile. It fades out where the paper begins.
+- A soft diffusion pass on the Macintosh and a warm bloom of its highlights that breathes on Shader's three-sine curve. The bloom layer overhangs the image so the halo is not cut flat.
+- A light vignette. The existing headline glow stays.
+
+Tried and removed at the user's request:
+
+- Scanlines. The `.pad` scanline overlay is switched off on About.
+- The vertical channel split on the Macintosh, drawn in strips, which read as CRT lines.
+- The SVG displacement lens over the whole hero, with its rounded tube corners.
+- Six cycling grain frames at 9fps, which strobed.
 
 Does not transfer:
 

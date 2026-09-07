@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { PaperHeader, PaperFooter } from '../launch/PaperChrome'
-import { AboutComputer, AboutGrain, AboutLens } from './AboutHeroSurface'
+import { AboutComputer, AboutGrain } from './AboutHeroSurface'
 import '../launch/launch.css'
 import './about.css'
 
@@ -11,7 +11,6 @@ export default function AboutPage() {
     <PaperHeader page="about" />
     <main id="paper-main">
       <section className="about-intro" aria-labelledby="about-title">
-        <AboutLens id="about-lens" />
         <div className="about-tube">
           <div className="about-intro-copy"><p className="pad-kicker"><span className="pad-dot" /> About Plum</p>
             <h1 id="about-title">Pons is winning.<br /><em>The edges are sharp.</em></h1>
