@@ -41,11 +41,7 @@ export function buildRouter(s: Services): Router {
     ctx.res.setHeader('Set-Cookie', setCookie)
     return { session }
   })
-  router.add('GET', '/api/auth/session', ctx => {
-    const session = s.auth.read(ctx)
-    if (!session) throw new HttpError(401, 'No session', 'unauthenticated')
-    return { session }
-  })
+  router.add('GET', '/api/auth/session', ctx => ({ session: s.auth.read(ctx) }))
   router.add('POST', '/api/auth/logout', ctx => {
     sameOrigin(ctx)
     ctx.res.setHeader('Set-Cookie', s.auth.logout(ctx))

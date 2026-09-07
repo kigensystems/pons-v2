@@ -41,7 +41,7 @@ test('health and launch-config are public; writes need same-origin and a session
   assert.equal((await api('/api/launch-intents', { method: 'POST', json: {}, origin: 'https://evil.example' })).status, 403)
   assert.equal((await api('/api/launch-intents', { method: 'POST', json: {}, origin: null })).status, 403)
   assert.equal((await api('/api/launch-intents', { method: 'POST', json: {} })).status, 401)
-  assert.equal((await api('/api/auth/session')).status, 401)
+  assert.equal((await api('/api/auth/session')).body.session, null)
   assert.equal((await api('/api/nope')).status, 404)
   assert.equal((await api('/api/health', { method: 'DELETE' })).status, 405)
 })
@@ -101,5 +101,5 @@ test('wallet sign-in, upload, intent, submission and registry listing work end t
   assert.equal((await api(`/api/launches/4663/${TOKEN}/candles?period=1h&from=1&to=2`)).status, 400)
 
   assert.equal((await api('/api/auth/logout', { method: 'POST', json: {} })).status, 200)
-  assert.equal((await api('/api/auth/session')).status, 401)
+  assert.equal((await api('/api/auth/session')).body.session, null)
 })
