@@ -15,13 +15,13 @@ export default function TokenGrid({ launches, loading, error, filter, search, vi
   })
 
   if (error && launches.length === 0) {
-    return <div className="pad-empty" role="status"><h3>The collection is out of reach.</h3><p>{error}</p><button type="button" className="pad-btn" onClick={onRetry}>Try again ↗</button></div>
+    return <div className="pad-empty" role="status"><h3>The collection is out of reach.</h3><p>{error}</p><button type="button" className="pad-btn" onClick={onRetry}>Try again</button></div>
   }
   if (loading && launches.length === 0) return <div className="pad-empty" role="status" aria-busy="true"><h3>Opening the collection…</h3><p>Reading Plum launches from the registry.</p></div>
   if (launches.length === 0) {
     return <div className="pad-empty" role="status"><h3>Nothing launched through Plum yet.</h3><p>Explore only lists coins created here. The first one could be yours.</p></div>
   }
-  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker, address or filter.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins ↗</button></div>
+  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker, address or filter.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
 
   return (
     <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
@@ -44,7 +44,7 @@ export default function TokenGrid({ launches, loading, error, filter, search, vi
               </div>
               <span className="pad-sr-only">{badge}{launch.protocolError ? `, ${launch.protocolError}` : ''}</span>
               <div className="pad-card-meta">
-                {launch.explorer ? <a className="pad-card-link" href={launch.explorer.token} target="_blank" rel="noreferrer" title={launch.token}>{shortAddress(launch.token)} ↗</a> : <span title={launch.token}>{shortAddress(launch.token)}</span>}
+                {launch.explorer ? <a className="pad-card-link" href={launch.explorer.token} target="_blank" rel="noreferrer" title={launch.token}>{shortAddress(launch.token)}</a> : <span title={launch.token}>{shortAddress(launch.token)}</span>}
                 <span>{launch.pairToken === '0x0000000000000000000000000000000000000000' ? 'ETH' : shortAddress(launch.pairToken)}</span>
                 <span>{relativeAge(launch.blockTime)}</span>
               </div>

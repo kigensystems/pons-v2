@@ -67,3 +67,12 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 ## Procedural graphics
 
 `images/mist.svg`, the inline grain filter, CRT content, softbox environment, and the small Macintosh line drawing are authored in this repository. The mist filter is static; the preserved scene can animate layer transforms rather than regenerating noise every frame. The active image comparison keeps all atmosphere motion paused and exposes no animation controls. The preserved 3D implementation supports reduced motion and keyboard playback.
+
+### ChicagoFLF — September 7, 2026
+
+- Control face for the Enter key, TV controls, Back to top, card badges, status code, and the loader copy, replacing VT323. Token `--font-ui` in `src/index.css`. Kickers and labels use Apple Garamond in tracked capitals.
+- File: `fonts/ChicagoFLF.ttf` (50,472 bytes, SHA-256 `b442111f37639e27572d9df0c5190e7480e6a7b01ec768aea47a154efab8d50d`), with the package README as `fonts/ChicagoFLF-README.txt`.
+- Author: Robin Casady (Casady & Greene), after Susan Kare's Chicago for Apple; version 2.0 metadata and Unicode repositioning by the Open Font Library uploader.
+- License: public domain, per the designer's statement reproduced in the README. Source: [Open Font Library](https://fontlibrary.org/en/font/chicagoflf), `chicagoflf.zip`, retrieved September 7, 2026, unchanged.
+- Same day, after approval: Instrument Serif and VT323 files and their OFL texts removed from `fonts/`. Their provenance entries below are historical.
+

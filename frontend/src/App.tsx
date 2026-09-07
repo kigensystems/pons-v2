@@ -71,16 +71,14 @@ function App() {
       <div className="vignette" aria-hidden="true" />
 
       <section className="intro" aria-labelledby="scene-title">
-        <p className="eyebrow"><span className="signal" /> A companion to Pons</p>
         <h1 id="scene-title">A familiar feeling.<br /><em>A new window.</em></h1>
-        <p className="intro-description">An independent companion to the Pons launchpad.<br className="desktop-break" /> A world of its own, beginning here.</p>
+        <p className="intro-description">An independent companion to the Pons launchpad.</p>
         <a className="enter-cue" href="/explore"><span className="enter-cue-key">↵</span> Enter</a>
       </section>
 
       <footer className="scene-footer">
         <div className="scene-note">
-          <span className="scene-index">001 — THE OPENING</span>
-          <span className="scene-caption">Somewhere between then and what’s next.</span>
+          <span className="scene-index">The opening</span>
         </div>
         <div className="tv-controls">
           <button className="tv-sound" type="button" disabled={imageError} aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>

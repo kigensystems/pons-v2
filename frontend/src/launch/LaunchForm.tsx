@@ -163,7 +163,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
           {stage === 'tracking' && intent && status && <div className="pad-status pad-wide" data-tone={status.tone} role="status" aria-live="polite">
             <strong>{status.tone === 'active' && <span className="pad-pulse" aria-hidden="true" />} {status.label}</strong>
             <p>{status.detail}</p>
-            {intent.launch && <p>Token <code>{intent.launch.token}</code>{explorer && <> · <a href={explorer} target="_blank" rel="noreferrer">View on Blockscout ↗</a></>}</p>}
+            {intent.launch && <p>Token <code>{intent.launch.token}</code>{explorer && <> · <a href={explorer} target="_blank" rel="noreferrer">View on Blockscout</a></>}</p>}
             {intent.submissions.at(-1) && <p className="pad-fine">Transaction <code>{shortAddress(intent.submissions.at(-1)!.transactionHash)}</code></p>}
           </div>}
         </div>
@@ -180,15 +180,15 @@ export default function LaunchForm({ session, config, connecting, connected, onC
       </div>
       <div className="pad-form-foot">
         {!session
-          ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting}>{connecting ? 'Check your wallet…' : connected ? 'Sign in' : 'Connect wallet'} <span aria-hidden="true">↗</span></button>
+          ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting}>{connecting ? 'Check your wallet…' : connected ? 'Sign in' : 'Connect wallet'}</button>
           : stage === 'form' || stage === 'preparing'
-            ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'} <span aria-hidden="true">↗</span></button>
+            ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'}</button>
             : stage === 'review' || stage === 'signing'
               ? <>
-                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)}>{stage === 'signing' ? 'Confirm in your wallet…' : 'Sign in wallet'} <span aria-hidden="true">↗</span></button>
+                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)}>{stage === 'signing' ? 'Confirm in your wallet…' : 'Sign in wallet'}</button>
                 <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={() => { setStage('form'); setIntent(null); setProblem('') }}>Edit</button>
               </>
-              : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'} <span aria-hidden="true">↗</span></button>}
+              : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'}</button>}
         <span className="pad-fine">
           {!session ? 'Signing in is a free message signature. Nothing is sent to the chain until you confirm a transaction.'
             : stage === 'review' ? 'Your wallet shows the exact transaction. Plum only learns the hash.'

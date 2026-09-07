@@ -34,7 +34,6 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
         <div className="loading-title" aria-hidden="true">Plum</div>
         <div className="loading-copy">
           <p role="status">{complete ? 'Welcome.' : 'Loading your companion...'}</p>
-          <p>Opening study 01</p>
         </div>
         <div
           className="loading-bar"
@@ -49,7 +48,7 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
             <span key={index} data-filled={index < Math.floor(progress * 21 / 100)} />
           ))}
         </div>
-        <p className="loading-footer">A companion to Pons. <span>A world of its own.</span></p>
+        <p className="loading-footer">A companion to Pons.</p>
         </div>
       </div>
     </div>

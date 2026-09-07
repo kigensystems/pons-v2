@@ -17,34 +17,33 @@ export default function AboutPage() {
             <p className="about-intro-sub">Plum is a second window on Pons launches.<br />What you’ll pay. What you’ve earned. Who’s real.</p>
             <a href="#our-story" className="about-story-link">Why we made it <span aria-hidden="true">↓</span></a>
           </div>
-          <figure className="about-computer"><AboutComputer src="/images/macintosh-render.png" alt="An ivory Macintosh with its keyboard and mouse in a softly lit green room" /><figcaption>A COMPANION / NOT A LAUNCHPAD</figcaption></figure>
-          <div className="about-hero-foot"><span>002 — ABOUT PLUM</span><span>Reads the chain. Says it plainly.</span></div>
+          <figure className="about-computer"><AboutComputer src="/images/macintosh-render.png" alt="An ivory Macintosh with its keyboard and mouse in a softly lit green room" /></figure>
           <div className="about-atmosphere" aria-hidden="true" />
         </div>
         <AboutGrain />
       </section>
 
       <section id="our-story" className="about-editorial" aria-labelledby="about-story">
-        <div className="about-section-label"><span className="pad-kicker">01 / Why Plum</span><span className="pad-kicker">On top of Pons. Not instead of it.</span></div>
+        <div className="about-section-label"><span className="pad-kicker">Why Plum</span><span className="pad-kicker">On top of Pons. Not instead of it.</span></div>
         <div className="about-columns">
           <div><h2 id="about-story">Nobody asked for<br />another <em>launchpad.</em></h2><p className="about-lede">They asked for the one they already use to stop hiding things.</p></div>
-          <div className="about-story-body"><p>Pons is the biggest pad on Robinhood chain, and people keep coming back to it. They also keep hitting the same walls. Gas that surprises you. Creator fees that read zero for a day. Coins that borrow a famous name and vanish.</p><p>Plum sits on top of all that. It doesn’t launch coins and it doesn’t hold your money. It reads the chain and tells you what it finds, in plain words, before you click.</p><p>Explore is the first piece: a place to browse what’s out there and try a demo coin.</p><a className="pad-link" href="/explore">Take a look around <span aria-hidden="true">↗</span></a></div>
+          <div className="about-story-body"><p>Pons is the biggest pad on Robinhood chain, and people keep coming back to it. They also keep hitting the same walls. Gas that surprises you. Creator fees that read zero for a day. Coins that borrow a famous name and vanish.</p><p>Plum sits on top of all that. It doesn’t launch coins and it doesn’t hold your money. It reads the chain and tells you what it finds, in plain words, before you click.</p><p>Explore is the first piece: a place to browse what’s out there and try a demo coin.</p><a className="pad-link" href="/explore">Take a look around</a></div>
         </div>
       </section>
 
       <div className="about-divider" aria-hidden="true"><span /><i /><span /></div>
 
       <section className="about-principles" aria-labelledby="about-principles-title">
-        <div className="about-principles-heading"><p className="pad-kicker">02 / Three rules</p><h2 id="about-principles-title">Chain truth.<br /><em>Plain words.</em></h2><p>We don’t bend these.</p></div>
+        <div className="about-principles-heading"><p className="pad-kicker">Three rules</p><h2 id="about-principles-title">Chain truth.<br /><em>Plain words.</em></h2><p>We don’t bend these.</p></div>
         <div className="about-principle-list">
-          <article><span>01</span><div><h3>Show the chain, not the guess.</h3><p>If a number comes from an indexer that’s behind, we say so. Zero means zero, never “still loading”.</p></div></article>
-          <article><span>02</span><div><h3>Say the cost before the click.</h3><p>Gas, platform fee, holder share. One line, in the asset you’re paying with, before you sign anything.</p></div></article>
-          <article><span>03</span><div><h3>Unverified means unverified.</h3><p>A famous name on a coin proves nothing. Until an account proves it’s theirs, we say so where you can’t miss it.</p></div></article>
+          <article><div><h3>Show the chain, not the guess.</h3><p>If a number comes from an indexer that’s behind, we say so. Zero means zero, never “still loading”.</p></div></article>
+          <article><div><h3>Say the cost before the click.</h3><p>Gas, platform fee, holder share. One line, in the asset you’re paying with, before you sign anything.</p></div></article>
+          <article><div><h3>Unverified means unverified.</h3><p>A famous name on a coin proves nothing. Until an account proves it’s theirs, we say so where you can’t miss it.</p></div></article>
         </div>
       </section>
 
       <section className="about-desk" aria-labelledby="about-desk-title">
-        <div className="about-section-label"><span className="pad-kicker">03 / On the desk</span><span className="pad-kicker">Nothing here is live yet.</span></div>
+        <div className="about-section-label"><span className="pad-kicker">On the desk</span><span className="pad-kicker">Nothing here is live yet.</span></div>
         <h2 id="about-desk-title">What we’re <em>building.</em></h2>
         <ul className="about-desk-list">
           <li><strong>Fee truth.</strong> Claimable, pending, claimed. With the transaction.</li>
@@ -54,8 +53,8 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <aside className="about-edition"><span className="pad-kicker">Early edition</span><p>The coins and figures on Explore are examples. There’s no live trading or wallet connection yet. Plum is independent and not affiliated with Pons or Robinhood.</p><span className="about-edition-number">No. 001</span></aside>
-      <section className="about-signoff" aria-labelledby="about-signoff-title"><p className="pad-kicker">Look before you click.</p><h2 id="about-signoff-title">See it <em>clearly.</em></h2><a className="pad-btn pad-btn--dark" href="/explore">Open Explore <span aria-hidden="true">↗</span></a></section>
+      <aside className="about-edition"><span className="pad-kicker">Early edition</span><p>The coins and figures on Explore are examples. There’s no live trading or wallet connection yet. Plum is independent and not affiliated with Pons or Robinhood.</p></aside>
+      <section className="about-signoff" aria-labelledby="about-signoff-title"><h2 id="about-signoff-title">See it <em>clearly.</em></h2><a className="pad-btn pad-btn--dark" href="/explore">Open Explore</a></section>
     </main>
     <PaperFooter />
   </div>

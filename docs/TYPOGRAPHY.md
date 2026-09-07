@@ -2,6 +2,8 @@
 
 September 7, 2026. Requested font update; screenshots document implementation, not user design approval.
 
+**Superseded the same evening.** Body copy moved to Apple Garamond, labels to Apple Garamond tracked capitals, controls to ChicagoFLF; Georgia, Instrument Serif, and VT323 are no longer used. The current system is in [DESIGN.md](../DESIGN.md); the sections below are the record of the titles-only step.
+
 ## Current: titles only
 
 The user clarified **Apple Garamond titles only**. The opening, Explore, About and creation-dialog headings, plus the loader title, use `--font-title`. Georgia returns for body copy, navigation, the Plum name and form controls; Instrument Serif returns for editorial details, card names and figures. VT323 terminal labels remain. Font sizes, layout and behavior are unchanged. No additional font family was adopted.
