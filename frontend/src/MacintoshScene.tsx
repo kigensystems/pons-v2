@@ -22,7 +22,7 @@ import {
   WebGPURenderer,
 } from 'three/webgpu'
 import type { Material, Texture } from 'three/webgpu'
-import { pass, vec4 } from 'three/tsl'
+import { pass, uniform, uv, vec4 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { fitCameraToPoints, getScreenFrame } from './sceneFraming'
@@ -31,7 +31,7 @@ import { createMonitorChannels } from './monitorChannels'
 // Baked once at startup: broad studio reflections without extra per-frame lights.
 function makeStudioEnvironment() {
   const studio = new Scene()
-  studio.background = new Color('#17151e')
+  studio.background = new Color('#20211f')
   const softbox = (position: Vector3, width: number, height: number, color: string, intensity: number) => {
     const panel = new Mesh(new PlaneGeometry(width, height), new MeshBasicMaterial({
       color: new Color(color).multiplyScalar(intensity),
@@ -40,9 +40,9 @@ function makeStudioEnvironment() {
     panel.lookAt(0, 1, 0)
     studio.add(panel)
   }
-  softbox(new Vector3(-3.8, 4, 5), 4, 5, '#fff0d9', 5)
-  softbox(new Vector3(-3, 1.6, 6), 2.4, 2.8, '#e9edff', 6)
-  softbox(new Vector3(4, 2.5, -2), 3, 5, '#b5a7ff', 3.5)
+  softbox(new Vector3(-3.8, 4, 5), 5, 5, '#fff0d9', 4.5)
+  softbox(new Vector3(-4, 2.8, 5), 1.5, 2.8, '#edf0ff', 3)
+  softbox(new Vector3(4, 3.5, -2), 3, 4, '#d4cce8', 2.2)
   softbox(new Vector3(0, 6, 0), 4, 3, '#fff2e2', 2)
   return studio
 }
@@ -113,14 +113,14 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
       const baseCamera = new Vector3(2.7, 2.45, 5.3)
       const lookAt = new Vector3(0, 0.86, 0)
       const overviewNormal = new Vector3()
-      const baseYaw = Math.atan2(2.5, 5.8)
-      const baseElevation = Math.atan2(1.35, Math.hypot(2.5, 5.8))
+      const baseYaw = MathUtils.degToRad(14)
+      const baseElevation = MathUtils.degToRad(10)
       const worldUp = new Vector3(0, 1, 0)
       camera.position.copy(baseCamera)
       camera.lookAt(lookAt)
       renderer.setClearColor(0x000000, 0)
       renderer.toneMapping = ACESFilmicToneMapping
-      renderer.toneMappingExposure = 0.95
+      renderer.toneMappingExposure = 1.02
       renderer.shadowMap.enabled = true
       let frame = 0
       let lastFrame = 0
@@ -130,6 +130,7 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
       let viewDirty = false
       let resizeObserver: ResizeObserver | undefined
       let pipeline: RenderPipeline | undefined
+      const colorShift = uniform(new Vector2())
       let disposePost = () => {}
       let disposeEnvironment = () => {}
       let ready = false
@@ -246,6 +247,8 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
         if (width < 1 || height < 1) return
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 540 ? 1.25 : 1.5, 4096 / Math.max(width, height)))
         renderer.setSize(width, height, false)
+        // Keep the analog fringe below one CSS pixel, including small screens.
+        colorShift.value.set((window.innerWidth <= 540 ? 0.35 : 0.7) / width, 0)
         camera.aspect = width / height
         camera.updateProjectionMatrix()
         fitView()
@@ -391,13 +394,13 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
         const environmentGenerator = new PMREMGenerator(renderer)
         const environment = environmentGenerator.fromScene(room, 0.04, 0.1, 100, { size: 128 })
         scene.environment = environment.texture
-        scene.environmentIntensity = 0.9
+        scene.environmentIntensity = 1.05
         disposeObject(room)
         environmentGenerator.dispose()
         disposeEnvironment = () => environment.dispose()
 
-        const hemisphere = new HemisphereLight('#e0dcea', '#211923', 0.45)
-        const warm = new DirectionalLight('#ffe7c5', 2.2)
+        const hemisphere = new HemisphereLight('#e8e6df', '#393b34', 0.7)
+        const warm = new DirectionalLight('#fff0d9', 2.4)
         warm.position.set(-3.5, 5, 4)
         warm.castShadow = true
         warm.shadow.mapSize.set(1024, 1024)
@@ -406,7 +409,7 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
         warm.shadow.camera.top = 4
         warm.shadow.camera.bottom = -4
         warm.shadow.normalBias = 0.025
-        const rim = new DirectionalLight('#b7b0ff', 1.8)
+        const rim = new DirectionalLight('#cec8e4', 1.05)
         rim.position.set(4, 3, -3)
         scene.add(hemisphere, warm, rim)
 
@@ -456,9 +459,9 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
               emissiveIntensity: 1.15,
               roughness: 0.14,
               metalness: 0,
-              clearcoat: 0.25,
+              clearcoat: 0.18,
               clearcoatRoughness: 0.12,
-              envMapIntensity: 2,
+              envMapIntensity: 0.75,
             })
             const oldMaterials = Array.isArray(object.material) ? object.material : [object.material]
             oldMaterials.forEach((material) => material.dispose())
@@ -467,9 +470,9 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
           } else {
             for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
               if (!(material instanceof MeshStandardMaterial)) continue
-              material.color.set('#fff5e7')
-              material.roughness = 0.82
-              material.metalness = 0.25
+              material.color.set('#fff8ec')
+              material.roughness = 0.72
+              material.metalness = 0
             }
           }
         })
@@ -477,10 +480,15 @@ export default function MacintoshScene({ active, sound, onSoundBlocked, onToggle
         fitView()
         const scenePass = pass(scene, camera)
         const color = scenePass.getTextureNode('output')
-        const glow = bloom(color, 0.34, 0.5, 0.95)
+        const glow = bloom(color, 0.46, 0.7, 0.72)
         glow.setResolutionScale(0.35)
+        // Sample the existing scene target, with no extra full-size render pass.
+        // Include shifted alpha so the colored silhouette is not cut off.
+        const red = color.sample(uv().add(colorShift))
+        const blue = color.sample(uv().sub(colorShift))
+        const analogColor = vec4(red.r, color.g, blue.b, color.a.max(red.a).max(blue.a))
         pipeline = new RenderPipeline(renderer)
-        pipeline.outputNode = vec4(color.rgb.add(glow.rgb), color.a.max(glow.r.mul(0.3)))
+        pipeline.outputNode = vec4(analogColor.rgb.add(glow.rgb), analogColor.a.max(glow.r.mul(0.4)))
         disposePost = () => { pipeline?.dispose(); glow.dispose(); scenePass.dispose() }
         ready = true
         canvas.dataset.model = 'macintosh-512k'

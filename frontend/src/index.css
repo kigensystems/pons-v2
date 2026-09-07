@@ -139,7 +139,7 @@ body:has(.loading-screen) { overflow: hidden; }
   background: #10120f;
 }
 .room, .vignette, .grain { position: absolute; inset: 0; pointer-events: none; }
-.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 80% 36%, #30353c 0%, #1b2226 31%, #131517 58%, #0e0f11 95%); }
+.room { z-index: -3; overflow: hidden; background: radial-gradient(ellipse at 72% 74%, #42433f 0%, #252c29 30%, #181d1b 53%, #111413 80%); }
 .window-light {
   position: absolute;
   width: 44%;
@@ -148,7 +148,7 @@ body:has(.loading-screen) { overflow: hidden; }
   top: -30%;
   background: #ced1a5;
   filter: blur(64px);
-  opacity: .19;
+  opacity: .11;
   transform: rotate(-33deg);
 }
 .window-frame {
@@ -160,24 +160,22 @@ body:has(.loading-screen) { overflow: hidden; }
   transform: rotate(-34deg);
   background: repeating-linear-gradient(90deg, transparent 0%, transparent 24%, #0d160e 24.5%, #0d160e 27%, transparent 29%);
   filter: blur(12px);
-  opacity: .45;
+  opacity: .16;
 }
 .desk {
   position: absolute;
-  inset: 57% -20% -30%;
-  transform: rotate(-8deg);
-  background: linear-gradient(180deg, #3c423321, #080e09 85%);
-  border-top: 1px solid #8a92751a;
-  box-shadow: 0 -4px 30px #bbc09907;
+  inset: 60% -20% -30%;
+  background: radial-gradient(ellipse at 65% 48%, #a29b8e26, #767a700f 45%, transparent 70%);
+  filter: blur(24px);
 }
 .room-haze {
   position: absolute;
-  width: 90%;
+  width: 120%;
   height: 70%;
-  right: -20%;
-  bottom: -30%;
+  right: -15%;
+  bottom: -18%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, #aec8a54a, #818c6b1a 40%, transparent 70%);
+  background: radial-gradient(ellipse, #c4b9b05c, #9b9c8626 40%, transparent 70%);
   filter: blur(45px);
   animation: haze-drift 24s ease-in-out infinite alternate;
 }
@@ -197,10 +195,10 @@ body:has(.loading-screen) { overflow: hidden; }
 .scene-object {
   position: absolute;
   z-index: 0;
-  width: 68%;
-  height: 87%;
-  left: 30%;
-  top: 1%;
+  width: 70%;
+  height: 90%;
+  left: 32%;
+  top: -2%;
 }
 .macintosh {
   display: block;
@@ -230,14 +228,16 @@ body:has(.loading-screen) { overflow: hidden; }
   z-index: 0;
   position: absolute;
   pointer-events: none;
-  inset: 67% -25% -45% 20%;
-  background: radial-gradient(ellipse, #b2b99a12 0%, #76877508 34%, transparent 64%);
-  filter: blur(45px);
+  inset: 53% -20% -25% 5%;
+  background: radial-gradient(ellipse, #c8beb13d 0%, #a29dad1c 34%, transparent 66%);
+  filter: blur(35px);
   animation: haze-drift 19s ease-in-out infinite alternate-reverse;
 }
 .grain {
-  z-index: 1;
-  opacity: .035;
+  z-index: 6;
+  opacity: .1;
+  filter: grayscale(1);
+  background-size: 180px 180px;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
 }
 .mist {
@@ -250,26 +250,26 @@ body:has(.loading-screen) { overflow: hidden; }
 }
 .mist--back {
   width: 120%;
-  height: 80%;
-  left: 8%;
-  top: 27%;
-  opacity: .2;
-  transform: rotate(-10deg);
+  height: 74%;
+  left: -3%;
+  top: 31%;
+  opacity: .48;
+  transform: rotate(-5deg);
   -webkit-mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
   mask-image: radial-gradient(ellipse, #000 10%, transparent 67%);
 }
 .mist--front {
   z-index: 0;
   width: 125%;
-  height: 38%;
+  height: 49%;
   left: -5%;
-  bottom: -11%;
-  opacity: .08;
+  bottom: -8%;
+  opacity: .38;
   animation-direction: alternate-reverse;
   -webkit-mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
   mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
 }
-.vignette { z-index: 2; background: linear-gradient(0deg, #0b100fd9, transparent 21%, transparent 83%, #0b100f66), radial-gradient(ellipse at 57% 47%, transparent 31%, #050d093d 79%, #050d0980); }
+.vignette { z-index: 2; background: linear-gradient(0deg, #10141273, transparent 17%, transparent 80%, #1014134d), radial-gradient(ellipse at 60% 54%, transparent 34%, #0c120e26 79%, #0c100d66); }
 .intro { position: absolute; z-index: 3; left: 6%; top: 38%; max-width: 33%; pointer-events: none; }
 .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 28px; font-size: 16px; text-transform: uppercase; letter-spacing: .12em; color: #ded4c5; font-family: 'VT323', monospace; text-shadow: 0 0 7px #f4dfb54d; }
 .signal { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #eadc9f; box-shadow: 0 0 8px #e5e79866; }
@@ -292,7 +292,7 @@ h1 em { font-weight: 400; }
 [data-motion='paused'] * { animation-play-state: paused !important; }
 @media (min-aspect-ratio: 19/10) and (min-width: 901px) {
   .opening { min-height: 560px; }
-  .scene-object { width: 65%; left: 32%; top: 4%; height: 82%; }
+  .scene-object { width: 68%; left: 33%; top: -1%; height: 88%; }
   .intro { top: 33%; }
 }
 @media (max-width: 900px) {
@@ -302,7 +302,7 @@ h1 em { font-weight: 400; }
   .intro { left: 7%; top: 14%; max-width: 85%; }
   h1 { font-size: clamp(36px, 5.5vw, 48px); }
   .intro-description { font-size: 14px; max-width: 300px; }
-  .scene-object { width: 100%; left: 0; top: 34%; height: 52%; }
+  .scene-object { width: 100%; left: 0; top: 33%; height: 57%; }
   .scene-footer { padding: 24px 6vw; }
   .scene-caption { max-width: 200px; line-height: 1.5; }
 }
@@ -316,14 +316,16 @@ h1 em { font-weight: 400; }
   .eyebrow { font-size: 13px; margin-bottom: 15px; letter-spacing: .12em; }
   h1 { font-size: clamp(30px, 8.5vw, 43px); line-height: 1.14; }
   .intro-description { font-size: 13px; line-height: 1.55; margin-top: 14px; max-width: 270px; }
-  .scene-object { width: 100%; left: 0; top: 37%; height: 49%; }
+  .scene-object { width: 100%; left: 0; top: max(36%, 302px); height: 44%; }
   .scene-footer { padding: 18px 6vw; align-items: center; gap: 10px; }
   .scene-note { gap: 0; }
   .scene-index { font-size: 12px; letter-spacing: .08em; }
   .scene-caption { display: none; }
   .motion-button { font-size: 10px; gap: 8px; padding: 0 11px; }
   .scene-controls { flex-direction: column; align-items: flex-end; gap: 6px; }
-  .foreground-haze { inset: 75% -70% -30% -50%; }
+  .foreground-haze { inset: 60% -50% -20% -50%; }
+  .mist--back { top: 40%; height: 60%; width: 160%; left: -30%; }
+  .mist--front { height: 38%; bottom: 0; opacity: .28; }
   .window-light { width: 90%; right: -20%; top: -10%; opacity: .1; }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -1,5 +1,14 @@
 # Macintosh opening scene validation
 
+## Softer atmosphere checkpoint — September 7, 2026
+
+- Compared live Shader, the supplied screenshot, the original generated Macintosh image, and rendered production desktop/mobile views. Reduced opening yaw/elevation to 14/10 degrees, softened ivory housing and lavender fill, reduced glass reflection, enlarged/repositioned the desktop scene, and tightened mobile spacing. Stronger layered mist exposed letterboxing in the original SVG; `preserveAspectRatio="none"` removes those hard fog boundaries. No purchased geometry or textures changed.
+- Grain now covers DOM and canvas, while broader bloom and a subpixel RGB offset run in the existing 3D composition pass. Shader's creator confirms grain, bloom, chromatic aberration, and canvas UI sharing the final graphics pipeline; the article does not establish its fog method. Our approach remains a layered approximation. [Creator's account](https://tympanus.net/codrops/2026/05/19/80s-business-tech-seamless-scene-transitions-inside-shader-ses-scroll-driven-webgpu-pipeline/).
+- Visually inspected 1440 x 900 desktop, the normal wide browser, and 390 x 844 mobile, including overview, monitor focus/return, and keyboard focus. Keyboard/mouse remain visible and mobile has no horizontal overflow. Evidence: [desktop](screenshots/atmosphere-desktop.jpg), [mobile](screenshots/atmosphere-mobile.jpg).
+- Production WebGPU and forced WebGL2 reached ready with no captured ordinary warnings/errors. The current reduced-motion preference started paused; explicit Play TV resumed video. Pause froze development frame count at 359 across separated reads. Hidden-tab behavior and asset-error recovery were unchanged and not manually retested.
+- Fresh development WebGPU samples at 1440 x 900 / pixel ratio 1 varied from 9.1 to 26.6 fps. This does not establish sustained 30 fps or a controlled before/after result. Existing frame/pixel-ratio caps, 35% bloom resolution, and 1024px shadow map remain. Physical-phone performance is unverified.
+- Node 24.19.0: build/TypeScript, Oxlint, all 19 existing tests, and diff whitespace checks pass. Existing large scene-chunk advisory remains (~260 KB gzip). No dependencies, new tests, or deployment.
+
 ## Landing-page typography and private transfer — September 7, 2026
 
 - Final scope follows the user's correction: typography only. The green room, fog artwork, lights/materials, camera layout, and scene code match the preceding committed version. The fuller serif and luminous text edges were compared against the live Shader reference; small technical labels use the already bundled VT323. No new font download or runtime dependency.
