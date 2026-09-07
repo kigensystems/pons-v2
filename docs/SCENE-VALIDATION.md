@@ -1,6 +1,23 @@
 # Macintosh opening scene validation
 
-## Current pass — September 6, 2026 follow-up
+## Current correction — September 6, 2026 pointer focus follow-up
+
+The user reported a white rectangular outline after clicking the computer. Reproduced in Chrome: the canvas had `data-input="pointer"` and matched `:focus-visible`, so excluding the custom keyboard rule still allowed the browser's native `outline: auto` to appear. The canvas now explicitly suppresses its default outline; the custom keyboard rule still applies. Clearing input modality on blur also restores the keyboard indicator when returning after mouse use.
+
+### Automated validation
+
+- Fresh build/TypeScript, Oxlint, all six existing geometry/framing tests, and `git diff --check` passed. The geometry tests do not validate CSS focus behavior; that was checked in the browser below.
+- Scene output is 258.08 KB gzip / 934.61 KB uncompressed. The existing bundle-size warning remains.
+
+### Visual and interaction validation
+
+- Inspected loaded desktop (1440 × 900) and mobile (390 × 844) scenes on WebGPU in development and WebGL2 in the freshly built production preview. Confirmed the reported backend in each case.
+- Mouse click, keyboard navigation back into the scene after a click/blur, and a subsequent mouse click were exercised. Pointer outline computed to `none`; keyboard re-entry retained the warm focus indicator. Screenshots confirmed the visual result.
+- Touching the actual CRT entered monitor focus without an outline on both backends. Escape returned to the computer, with a keyboard indicator; the next mouse click removed it. These actions worked with the atmosphere paused under reduced motion. Mobile had no horizontal overflow.
+- Revisited the live Shader opening and generated reference beside the local render. This correction does not complete the visual brief. The broad pale CRT reflection, relatively uniform lavender side lighting, and large mobile gap above the computer are recorded as next-pass priorities in `PROJECT-BRIEF.md`.
+- This was a focused outline/accessibility regression check. The hidden-tab, download-failure, GPU timing, and unchanged-model checks below are from the preceding implementation pass, not new measurements. Physical-phone testing remains outstanding.
+
+## Preceding implementation pass — September 6, 2026 follow-up
 
 Local development and local production preview only. The user's final interaction direction supersedes the earlier visible controls: the computer stays stationary, dragging changes the camera viewpoint, and the ordinary opening has no visible toolbar or pause button. Focus was pulled back to show the bezel and enclosure.
 
@@ -19,7 +36,7 @@ Local development and local production preview only. The user's final interactio
 - Confirmed both WebGPU and forced WebGL2 in the **production build** using the renderer's reported backend. Inspected desktop views on both and mobile views during development/production checks. Ordinary production rendering returned no browser warnings/errors before intentional download-failure tests.
 - With reduced motion enabled, the opening starts paused. Arrow keys and touch dragging changed the camera; the model's full world transform remained unchanged. Paused direct input advanced frame counts, then stopped drawing when idle. Yaw clamps at ±36°, elevation at ±12°; the keyboard positive-yaw clamp was exercised.
 - Touch selection hit the actual CRT, entered monitor view, and Escape returned to the computer. Focus after a changed viewpoint remained aligned to the screen; viewport resizing refit it. Screen geometry includes the real approximately 4.9° tilt, and its exported UVs place V=0 at the top. The final focus fit uses at most 46% of each viewport axis in normalized screen bounds, retaining space around the CRT.
-- Verified reset cancels an in-progress mouse drag. Screen-reader instructions and keyboard equivalents live in the DOM canvas. Enter toggles monitor focus, Escape/Home reset, and Space explicitly pauses/resumes atmosphere. Pointer input does not show the keyboard focus outline.
+- Verified reset cancels an in-progress mouse drag. Screen-reader instructions and keyboard equivalents live in the DOM canvas. Enter toggles monitor focus, Escape/Home reset, and Space explicitly pauses/resumes atmosphere. The original claim that pointer input never showed an outline was incorrect: the later user-reported case exposed Chrome's native focus ring. See the correction below.
 - A real hidden-tab check reported `document.hidden: true`, motion paused, and frame count **1165** unchanged across separated reads; showing it again resumed frames. The test browser's focus-emulation override was temporarily disabled for this check, then restored.
 - Deliberately blocked the production lazy scene module: the error boundary retained the still, displayed a readable message, and keyboard activation of **Reload 3D scene** restored live 3D after unblocking. Repeated this with the GLB request blocked; the scene's own fallback/reload path recovered too. Failure screenshots were inspected on mobile. All request blocking was removed afterward.
 

@@ -366,6 +366,8 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
           if (!event.repeat) toggleAtmosphereRef.current()
         }
       }
+      // Clear pointer modality on exit so Tab re-entry can show keyboard focus.
+      const clearInputModality = () => { delete canvas.dataset.input }
       const visibilityChanged = () => {
         if (document.hidden) { cancelDrag(); cancelAnimationFrame(frame); frame = 0 }
         else { lastTimestamp = performance.now(); invalidate() }
@@ -385,6 +387,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         canvas.removeEventListener('pointercancel', cancelDrag)
         canvas.removeEventListener('lostpointercapture', cancelDrag)
         canvas.removeEventListener('keydown', keyDown)
+        canvas.removeEventListener('blur', clearInputModality)
         canvas.removeEventListener('dblclick', resetView)
         cancelDrag()
         controllerRef.current = null
@@ -503,6 +506,7 @@ export default function MacintoshScene({ active, onToggleAtmosphere }: { active:
         canvas.addEventListener('pointercancel', cancelDrag)
         canvas.addEventListener('lostpointercapture', cancelDrag)
         canvas.addEventListener('keydown', keyDown)
+        canvas.addEventListener('blur', clearInputModality)
         canvas.addEventListener('dblclick', resetView)
         controllerRef.current = (playing) => {
           cancelAnimationFrame(frame)

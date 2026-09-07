@@ -52,6 +52,14 @@ The user asked for continual comparison with the real Shader site. Direct compar
 
 Validation is recorded in `docs/SCENE-VALIDATION.md`. Build/TypeScript and lint are separate from visual rendering and device checks.
 
+## Current handoff and next visual pass
+
+The implementation checkpoint is not final visual approval. The user still prefers the generated image, and passing technical checks does not resolve that feedback. The September 6 follow-up fixes an unintended native browser outline on mouse/touch selection; keyboard navigation retains its focus indicator, including after leaving and returning to the scene.
+
+The next priority is one focused lighting/material pass against `frontend/public/images/macintosh-render.png`, with the retained Blender `baseline` and `glass` studies and live Shader opening beside the actual browser render. The current CRT has a broad pale reflection across its upper half; refine its placement and intensity so the glass stays dark and the greeting remains readable. Improve the housing's soft highlight falloff and soften the lavender fill, which currently reads as a relatively uniform side color. Keep the purchased geometry and stationary-computer interaction.
+
+Then refine mobile composition: the current portrait view leaves a large gap between the copy and computer, weakening the Mac's prominence. Inspect overview and monitor focus together on desktop and mobile. Record actual visual differences separately from functional checks before calling that pass complete. No additional controls, sections, scrolling, logo, API work, or deployment are needed for these refinements.
+
 ## Historical paused checkpoint
 
 The user requested a pause on September 6. The working real 3D opening is saved and the local preview remains running. The latest visual feedback is unresolved: the user prefers the earlier generated computer image (`frontend/public/images/macintosh-render.png`) to the current live model presentation.
