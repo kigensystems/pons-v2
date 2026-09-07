@@ -31,9 +31,10 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
       </svg>
       <div className="loading-crt">
         <div className="loading-content">
-        <div className="loading-title" aria-hidden="true">Plum</div>
+        <div className="loading-lockup"><img className="loading-mark" src="/images/loading-mark.png" alt="" width="320" height="320" /><span className="loading-title">Plum</span></div>
         <div className="loading-copy">
-          <p role="status">{complete ? 'Welcome.' : 'Loading your companion...'}</p>
+          <p>Plum, Website</p>
+          <p role="status">{complete ? 'Welcome.' : 'Version 1.0'}</p>
         </div>
         <div
           className="loading-bar"
@@ -48,7 +49,7 @@ export default function LoadingScreen({ progress, complete, onExited }: Props) {
             <span key={index} data-filled={index < Math.floor(progress * 21 / 100)} />
           ))}
         </div>
-        <p className="loading-footer">A companion to Pons.</p>
+        <p className="loading-footer">Copyright (c) Plum, 2026. All Rights Reserved.</p>
         </div>
       </div>
     </div>
