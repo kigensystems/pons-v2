@@ -9,6 +9,7 @@ An independent companion to the Pons launchpad. The first audience, product task
 - Lead reference: [Shader](https://www.shader.se/).
 - Visual target: dreamy dark haze, retro computer graphics, warm luminous serif typography, convincing materials, and careful composition. Match the reference closely instead of inventing another visual direction.
 - Current computer presentation: the original Macintosh artwork with live television fitted into its glass. The purchased Macintosh 512K by Shrednector and its 3D implementation remain preserved for comparison. See the source record below.
+- Ground the image on a shared surface: retain solid keyboard/mouse edges, use aligned contact and soft cast shadows consistent with the baked upper-left light, and keep foreground fog light enough to reveal those contacts. Preserve the reactive CRT light and original artwork bytes.
 - Supporting reference: [Oxigen](https://www.oxigen.sa/) for atmospheric depth; its voxel landscape is not an instruction to add a second scene or voxelize the Mac.
 - Current deliverable: the opening scene only. No scroll behavior or transitions. Subtle ambient movement can be considered within this scene, with a static reduced-motion presentation.
 - Logo: deferred; the user may develop it independently. All project naming in the scaffold is a working label.

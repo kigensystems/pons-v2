@@ -165,7 +165,7 @@ body:has(.loading-screen) { overflow: hidden; }
 .desk {
   position: absolute;
   inset: 60% -20% -30%;
-  background: radial-gradient(ellipse at 65% 48%, #a29b8e26, #767a700f 45%, transparent 70%);
+  background: radial-gradient(ellipse at 65% 48%, #a29b8e38, #767a701c 45%, transparent 70%);
   filter: blur(24px);
 }
 .room-haze {
@@ -229,7 +229,7 @@ body:has(.loading-screen) { overflow: hidden; }
   position: absolute;
   pointer-events: none;
   inset: 53% -20% -25% 5%;
-  background: radial-gradient(ellipse, #c8beb13d 0%, #a29dad1c 34%, transparent 66%);
+  background: radial-gradient(ellipse, #c8beb11c 0%, #a29dad0d 34%, transparent 66%);
   filter: blur(35px);
   animation: haze-drift 19s ease-in-out infinite alternate-reverse;
 }
@@ -264,7 +264,7 @@ body:has(.loading-screen) { overflow: hidden; }
   height: 49%;
   left: -5%;
   bottom: -8%;
-  opacity: .38;
+  opacity: .18;
   animation-direction: alternate-reverse;
   -webkit-mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
   mask-image: radial-gradient(ellipse, #000 4%, transparent 64%);
@@ -325,7 +325,7 @@ h1 em { font-weight: 400; }
   .scene-controls { flex-direction: column; align-items: flex-end; gap: 6px; }
   .foreground-haze { inset: 60% -50% -20% -50%; }
   .mist--back { top: 40%; height: 60%; width: 160%; left: -30%; }
-  .mist--front { height: 38%; bottom: 0; opacity: .28; }
+  .mist--front { height: 38%; bottom: 0; opacity: .14; }
   .window-light { width: 90%; right: -20%; top: -10%; opacity: .1; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -334,7 +334,8 @@ h1 em { font-weight: 400; }
 
 /* The original artwork has a wider composition than the live model assembly. */
 .scene-object--still { width: 72%; left: 28.5%; top: 12%; height: 78%; }
-.macintosh--still { height: 100%; filter: saturate(.92); }
+.macintosh--still { height: 100%; filter: saturate(.92); -webkit-mask-image: none; mask-image: none; }
+.image-grounding { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; mix-blend-mode: multiply; }
 .image-television { --tv-light: #b4beff; --tv-glow: 0; --tv-spill: 0; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .image-tv-picture { opacity: .94; }
 .image-tv-canvas { display: block; width: 640px; height: 480px; filter: brightness(1.4) saturate(1.1); }

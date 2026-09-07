@@ -1,5 +1,12 @@
 # Macintosh opening scene validation
 
+## Grounded image composition — September 7, 2026
+
+- Removed the still artwork's inherited bottom fade, which erased keyboard/mouse contact edges. Added registered SVG shadows at three softness levels beneath the tower, keyboard, and mouse; the broad shadows extend down/right from the artwork's upper-left key. Strengthened the receiving surface slightly and reduced foreground fog wash while retaining rear mist. The SVG shares the artwork/TV viewBox and contain sizing. This is 2D compositing, not newly introduced 3D geometry.
+- Compared the actual production render with live Shader. Visually inspected the normal wide browser, 1440 x 900 desktop, and 390 x 844 mobile. Contact edges remain solid, shadows follow the objects at both sizes, and TV playback/glow remain visible. Mobile document width equals its 390px viewport. Evidence: [desktop](screenshots/image-grounding-desktop.jpg), [mobile](screenshots/image-grounding-mobile.jpg).
+- Reduced-motion startup retained the paused TV; Play and Pause still changed its visible state. Shadows are static SVG filters with no new update loop, dependencies, or assets. Original artwork and playback code are unchanged. No new GPU timing or physical-phone performance measurements were made.
+- Build/TypeScript and Oxlint passed. No new behavioral tests were added for the static visual layers. No deployment.
+
 ## Image-based television and reactive CRT light — September 7, 2026
 
 - Corrected the image swap to retain TV playback. The original artwork remains unchanged, while a 640 x 480 2D canvas plays the existing four clips inside an SVG path fitted to the curved glass. The same playback controller is shared with the preserved Three texture adapter; the active image view does not import Three.js or load the GLB.

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
 import ImageTelevision from './ImageTelevision'
+import ImageGrounding from './ImageGrounding'
 
 function App() {
   const [progress, setProgress] = useState(0)
@@ -53,7 +54,10 @@ function App() {
           onLoad={() => setProgress(100)}
           onError={() => { setImageError(true); dismissLoading() }}
         />
-        {!imageError && <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />}
+        {!imageError && <>
+          <ImageGrounding />
+          <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} />
+        </>}
         {imageError && <div className="model-status">
           <p role="status">The Macintosh image could not load.</p>
           <button className="motion-button" type="button" onClick={() => window.location.reload()}>Reload image</button>
