@@ -2,7 +2,7 @@
 
 ## Reuse in Plum's Explore and About pages
 
-The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; Explore uses CSS sepia/saturation grading and multiply blending, and About uses CSS brightness/saturation grading over a dark green background. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
+The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; About uses CSS brightness/saturation grading over a dark green background. Explore's hero used the same artwork with sepia grading and multiply blending until September 7, when it was replaced by the CRT close-up recorded below. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
 
 ## Monitor channels
 

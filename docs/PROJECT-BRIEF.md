@@ -29,7 +29,7 @@ Open decisions, in order: the headline pattern (proposal: keep the two-line ital
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
-- Explore and About use scoped styles, the shared type tokens in `index.css`, the existing artwork, and static grain. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
+- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the newest coin. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
 - Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, Play/Pause, and opt-in sound.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
