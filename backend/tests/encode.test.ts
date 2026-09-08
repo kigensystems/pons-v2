@@ -36,8 +36,11 @@ test('terms hash changes with any of chain, target, calldata or value', () => {
   assert.notEqual(transactionHashOfTerms(other), hash)
 })
 
-test('encoding refuses pair tokens, bad salts and out-of-range creator tax', () => {
-  assert.throws(() => encodeLaunchToken({ chainId: 4663, factory: FACTORY, params, launchConfigId: 0n, pairToken: creator.address, launchFee: 1n }), /native ETH/)
+test('encoding carries an ERC-20 pair and refuses bad salts and out-of-range creator tax', () => {
+  const paired = encodeLaunchToken({ chainId: 4663, factory: FACTORY, params, launchConfigId: 0n, pairToken: creator.address, launchFee: 1n })
+  assert.equal(decodeFunctionData({ abi: factoryAbi, data: paired.data }).args[2], creator.address)
+  assert.equal(paired.value, 1n)
+  assert.throws(() => encodeLaunchToken({ chainId: 4663, factory: FACTORY, params, launchConfigId: 0n, pairToken: '0x1234' as `0x${string}`, launchFee: 1n }), /pairToken/)
   assert.throws(() => encodeLaunchToken({ chainId: 4663, factory: FACTORY, params: { ...params, salt: '0x1234' }, launchConfigId: 0n, pairToken: zeroAddress, launchFee: 1n }), /salt/)
   assert.throws(() => encodeLaunchToken({ chainId: 4663, factory: FACTORY, params: { ...params, creatorTaxBps: 70_000 }, launchConfigId: 0n, pairToken: zeroAddress, launchFee: 1n }), /creatorTaxBps/)
 })

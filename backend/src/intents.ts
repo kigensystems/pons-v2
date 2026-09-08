@@ -15,6 +15,8 @@ export type SubmissionState = 'pending' | 'included' | 'reverted' | 'rejected' |
 
 export type Terms = {
   launchFeeWei: string
+  // The quote asset: ETH at the zero address, or an approved ERC-20. Threshold and phantom quote below are in its decimals.
+  pair: { address: Address; symbol: string; name: string; decimals: number }
   supply: string
   curveFeeBps: number
   creatorTaxBps: number
@@ -243,7 +245,9 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
       if (!/^[A-Z0-9]{1,12}$/.test(symbol)) throw new HttpError(400, 'symbol must be 1-12 upper-case letters or digits', 'invalid_symbol')
       const description = text(body.description, 'description', DESCRIPTION_MAX)
       const socials = socialsOf(body.socials)
-      if (body.pairToken !== undefined && body.pairToken !== zeroAddress) throw new HttpError(400, 'Only ETH pairs are available in this release', 'unsupported_pair')
+      const pairTokenRaw = body.pairToken === undefined || body.pairToken === null ? zeroAddress : body.pairToken
+      if (typeof pairTokenRaw !== 'string' || !isAddress(pairTokenRaw)) throw new HttpError(400, 'pairToken must be an address (the zero address for ETH)', 'invalid_pair')
+      const pairToken = getAddress(pairTokenRaw)
       if (body.initialBuyWei !== undefined && body.initialBuyWei !== '0') throw new HttpError(400, 'Initial buys are not available yet', 'unsupported_initial_buy')
       const buybackEnabled = body.buybackEnabled === undefined ? false : body.buybackEnabled
       if (typeof buybackEnabled !== 'boolean') throw new HttpError(400, 'buybackEnabled must be a boolean', 'invalid_buyback')
@@ -268,16 +272,27 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
       if ((creatorTaxBps as number) > settings.maxCreatorTaxBps) throw new HttpError(400, `creatorTaxBps exceeds the factory maximum of ${settings.maxCreatorTaxBps}`, 'creator_tax_too_high')
       if (!(await chain.canLaunch(address, settings.blockNumber))) throw new HttpError(409, 'This wallet is not eligible to launch on the factory right now', 'not_eligible')
 
+      // An ERC-20 pair prices the whole launch in that asset: its own threshold and phantom quote, and its own
+      // economics pin read at the same block as the rest of the terms. The creation fee stays in ETH.
+      let pair: Terms['pair'] = { address: zeroAddress, symbol: 'ETH', name: 'Ether', decimals: 18 }
+      let economics = { expected: launchConfig.expectedEconomicsEth, graduationThreshold: launchConfig.graduationThreshold, phantomQuote: launchConfig.phantomQuote }
+      if (pairToken !== zeroAddress) {
+        const approved = (await chain.pairTokens()).items.find(item => item.address.toLowerCase() === pairToken.toLowerCase())
+        if (!approved) throw new HttpError(400, 'That pair asset is not approved on the factory', 'unsupported_pair')
+        pair = { address: pairToken, symbol: approved.symbol, name: approved.name, decimals: approved.decimals }
+        economics = { expected: await chain.launchEconomics(BigInt(launchConfigId as number), pairToken, settings.blockNumber), graduationThreshold: approved.graduationThreshold, phantomQuote: approved.phantomQuote }
+      }
+
       const params: TokenParams = {
         name, symbol, logo, description, socials,
         creatorFeeRecipient: getAddress(feeRecipient), creatorTaxBps: creatorTaxBps as number, buybackEnabled,
-        expectedEconomics: launchConfig.expectedEconomicsEth, salt: `0x${randomBytes(32).toString('hex')}`,
+        expectedEconomics: economics.expected, salt: `0x${randomBytes(32).toString('hex')}`,
       }
-      const tx = encodeLaunchToken({ chainId: config.chainId, factory: config.factory, params, launchConfigId: BigInt(launchConfigId as number), pairToken: zeroAddress, launchFee: settings.launchFeeWei })
+      const tx = encodeLaunchToken({ chainId: config.chainId, factory: config.factory, params, launchConfigId: BigInt(launchConfigId as number), pairToken, launchFee: settings.launchFeeWei })
       const terms: Terms = {
-        launchFeeWei: settings.launchFeeWei.toString(), supply: launchConfig.supply.toString(), curveFeeBps: Number(launchConfig.curveFeeBps), creatorTaxBps: params.creatorTaxBps,
+        launchFeeWei: settings.launchFeeWei.toString(), pair, supply: launchConfig.supply.toString(), curveFeeBps: Number(launchConfig.curveFeeBps), creatorTaxBps: params.creatorTaxBps,
         totalTradeFeeBps: Number(launchConfig.curveFeeBps) + params.creatorTaxBps, maxCreatorTaxBps: settings.maxCreatorTaxBps,
-        graduationThresholdWei: launchConfig.graduationThreshold.toString(), phantomQuoteWei: launchConfig.phantomQuote.toString(),
+        graduationThresholdWei: economics.graduationThreshold.toString(), phantomQuoteWei: economics.phantomQuote.toString(),
         sourceBlock: Number(settings.blockNumber), sourceBlockHash: settings.blockHash, observedAt: settings.observedAt,
       }
       const simulation = await simulate(address, tx)
@@ -285,7 +300,7 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
       const created = now()
       try {
         insert.run(id, idempotencyKey, getAddress(address), config.chainId, tx.to, tx.data, tx.value.toString(), transactionHashOfTerms(tx), params.salt, params.expectedEconomics,
-          launchConfigId as number, zeroAddress, JSON.stringify(params), JSON.stringify(terms), JSON.stringify(simulation), Number(settings.blockNumber), created, created + config.intentTtlSeconds, created)
+          launchConfigId as number, pairToken.toLowerCase(), JSON.stringify(params), JSON.stringify(terms), JSON.stringify(simulation), Number(settings.blockNumber), created, created + config.intentTtlSeconds, created)
       } catch (error) {
         // A concurrent request with the same key won the race; return its intent.
         const raced = selectByKey.get(address, idempotencyKey) as IntentRow | undefined

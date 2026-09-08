@@ -14,8 +14,12 @@ export type LaunchConfigResponse = {
   launchEnabled: boolean
   maxCreatorTaxBps: number
   configs: { id: number; supply: string; curveFeeBps: string; enabled: boolean; graduationThreshold: string }[]
+  // ETH first (the zero address), then every ERC-20 the factory approves as a quote asset. Raw integers in each asset's decimals.
+  pairTokens: PairToken[]
   eligibility: { wallet: string; canLaunch: boolean } | null
 }
+
+export type PairToken = { address: `0x${string}`; symbol: string; name: string; decimals: number; phantomQuote: string; graduationThreshold: string }
 
 export type Simulation =
   | { ok: true; gas: string; maxFeePerGas: string; balanceWei: string; requiredWei: string }
@@ -33,7 +37,7 @@ export type Intent = {
   expiresAt: number
   transaction: { chainId: number; to: `0x${string}`; data: `0x${string}`; value: string }
   tokenParams: { name: string; symbol: string; logo: string; description: string; creatorTaxBps: number }
-  terms: { launchFeeWei: string; supply: string; curveFeeBps: number; creatorTaxBps: number; totalTradeFeeBps: number; sourceBlock: number; observedAt: number }
+  terms: { launchFeeWei: string; pair: { address: `0x${string}`; symbol: string; name: string; decimals: number }; supply: string; curveFeeBps: number; creatorTaxBps: number; totalTradeFeeBps: number; graduationThresholdWei: string; sourceBlock: number; observedAt: number }
   simulation: Simulation | null
   submissions: { transactionHash: `0x${string}`; state: string; detail: string | null }[]
   launch: { token: `0x${string}`; curve: `0x${string}`; transactionHash: `0x${string}`; blockNumber: number; confirmationState: string } | null

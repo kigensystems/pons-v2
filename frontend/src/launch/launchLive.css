@@ -37,3 +37,23 @@
 /* The CRT caption's one action: the featured coin's card. Same lettering as the caption, underlined as a link. */
 .pad-crt-locate { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
 .pad-crt-locate:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+/* The pair picker: a button showing the asset's mark and ticker, opening a searchable list of the same. */
+.pad-pair { position: relative; }
+.pad-pair-button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 2px; color: var(--ink); font: 15px/1.4 var(--body); text-align: left; cursor: pointer; }
+.pad-pair-button:disabled { cursor: default; color: var(--ink-3); }
+.pad-pair-button[aria-expanded='true'] { border-color: var(--ink-2); }
+.pad-pair-button svg { margin-left: auto; flex: 0 0 auto; color: var(--ink-2); transition: transform .15s; }
+.pad-pair-button[aria-expanded='true'] svg { transform: rotate(180deg); }
+.pad-pair-mark { width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%; border: 1px solid var(--line); background: var(--paper-3); object-fit: cover; display: inline-grid; place-items: center; font: 700 9px/1 var(--font-body); letter-spacing: .04em; color: var(--ink-2); overflow: hidden; }
+.pad-pair-menu { position: absolute; z-index: 6; left: 0; right: 0; top: calc(100% + 4px); background: var(--paper-2); border: 1px solid var(--ink-2); border-radius: 3px; box-shadow: 4px 6px 0 #15251b30; }
+.pad-pair-search { display: block; width: 100%; padding: 9px 10px; border: 0; border-bottom: 1px solid var(--line); border-radius: 3px 3px 0 0; background: var(--paper); color: var(--ink); font: 14px/1.4 var(--body); }
+.pad-pair-search::placeholder { color: var(--ink-3); }
+.pad-pair-list { max-height: 264px; overflow: auto; margin: 0; padding: 4px 0; list-style: none; }
+.pad-pair-group { padding: 9px 10px 3px; font: 11px/1.4 var(--font-body); text-transform: uppercase; letter-spacing: .14em; color: var(--ink-3); }
+.pad-pair-option { display: flex; align-items: center; gap: 10px; padding: 7px 10px; font: 15px/1.3 var(--body); color: var(--ink); cursor: pointer; }
+.pad-pair-option[data-active='true'] { background: var(--paper-3); }
+.pad-pair-option[aria-selected='true'] { font-weight: 700; }
+.pad-pair-empty { padding: 12px 10px; font: 13px/1.5 var(--body); color: var(--ink-2); }
+.pad-quote-line .pad-pair-mark { width: 16px; height: 16px; font-size: 7px; vertical-align: -3px; margin-right: 6px; }
+@media (prefers-reduced-motion: reduce) { .pad-pair-button svg { transition: none; } }

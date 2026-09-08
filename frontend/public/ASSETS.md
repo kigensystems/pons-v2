@@ -70,6 +70,12 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - The September 7 image comparison uses this unchanged file as the opening's main artwork. It also remains the fallback in the preserved live-model implementation. It is rendered artwork, not a downloaded or reconstructed 3D model. Small object details are illustrative and are not a dimensional reference. Do not describe it as an exact historical replica.
 - No third-party model or model license was used to produce this asset. No third-party license is asserted for the generated image. Apple/Macintosh marks depicted on the object are not the product's branding.
 
+## Pair marks — September 8, 2026
+
+- Files: `pairs/<ticker>.svg` for ETH and 55 approved pair assets (`pairs/usdg.png` is the one raster), 57 files, 388 KB together. Used only in the creation desk's "Paired with" picker and terms panel; each is drawn 24 px round.
+- Source: copied unchanged from pons's own launch form, `https://www.ponsfamily.com/pairs/<ticker>.svg` (`ethereum.svg` for ETH), retrieved September 8, 2026, at the user's direction after Robinhood's CDN and Mobula both returned one placeholder feather for every stock token. 24 of the SVGs wrap an embedded raster; none carries a script or an external reference.
+- The marks are the companies' and funds' own trademarks, shown to identify the stock or asset a launch is priced in. No licence from pons or from the mark owners is asserted. A pair the factory approves without a file here shows its ticker's first letters instead (`PairMark` in `src/launch/PairPicker.tsx`).
+
 ## Typography
 
 ### Apple Garamond — September 7, 2026

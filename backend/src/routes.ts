@@ -1,5 +1,6 @@
 // Route table. Every write requires a same-origin request and a wallet session; responses never carry
 // provider secrets or raw upstream errors.
+import { zeroAddress } from 'viem'
 import { HttpError, RateLimiter, Router, readBody, readJson, type Ctx } from './http.ts'
 import type { Config } from './config.ts'
 import type { ChainReader } from './chain/client.ts'
@@ -72,10 +73,16 @@ export function buildRouter(s: Services): Router {
   router.add('GET', '/api/launch-config', async ctx => {
     const chainId = Number(ctx.url.searchParams.get('chainId') ?? s.config.chainId)
     if (chainId !== s.config.chainId) throw new HttpError(404, `This server serves chain ${s.config.chainId}`, 'wrong_chain')
-    const settings = await s.chain.launchSettings()
+    const [settings, pairs] = await Promise.all([s.chain.launchSettings(), s.chain.pairTokens().catch(() => null)])
     const session = s.auth.read(ctx)
     const eligibility = session ? { wallet: session.address, canLaunch: await s.chain.canLaunch(session.address, settings.blockNumber) } : null
-    return { chainId, factory: s.config.factory, router: s.config.router, pairTokens: ['ETH'], initialBuy: 'unavailable', ...settings, eligibility }
+    // ETH first, then every approved ERC-20 pair; a failed pair read leaves ETH alone rather than failing the desk.
+    const eth = settings.configs[0]
+    const pairTokens = [
+      { address: zeroAddress, symbol: 'ETH', name: 'Ether', decimals: 18, phantomQuote: eth?.phantomQuote ?? 0n, graduationThreshold: eth?.graduationThreshold ?? 0n },
+      ...(pairs?.items ?? []),
+    ]
+    return { chainId, factory: s.config.factory, router: s.config.router, pairTokens, pairTokensObservedAt: pairs?.observedAt ?? null, initialBuy: 'unavailable', ...settings, eligibility }
   })
 
   router.add('POST', '/api/launch-intents', async ctx => {

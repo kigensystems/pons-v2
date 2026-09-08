@@ -150,7 +150,7 @@ This specifies application behavior, not implemented functionality.
 7. **Confirm independently.** Verify the receipt and input against the stored intent. A worker retries pending receipts with bounded backoff and reconciles replacement hashes. On success, store membership and show the token address and explorer link.
 8. **Enrich later.** Add the token to Explore after the chosen inclusion policy succeeds. Keep prices/volume unavailable until valid observations arrive; do not wait for Mobula discovery before acknowledging creation.
 
-Initial buy support should use the atomic launch-and-buy path once validated. Sequential creation and purchase are not equivalent. Do not offer the prototype's USDG/cbBTC choices until actual asset addresses and approved economics have been checked. Creator revenue and a proposed Plum platform fee are separate: no partner/referral payment or extra platform fee has been established.
+Initial buy support should use the atomic launch-and-buy path once validated. Sequential creation and purchase are not equivalent. Do not offer the prototype's USDG/cbBTC choices until actual asset addresses and approved economics have been checked (done September 8: the desk reads the approved set and each asset's economics from the factory itself). Creator revenue and a proposed Plum platform fee are separate: no partner/referral payment or extra platform fee has been established.
 
 ## 7. Plum-only launch membership
 
@@ -257,7 +257,7 @@ Frontend integration will need a wallet connector and ABI client, for example vi
 - Successful creation, signed transactions, live trading or creator fee claims.
 - Eligibility/gas simulation for the user's actual wallet and payload.
 - Verified source correspondence, closed audits or a production security review.
-- Actual pons testnet addresses or approved USDG/cbBTC addresses/economics.
+- Actual pons testnet addresses. (Approved pair addresses and economics are now read from the factory.)
 - Sustained reliability, archive completeness, reconnect recovery or failover.
 - Mobula v2 lifecycle completeness, streaming entitlement or account billing plan.
 - A Plum referral agreement, independently verifiable onchain Plum marker or permission to claim an official partnership.

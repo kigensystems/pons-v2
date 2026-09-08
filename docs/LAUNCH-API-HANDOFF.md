@@ -37,7 +37,7 @@ Public read-only fallback that worked this session without keys: `ROBINHOOD_RPC_
 - pons custom errors are declared without parameters; revert reasons with arguments surface as a selector only. Ask pons for the ABI JSON.
 - The onchain logo URI is `PLUM_PUBLIC_URL/api/uploads/<id>`. Local disk storage is development only; a real launch needs a durable public host or IPFS pin behind the existing `ImageStore` adapter.
 - `PLUM_CONFIRMATIONS` defaults to 12; Robinhood's finality depth is undocumented.
-- Initial buys and non-ETH pairs are refused by the API until validated; the router ABI is transcribed but unused.
+- Initial buys are refused by the API until validated; the router ABI is transcribed but unused. Non-ETH pairs are offered and encoded since September 8 (the approved list is folded from the factory's `PairTokenApprovalUpdated` events), but no pair-token launch has been signed with a real wallet.
 - Wallet discovery uses `window.ethereum` only; EIP-6963 would handle multiple extensions.
 - Rate limits are in-process memory; a multi-instance deployment needs a shared store.
 - Session verification for contract wallets goes through RPC (`verifySiweMessage`); only EOA signatures were tested offline.

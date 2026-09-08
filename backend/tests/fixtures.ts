@@ -1,9 +1,9 @@
 // Shared fakes: an in-memory ChainReader whose behaviour each test scripts, plus receipt builders.
-import { encodeAbiParameters, encodeEventTopics, keccak256, toHex, zeroAddress, type Address, type Hex } from 'viem'
+import { encodeAbiParameters, encodeEventTopics, getAddress, keccak256, toHex, zeroAddress, type Address, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { verifyMessage } from 'viem'
 import { factoryAbi } from '../src/chain/abi.ts'
-import type { ChainReader, LaunchSettings, LaunchedToken, Simulation } from '../src/chain/client.ts'
+import type { ChainReader, LaunchSettings, LaunchedToken, PairToken, Simulation } from '../src/chain/client.ts'
 import type { FetchedBlock, FetchedReceipt, FetchedTransaction } from '../src/chain/verify.ts'
 import type { Config } from '../src/config.ts'
 import { loadConfig } from '../src/config.ts'
@@ -15,6 +15,9 @@ export const STRANGER: Address = '0x000000000000000000000000000000000000dEaD'
 export const TOKEN: Address = '0x1111111111111111111111111111111111111111'
 export const CURVE: Address = '0x2222222222222222222222222222222222222222'
 export const ECONOMICS: Hex = '0xa9fc75d4203a33fe660e8fa32c74c3aa41c1fda4bf23d3a39b6bc22a1f8b1ca7'
+// NVIDIA's Robinhood token as the factory listed it on September 8, 2026, with its own economics pin.
+export const NVDA: PairToken = { address: getAddress('0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec'), symbol: 'NVDA', name: 'NVIDIA • Robinhood Token', decimals: 18, phantomQuote: 16_640_000_000_000_000_000n, graduationThreshold: 41_600_000_000_000_000_000n }
+export const NVDA_ECONOMICS: Hex = '0xca334db6301055305178e8e7c69b02407df457de6f5ef3be4e6bb19c1460e167'
 
 export function testConfig(overrides: Partial<Config> = {}): Config {
   return { ...loadConfig({
@@ -39,6 +42,7 @@ export type FakeChain = ChainReader & {
   blocks: Map<string, FetchedBlock>
   head: FetchedBlock
   tokens: Map<string, LaunchedToken>
+  pairs: PairToken[]
   calls: string[]
 }
 
@@ -47,8 +51,10 @@ export function fakeChain(chainId = 4663): FakeChain {
   const chain: FakeChain = {
     chainId, settings: structuredClone(settings), eligible: new Set([creator.address.toLowerCase()]),
     simulation: { ok: true, gas: 3_000_000n, maxFeePerGas: 400_000_000n, maxPriorityFeePerGas: 1n },
-    balances: new Map([[creator.address.toLowerCase(), 10n ** 18n]]), txs: new Map(), receipts: new Map(), blocks: new Map(), head, tokens: new Map(), calls: [],
+    balances: new Map([[creator.address.toLowerCase(), 10n ** 18n]]), txs: new Map(), receipts: new Map(), blocks: new Map(), head, tokens: new Map(), pairs: [structuredClone(NVDA)], calls: [],
     async latestBlock() { chain.calls.push('latestBlock'); return chain.head },
+    async pairTokens() { chain.calls.push('pairs'); return { blockNumber: chain.settings.blockNumber, observedAt: chain.settings.observedAt, items: chain.pairs } },
+    async launchEconomics(_id, pairToken) { chain.calls.push(`economics:${pairToken.slice(0, 8)}`); return pairToken === zeroAddress ? chain.settings.configs[0]!.expectedEconomicsEth : NVDA_ECONOMICS },
     async blockByNumber(number) { chain.calls.push(`block:${number}`); return chain.blocks.get(number.toString()) ?? null },
     async launchSettings() { chain.calls.push('settings'); return chain.settings },
     async canLaunch(account) { chain.calls.push('canLaunch'); return chain.eligible.has(account.toLowerCase()) },

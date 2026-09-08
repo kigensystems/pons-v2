@@ -3,13 +3,16 @@
 import { createPublicClient, http, webSocket, decodeErrorResult, BaseError, ContractFunctionRevertedError, CallExecutionError, HttpRequestError, type Address, type Hex, type PublicClient } from 'viem'
 import { robinhood, robinhoodTestnet } from 'viem/chains'
 import { verifySiweMessage } from 'viem/siwe'
-import { factoryAbi, PHASES } from './abi.ts'
+import { erc20Abi, factoryAbi, PHASES } from './abi.ts'
 import type { Config } from '../config.ts'
 import type { FetchedBlock, FetchedReceipt, FetchedTransaction } from './verify.ts'
 
 export type LaunchConfig = { id: number; supply: bigint; curveFeeBps: bigint; phantomQuote: bigint; graduationThreshold: bigint; poolFee: number; tickSpacing: number; enabled: boolean; expectedEconomicsEth: Hex }
 export type LaunchSettings = { blockNumber: bigint; blockHash: Hex; observedAt: number; launchFeeWei: bigint; launchEnabled: boolean; maxCreatorTaxBps: number; configs: LaunchConfig[] }
 export type Simulation = { ok: true; gas: bigint; maxFeePerGas: bigint; maxPriorityFeePerGas: bigint } | { ok: false; code: string; reason: string }
+// An ERC-20 the factory accepts as a launch's quote asset. Amounts are raw integers in the asset's own decimals.
+export type PairToken = { address: Address; symbol: string; name: string; decimals: number; phantomQuote: bigint; graduationThreshold: bigint }
+export type PairTokens = { blockNumber: bigint; observedAt: number; items: PairToken[] }
 export type LaunchedToken = { exists: boolean; phase: number; phaseName: string; curve: Address; deployer: Address; creatorFeeRecipient: Address; pairToken: Address; creatorTaxBps: number; buybackEnabled: boolean; graduationThreshold: bigint }
 
 export type ChainReader = {
@@ -17,6 +20,10 @@ export type ChainReader = {
   latestBlock(): Promise<FetchedBlock>
   blockByNumber(number: bigint): Promise<FetchedBlock | null>
   launchSettings(): Promise<LaunchSettings>
+  // Every pair asset the factory approves right now, named. ETH is not in the list; it is the zero address.
+  pairTokens(): Promise<PairTokens>
+  // The economics pin for a config and pair at a block; what launchToken must carry as expectedEconomics.
+  launchEconomics(launchConfigId: bigint, pairToken: Address, blockNumber: bigint): Promise<Hex>
   canLaunch(account: Address, blockNumber: bigint): Promise<boolean>
   simulate(tx: { account: Address; to: Address; data: Hex; value: bigint }): Promise<Simulation>
   balance(account: Address): Promise<bigint>
@@ -56,6 +63,10 @@ export function createChainReader(config: Config): ChainReader {
   const SETTINGS_STALE_MS = 60_000
   let settingsCache: { value: LaunchSettings; at: number } | null = null
   let settingsInflight: Promise<LaunchSettings> | null = null
+  const PAIRS_TTL_MS = 10 * 60_000
+  const PAIRS_STALE_MS = 6 * 60 * 60_000
+  let pairsCache: { value: PairTokens; at: number } | null = null
+  let pairsInflight: Promise<PairTokens> | null = null
   let feeCache: { value: { maxFeePerGas: bigint; maxPriorityFeePerGas: bigint }; until: number } | null = null
   let feeInflight: Promise<{ maxFeePerGas: bigint; maxPriorityFeePerGas: bigint }> | null = null
 
@@ -88,6 +99,32 @@ export function createChainReader(config: Config): ChainReader {
     return { blockNumber, blockHash: block.hash, observedAt: Number(block.timestamp), launchFeeWei, launchEnabled, maxCreatorTaxBps: Number(maxTax), configs }
   }
 
+  // The factory publishes no list of pair assets, only a switch per address and an event when it moves.
+  // Folding every PairTokenApprovalUpdated since deployment gives the approved set (58 events on
+  // mainnet in September 2026, one request on Alchemy); each survivor is then named and priced.
+  async function readPairTokens(): Promise<PairTokens> {
+    const block = await client.getBlock({ blockTag: 'latest' })
+    const blockNumber = block.number
+    const logs = await client.getLogs({ address: config.factory, event: factoryAbi.find(f => f.type === 'event' && f.name === 'PairTokenApprovalUpdated')!, fromBlock: 0n, toBlock: blockNumber })
+    const approved = new Map<string, Address>()
+    for (const log of logs) {
+      const address = log.args.pairToken!
+      if (log.args.approved) approved.set(address.toLowerCase(), address); else approved.delete(address.toLowerCase())
+    }
+    const items = await Promise.all([...approved.values()].map(async address => {
+      const token = { address, abi: erc20Abi } as const
+      const [economics, symbol, name] = await Promise.all([
+        limited(() => client.readContract({ ...factory, functionName: 'pairTokenEconomics', args: [address], blockNumber })),
+        limited(() => client.readContract({ ...token, functionName: 'symbol', blockNumber })).catch(() => ''),
+        limited(() => client.readContract({ ...token, functionName: 'name', blockNumber })).catch(() => ''),
+      ])
+      const [phantomQuote, graduationThreshold, decimals] = economics
+      return { address, symbol: symbol || address.slice(0, 8), name: name || '', decimals, phantomQuote, graduationThreshold }
+    }))
+    items.sort((a, b) => a.symbol.localeCompare(b.symbol))
+    return { blockNumber, observedAt: Number(block.timestamp), items }
+  }
+
   const toBlock = (b: { number: bigint | null; hash: Hex | null; timestamp: bigint }): FetchedBlock => ({ number: b.number!, hash: b.hash!, timestamp: b.timestamp })
 
   return {
@@ -111,6 +148,18 @@ export function createChainReader(config: Config): ChainReader {
         .finally(() => { settingsInflight = null })
       return settingsInflight
     },
+    // Approvals move rarely, so the list serves for ten minutes and a failed refresh keeps a copy up to six hours old.
+    pairTokens() {
+      const age = pairsCache ? Date.now() - pairsCache.at : Infinity
+      if (pairsCache && age < PAIRS_TTL_MS) return Promise.resolve(pairsCache.value)
+      if (pairsInflight) return pairsInflight
+      pairsInflight = readPairTokens()
+        .then(value => { pairsCache = { value, at: Date.now() }; return value })
+        .catch(error => { if (pairsCache && age < PAIRS_STALE_MS) return pairsCache.value; throw error })
+        .finally(() => { pairsInflight = null })
+      return pairsInflight
+    },
+    launchEconomics(launchConfigId, pairToken, blockNumber) { return limited(() => client.readContract({ ...factory, functionName: 'previewLaunchEconomics', args: [launchConfigId, pairToken], blockNumber })) },
     canLaunch(account, blockNumber) { return limited(() => client.readContract({ ...factory, functionName: 'canLaunch', args: [account], blockNumber })) },
     async simulate(tx) {
       try {

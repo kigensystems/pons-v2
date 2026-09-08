@@ -10,7 +10,7 @@ Updated September 8, 2026. What was implemented from the [integration report](PL
 | `backend/src/config.ts` | Environment loading with named errors; testnet needs explicit factory/router addresses |
 | `frontend/src/launch/appkit.ts` | Reown AppKit over wagmi: wallet picker, QR sign-in, network switching; sign-in itself stays in `wallet.ts` |
 | `backend/src/chain/abi.ts` | pons v2 fragments transcribed from the docs snapshot: three-argument `launchToken`, getters, `TokenLaunched`, router `launchAndBuy` |
-| `backend/src/chain/client.ts` | viem adapter: pinned settings reads, eligibility, gas/fee simulation, receipts, protocol state, SIWE verification |
+| `backend/src/chain/client.ts` | viem adapter: pinned settings reads, the approved pair-asset list (folded from `PairTokenApprovalUpdated`, cached ten minutes), eligibility, gas/fee simulation, receipts, protocol state, SIWE verification |
 | `backend/src/chain/encode.ts` | Pure calldata construction and the terms hash |
 | `backend/src/chain/verify.ts` | Pure receipt verification against a stored intent |
 | `backend/src/auth.ts` | EIP-4361 challenge/verify, hashed session cookie |
@@ -21,7 +21,7 @@ Updated September 8, 2026. What was implemented from the [integration report](PL
 | `backend/src/market/mobula.ts` | Cached, coalesced, retrying Mobula adapter; the pons-wide pulse feed; disabled without a key |
 | `backend/src/db.ts` | SQLite schema via `node:sqlite` (WAL, uniqueness constraints) |
 | `frontend/src/launch/api.ts`, `wallet.ts`, `useSession.ts` | Typed API client, injected-wallet access through viem, session hook |
-| `frontend/src/launch/LaunchForm.tsx`, `TokenGrid.tsx`, `LaunchPage.tsx`, `ExploreMonitor.tsx` | Describe → review → sign → track flow; registry-backed Explore; the CRT showing the latest graduation |
+| `frontend/src/launch/LaunchForm.tsx`, `PairPicker.tsx`, `TokenGrid.tsx`, `LaunchPage.tsx`, `ExploreMonitor.tsx` | Describe → review → sign → track flow with the pair-asset picker (mark and ticker, searchable); registry-backed Explore; the CRT showing the latest graduation |
 
 Shared files touched: `frontend/package.json` (adds `viem`), `frontend/vite.config.ts` (one proxy line so `/api` reaches the backend in development), `.env.example`, `.gitignore`.
 
@@ -91,7 +91,8 @@ Registry rows move from `included` to `confirmed` after `PLUM_CONFIRMATIONS` blo
 - The logo URI written onchain points at `PLUM_PUBLIC_URL`. For a real launch that must be a durable public host or an IPFS pin; the local disk adapter is development only.
 - `verifySiweMessage` for contract wallets depends on RPC; it was tested through Alchemy with an EOA (September 9), not with a contract wallet.
 - Mobula normalization is based on the documented field names and a fake server; no live Mobula call was made. The root `.env` arrived at the end of the session in the main checkout; see [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md).
-- Initial buys, pair tokens other than ETH and the router path are encoded in the ABI but refused by the API until validated on a fork or a real launch. pons publishes no testnet deployment.
+- Initial buys and the router path are encoded in the ABI but refused by the API until validated on a fork or a real launch. pons publishes no testnet deployment.
+- Pair tokens other than ETH (September 8): the desk offers every asset the factory approves, the API pins that pair's own `previewLaunchEconomics` and encodes it, and the backend tests cover it, but no pair-token launch has been signed with a real wallet yet. The transaction is the same single `launchToken` call with the fee as `msg.value`; the docs say a creator needs no balance or approval of the pair asset to launch.
 
 ## Recommended next steps
 

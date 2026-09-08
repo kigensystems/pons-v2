@@ -1,9 +1,22 @@
 // Display helpers for launch terms and registry cards. Amounts stay integers until they are shown.
-import { formatEther } from 'viem'
+import { formatEther, formatUnits } from 'viem'
 import type { Intent, IntentStatus, Launch, PonsCoin, Simulation } from './api'
 
 export function formatEth(wei: string | bigint, maxFraction = 6): string {
   const value = formatEther(BigInt(wei))
+  const [whole, fraction = ''] = value.split('.')
+  const trimmed = fraction.slice(0, maxFraction).replace(/0+$/, '')
+  return trimmed ? `${whole}.${trimmed}` : whole!
+}
+
+// Robinhood names its stock tokens "Apple • Robinhood Token"; the desk says Apple and groups them as stocks.
+const STOCK_SUFFIX = ' • Robinhood Token'
+export const isStock = (pair: { name: string }) => pair.name.endsWith(STOCK_SUFFIX)
+export const pairName = (pair: { name: string }) => isStock(pair) ? pair.name.slice(0, -STOCK_SUFFIX.length) : pair.name
+
+// An amount of a pair asset in its own decimals, trimmed the way formatEth trims wei.
+export function formatAmount(raw: string | bigint, decimals: number, maxFraction = 4): string {
+  const value = formatUnits(BigInt(raw), decimals)
   const [whole, fraction = ''] = value.split('.')
   const trimmed = fraction.slice(0, maxFraction).replace(/0+$/, '')
   return trimmed ? `${whole}.${trimmed}` : whole!

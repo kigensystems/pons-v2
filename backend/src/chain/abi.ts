@@ -75,6 +75,8 @@ export const factoryAbi = [
   { type: 'function', name: 'launchEnabled', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'bool' }] },
   { type: 'function', name: 'maxCreatorTaxBps', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'uint256' }] },
   { type: 'function', name: 'approvedPairTokens', stateMutability: 'view', inputs: [{ name: 'pairToken', type: 'address' }], outputs: [{ name: '', type: 'bool' }] },
+  { type: 'function', name: 'pairTokenEconomics', stateMutability: 'view', inputs: [{ name: 'pairToken', type: 'address' }],
+    outputs: [{ name: 'phantomQuote', type: 'uint256' }, { name: 'graduationThreshold', type: 'uint256' }, { name: 'decimals', type: 'uint8' }] },
   { type: 'function', name: 'canLaunch', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'bool' }] },
   { type: 'function', name: 'getLaunchedToken', stateMutability: 'view', inputs: [{ name: 'token', type: 'address' }],
     outputs: [{ name: '', type: 'tuple', components: launchedTokenComponents }] },
@@ -86,7 +88,18 @@ export const factoryAbi = [
     { name: 'launchConfigId', type: 'uint256', indexed: false },
     { name: 'graduationThreshold', type: 'uint256', indexed: false },
   ] },
+  // The owner's approval switch for a pair asset; the fold of every emission is the approved set.
+  { type: 'event', name: 'PairTokenApprovalUpdated', inputs: [
+    { name: 'pairToken', type: 'address', indexed: true },
+    { name: 'approved', type: 'bool', indexed: false },
+  ] },
   ...errors,
+] as const
+
+// Enough ERC-20 to name a pair asset. Decimals come from the factory's own economics record.
+export const erc20Abi = [
+  { type: 'function', name: 'symbol', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'string' }] },
+  { type: 'function', name: 'name', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'string' }] },
 ] as const
 
 export const routerAbi = [

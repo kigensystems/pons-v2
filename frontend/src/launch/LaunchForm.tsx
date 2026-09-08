@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { api, ApiError, type Intent, type LaunchConfigResponse, type Session } from './api'
-import { describeIntent, describeSimulationFailure, formatBps, formatEth, gasAllowanceWei, isSettled, shortAddress } from './launchModel'
+import { describeIntent, describeSimulationFailure, formatAmount, formatBps, formatEth, gasAllowanceWei, isSettled, isStock, shortAddress } from './launchModel'
+import PairPicker, { PairMark } from './PairPicker'
 import { sendPreparedTransaction, WalletError } from './wallet'
 import './launchLive.css'
 
@@ -10,8 +11,8 @@ type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 const POLL_MS = 2000
 // The draft outlives the dialog: the desk closes for the wallet picker, and a phone wallet can reload the page.
 const DRAFT_KEY = 'plum-desk-draft'
-type Draft = { name: string; ticker: string; description: string; website: string; creatorTax: string }
-const EMPTY_DRAFT: Draft = { name: '', ticker: '', description: '', website: '', creatorTax: '0' }
+type Draft = { name: string; ticker: string; description: string; website: string; creatorTax: string; pair: string }
+const EMPTY_DRAFT: Draft = { name: '', ticker: '', description: '', website: '', creatorTax: '0', pair: '0x0000000000000000000000000000000000000000' }
 function readDraft(): Draft {
   try {
     const raw = sessionStorage.getItem(DRAFT_KEY)
@@ -45,6 +46,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   const [preview, setPreview] = useState('')
   const [imageError, setImageError] = useState('')
   const [creatorTax, setCreatorTax] = useState(draft.creatorTax)
+  const [pair, setPair] = useState(draft.pair)
   const [stage, setStage] = useState<Stage>('form')
   const [intent, setIntent] = useState<Intent | null>(null)
   const [problem, setProblem] = useState('')
@@ -64,7 +66,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
     return () => { element?.close(); document.body.style.overflow = overflow; opener?.focus() }
   }, [])
 
-  useEffect(() => { writeDraft({ name, ticker, description, website, creatorTax }) }, [name, ticker, description, website, creatorTax])
+  useEffect(() => { writeDraft({ name, ticker, description, website, creatorTax, pair }) }, [name, ticker, description, website, creatorTax, pair])
 
   useEffect(() => {
     if (!preview) return
@@ -103,6 +105,12 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   const websiteValid = !website.trim() || /^https:\/\/\S+$/.test(website.trim())
   const tickerValid = /^[A-Z0-9]{1,12}$/.test(ticker)
   const gateOpen = Boolean(config?.launchEnabled && config.configs[0]?.enabled)
+  // A drafted pair the factory no longer lists falls back to ETH rather than blocking the desk.
+  const pairs = config?.pairTokens ?? []
+  const selectedPair = pairs.find(item => item.address.toLowerCase() === pair.toLowerCase()) ?? pairs[0] ?? null
+  const pairAddress = selectedPair?.address ?? ZERO
+  // The terms aside quotes the pair the intent pinned once one exists, else the pair being chosen.
+  const quotedPair = intent ? { ...intent.terms.pair, graduationThreshold: intent.terms.graduationThresholdWei } : selectedPair
   const eligible = config?.eligibility?.canLaunch ?? true
   const ready = Boolean(session && config && gateOpen && eligible && name.trim() && tickerValid && taxValid && websiteValid && !imageError)
 
@@ -118,7 +126,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
     setStage('preparing'); setProblem('')
     try {
       const upload = file ? await api.upload(file) : null
-      const body: Record<string, unknown> = { name: name.trim(), symbol: ticker, description: description.trim(), creatorTaxBps: taxBps, launchConfigId: 0, pairToken: ZERO, initialBuyWei: '0' }
+      const body: Record<string, unknown> = { name: name.trim(), symbol: ticker, description: description.trim(), creatorTaxBps: taxBps, launchConfigId: 0, pairToken: pairAddress, initialBuyWei: '0' }
       if (upload) body.logoUploadId = upload.id
       if (website.trim()) body.socials = { website: website.trim() }
       setIntent(await api.createIntent(crypto.randomUUID(), body))
@@ -190,13 +198,16 @@ export default function LaunchForm({ session, config, connecting, connected, onC
             {imageError && <p className="pad-error pad-wide" role="alert">{imageError}</p>}
             <label><span>Website <small>(optional)</small></span><input type="url" value={website} onChange={event => setWebsite(event.target.value)} placeholder="https://" disabled={busy} aria-invalid={website.trim() ? !websiteValid : undefined} aria-describedby={!websiteValid ? 'pad-website-error' : undefined} />{!websiteValid && <small className="pad-error" id="pad-website-error">Use a full address starting with https://</small>}</label>
             <label><span>Creator fee (%)</span><input type="number" min="0" max={maxTax / 100} step="0.01" inputMode="decimal" value={creatorTax} onChange={event => setCreatorTax(event.target.value)} disabled={busy} aria-invalid={!taxValid} aria-describedby={!taxValid ? 'pad-fee-error' : undefined} />{!taxValid && <small className="pad-error" id="pad-fee-error">Between 0% and {maxTax / 100}%, in steps of 0.01.</small>}</label>
-            <p className="pad-fine pad-wide">Paired with ETH. Initial buys and other pairs arrive once they are validated. The creator fee is fixed at launch and cannot be raised later.</p>
+            <div className="pad-wide pad-field"><span id="pad-pair-label">Paired with</span><PairPicker pairs={pairs} value={pairAddress} onChange={setPair} disabled={busy || !config} labelledBy="pad-pair-label" describedBy="pad-pair-help" /><small className="pad-fine" id="pad-pair-help">{selectedPair && selectedPair.address !== ZERO
+              ? `Graduates at ${formatAmount(selectedPair.graduationThreshold, selectedPair.decimals)} ${selectedPair.symbol}. Buyers spend ${selectedPair.symbol}, your fees arrive in it, and the coin's dollar price moves with ${isStock(selectedPair) ? 'the stock' : 'that asset'}. The creation fee is still paid in ETH.`
+              : `Graduates at ${selectedPair ? formatAmount(selectedPair.graduationThreshold, selectedPair.decimals) : '4.2'} ETH. Buyers spend ETH and your fees arrive in ETH.`}</small></div>
+            <p className="pad-fine pad-wide">Initial buys arrive once they are validated. The creator fee is fixed at launch and cannot be raised later.</p>
           </>}
 
           {(stage === 'review' || stage === 'signing') && intent && <div className="pad-review pad-wide">
             <div className="pad-review-card">
               {intent.tokenParams.logo ? <img src={intent.tokenParams.logo} alt="" /> : <div className="pad-review-mark" aria-hidden="true">{intent.tokenParams.symbol.slice(0, 2)}</div>}
-              <div><strong>{intent.tokenParams.name}</strong><span>${intent.tokenParams.symbol} · paired with ETH</span>{intent.tokenParams.description && <p>{intent.tokenParams.description}</p>}</div>
+              <div><strong>{intent.tokenParams.name}</strong><span>${intent.tokenParams.symbol} · paired with <PairMark symbol={intent.terms.pair.symbol} /> {intent.terms.pair.symbol}</span>{intent.tokenParams.description && <p>{intent.tokenParams.description}</p>}</div>
             </div>
             <p className="pad-fine">Terms were read from the factory at block {intent.terms.sourceBlock.toLocaleString('en-US')}. This quote expires in {Math.ceil(expiresIn / 60)} min; the wallet will show the same recipient, value and data.</p>
             {intent.simulation && !intent.simulation.ok && <p className="pad-error" role="alert">{describeSimulationFailure(intent.simulation)}</p>}
@@ -214,6 +225,8 @@ export default function LaunchForm({ session, config, connecting, connected, onC
           <Line label="Creation fee" value={config ? `${formatEth(config.launchFeeWei)} ETH` : '…'} />
           <Line label="Network gas" value={gasWei !== null ? `≤ ${formatEth(gasWei)} ETH` : shortfall ? `≤ ${formatEth(BigInt(shortfall.requiredWei!) - BigInt(intent!.transaction.value))} ETH` : intent ? 'Not estimated' : 'Estimated after review'} note={gasWei !== null || shortfall ? 'allowance at the current fee cap' : undefined} />
           <Line label="Initial buy" value="None" />
+          <Line label="Priced in" value={quotedPair ? <><PairMark symbol={quotedPair.symbol} />{quotedPair.symbol}</> : '…'} />
+          <Line label="Graduates at" value={quotedPair ? `${formatAmount(quotedPair.graduationThreshold, quotedPair.decimals)} ${quotedPair.symbol}` : '…'} />
           <Line label="Base trade fee" value={config?.configs[0] ? formatBps(Number(config.configs[0].curveFeeBps)) : '…'} />
           <Line label="Creator fee" value={taxValid ? formatBps(taxBps) : '—'} />
           <Line label="Total trade fee" value={config?.configs[0] && taxValid ? formatBps(Number(config.configs[0].curveFeeBps) + taxBps) : '—'} strong />
@@ -242,6 +255,6 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   </dialog>
 }
 
-function Line({ label, value, note, strong }: { label: string; value: string; note?: string; strong?: boolean }) {
+function Line({ label, value, note, strong }: { label: string; value: ReactNode; note?: string; strong?: boolean }) {
   return <div className="pad-quote-line" data-strong={strong}><dt>{label}</dt><dd>{value}{note && <small>{note}</small>}</dd></div>
 }

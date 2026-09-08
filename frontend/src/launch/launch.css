@@ -134,8 +134,8 @@
 .pad-close { width: 38px; height: 38px; flex: 0 0 auto; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 24px; cursor: pointer; }
 .pad-form-body { display: grid; grid-template-columns: 1.3fr 1fr; gap: 26px; padding: 23px 26px; }
 .pad-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 14px; }
-.pad-fields label { display: flex; flex-direction: column; gap: 7px; font-size: 14px; }
-.pad-fields label > span:first-child { color: var(--ink-2); }
+.pad-fields label, .pad-fields .pad-field { display: flex; flex-direction: column; gap: 7px; font-size: 14px; }
+.pad-fields label > span:first-child, .pad-fields .pad-field > span:first-child { color: var(--ink-2); }
 .pad-fields input, .pad-fields select, .pad-fields textarea { width: 100%; min-width: 0; padding: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 2px; color: var(--ink); font: 15px/1.4 var(--body); }
 .pad-fields textarea { resize: vertical; min-height: 80px; max-height: 200px; }
 .pad-fields input::placeholder, .pad-fields textarea::placeholder { color: var(--ink-3); }
@@ -151,7 +151,7 @@
 .pad-quote > .pad-kicker { padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
 .pad-quote dl { margin: 0; }
 .pad-quote-line { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px dotted var(--line); font-size: 12px; }
-.pad-quote-line dt { color: var(--ink-2); }
+.pad-quote-line dt { color: var(--ink-2); white-space: nowrap; }
 .pad-quote-line dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
 .pad-quote-line[data-strong='true'] { font-size: 15px; }
 .pad-quote-total { display: flex; flex-direction: column; gap: 6px; padding: 17px 0; }
