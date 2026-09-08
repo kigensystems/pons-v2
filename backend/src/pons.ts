@@ -29,6 +29,13 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
   let spot: Spotlight | null = null
   let inflight: Promise<PonsCoins> | null = null
   let spotInflight: Promise<Spotlight> | null = null
+  // A factory event asks for a read ahead of the TTL. Mobula indexes a graduation some seconds after
+  // the chain does, so the nudge reads now and again later; forced reads keep a minimum spacing.
+  let forced = false
+  let forcedAt = 0
+  let followUps: NodeJS.Timeout[] = []
+  const FORCE_GAP_SECONDS = 15
+  const FOLLOW_UP_MS = [20_000, 60_000]
 
   function present(coin: PulseCoin): PonsCoin {
     const key = coin.token.toLowerCase()
@@ -47,10 +54,24 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
   }
 
   function coins(): Promise<PonsCoins> {
-    if (feed && feed.status === 'ok' && feed.retrievedAt + ttl > clock()) return Promise.resolve(feed)
+    // A read in progress serves every caller; it is at least as fresh as the snapshot.
     if (inflight) return inflight
+    if (!forced && feed && feed.status === 'ok' && feed.retrievedAt + ttl > clock()) return Promise.resolve(feed)
+    forced = false
     inflight = refresh().then(snapshot => { feed = snapshot; return snapshot }).finally(() => { inflight = null })
     return inflight
+  }
+
+  function readAhead() {
+    if (clock() - forcedAt < FORCE_GAP_SECONDS) return
+    forcedAt = clock(); forced = true
+    void coins().catch(() => {})
+  }
+
+  function nudge() {
+    for (const timer of followUps) clearTimeout(timer)
+    followUps = FOLLOW_UP_MS.map(ms => { const timer = setTimeout(readAhead, ms); timer.unref(); return timer })
+    readAhead()
   }
 
   // Newest graduation first; a candidate the factory does not report as graduated is skipped.
@@ -68,6 +89,7 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
 
   return {
     coins,
+    nudge,
     // Confirmed once per snapshot; every viewer arriving during that read shares it.
     async spotlight(): Promise<Spotlight> {
       const list = await coins()

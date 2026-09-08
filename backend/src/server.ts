@@ -11,6 +11,7 @@ import { createLaunches } from './launches.ts'
 import { createPons } from './pons.ts'
 import { createMobula } from './market/mobula.ts'
 import { buildRouter, type Services } from './routes.ts'
+import { TOKEN_LAUNCHED_TOPIC } from './chain/verify.ts'
 
 export function createServices(config: Config, options: { chain?: ChainReader; dbPath?: string; fetch?: typeof fetch } = {}): Services & { db: ReturnType<typeof openDatabase>; market: ReturnType<typeof createMobula> } {
   const db = openDatabase(options.dbPath ?? config.dbPath)
@@ -70,11 +71,17 @@ if (import.meta.main) {
   }
   const services = createServices(config)
   const stop = services.intents.startWorker(config.reconcileIntervalMs)
+  // Live factory logs: a launch wakes the worker at once, anything else (graduations, config changes)
+  // asks the Pons feed to read ahead of its TTL. Polling continues underneath either way.
+  const unwatch = services.chain.watchFactory(({ topic }) => {
+    if (topic.toLowerCase() === TOKEN_LAUNCHED_TOPIC) void services.intents.reconcileAll()
+    else services.pons.nudge()
+  })
   const server = createServer(createHandler(buildRouter(services), { proxySecret: config.proxySecret }))
   server.listen(config.port, config.host, () => {
-    console.log(`Plum API listening on http://${config.host}:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}; proxy signature ${config.proxySecret ? 'required' : 'not required'}`)
+    console.log(`Plum API listening on http://${config.host}:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}; proxy signature ${config.proxySecret ? 'required' : 'not required'}; factory events ${config.rpcWsUrl ? 'streamed' : 'polled'}`)
   })
-  const shutdown = () => { stop(); server.close(); services.db.close(); process.exit(0) }
+  const shutdown = () => { stop(); unwatch(); server.close(); services.db.close(); process.exit(0) }
   process.on('SIGINT', shutdown)
   process.on('SIGTERM', shutdown)
 }

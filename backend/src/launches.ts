@@ -35,7 +35,7 @@ export function createLaunches(db: Db, chain: ChainReader, market: ReturnType<ty
   const stateCache = new Map<string, { value: LaunchedToken; until: number }>()
   const stateInflight = new Map<string, Promise<{ state: LaunchedToken | null; error: string | null }>>()
 
-  // One factory read per token per half minute, shared by every list request that arrives meanwhile.
+  // One factory read per token per fifteen seconds, shared by every list request that arrives meanwhile.
   function protocolState(token: Address): Promise<{ state: LaunchedToken | null; error: string | null }> {
     const key = token.toLowerCase()
     const hit = stateCache.get(key)
@@ -43,7 +43,7 @@ export function createLaunches(db: Db, chain: ChainReader, market: ReturnType<ty
     const pending = stateInflight.get(key)
     if (pending) return pending
     const job = chain.launchedToken(token)
-      .then(value => { stateCache.set(key, { value, until: Date.now() + 30_000 }); return { state: value, error: null } })
+      .then(value => { stateCache.set(key, { value, until: Date.now() + 15_000 }); return { state: value, error: null } })
       .catch(() => ({ state: hit?.value ?? null, error: 'Protocol state is temporarily unavailable' }))
       .finally(() => stateInflight.delete(key))
     stateInflight.set(key, job)

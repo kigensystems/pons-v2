@@ -60,6 +60,7 @@ export function fakeChain(chainId = 4663): FakeChain {
       return chain.tokens.get(token.toLowerCase()) ?? { exists: false, phase: 0, phaseName: 'NotGraduated', curve: zeroAddress, deployer: zeroAddress, creatorFeeRecipient: zeroAddress, pairToken: zeroAddress, creatorTaxBps: 0, buybackEnabled: false, graduationThreshold: 0n }
     },
     // Offline EOA verification stands in for the RPC-backed ERC-6492 check.
+    watchFactory() { return () => {} },
     async verifySiwe(message, signature) {
       const line = message.split('\n')[1] as Address
       return verifyMessage({ address: line, message, signature })

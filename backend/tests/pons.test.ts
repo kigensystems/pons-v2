@@ -107,3 +107,25 @@ test('the spotlight is the newest factory-confirmed graduation; failures keep th
   assert.equal((await silent.spotlight()).status, 'unavailable')
   assert.equal((await silent.coins()).items.length, 0)
 })
+
+test('a factory event reads the feed ahead of its TTL, with forced reads spaced out', async () => {
+  let clock = 1000
+  const db = openDatabase(':memory:')
+  const chain = fakeChain()
+  const bonded = (symbol: string) => ({ bonded: { data: [coin(A, symbol, '2026-09-07T22:07:38.000Z', { bonded: true, bonded_at: '2026-09-07T23:57:29.007Z' })] } })
+  const { fetchImpl, calls } = feed([{ status: 200, body: bonded('ONE') }, { status: 200, body: bonded('TWO') }, { status: 200, body: bonded('THREE') }])
+  const market = createMobula(db, { apiKey: 'secret', baseUrl: 'https://api.example', chainId: 4663, fetch: fetchImpl, now: () => clock })
+  const pons = createPons(db, chain, market, FACTORY, { now: () => clock, ttlSeconds: 30 })
+  assert.equal((await pons.coins()).items[0]!.symbol, 'ONE')
+  clock = 1005
+  assert.equal((await pons.coins()).items[0]!.symbol, 'ONE', 'inside the TTL the snapshot is reused')
+  pons.nudge()
+  assert.equal((await pons.coins()).items[0]!.symbol, 'TWO', 'a nudge reads again at once')
+  clock = 1010
+  pons.nudge()
+  assert.equal((await pons.coins()).items[0]!.symbol, 'TWO', 'a second nudge within the spacing is ignored')
+  clock = 1025
+  pons.nudge()
+  assert.equal((await pons.coins()).items[0]!.symbol, 'THREE')
+  assert.equal(calls.length, 3)
+})

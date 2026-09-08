@@ -7,7 +7,7 @@ import './launchLive.css'
 type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; connected: boolean; onConnect: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
 type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 
-const POLL_MS = 3000
+const POLL_MS = 2000
 const ZERO = '0x0000000000000000000000000000000000000000'
 const nowSeconds = () => Math.floor(Date.now() / 1000)
 

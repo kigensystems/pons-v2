@@ -1,6 +1,6 @@
 // Chain adapter. Everything the application needs from RPC goes through ChainReader so tests can
 // substitute a fake and so a provider change stays inside this file.
-import { createPublicClient, http, decodeErrorResult, BaseError, ContractFunctionRevertedError, CallExecutionError, HttpRequestError, type Address, type Hex, type PublicClient } from 'viem'
+import { createPublicClient, http, webSocket, decodeErrorResult, BaseError, ContractFunctionRevertedError, CallExecutionError, HttpRequestError, type Address, type Hex, type PublicClient } from 'viem'
 import { robinhood, robinhoodTestnet } from 'viem/chains'
 import { verifySiweMessage } from 'viem/siwe'
 import { factoryAbi, PHASES } from './abi.ts'
@@ -24,7 +24,10 @@ export type ChainReader = {
   receipt(hash: Hex): Promise<FetchedReceipt | null>
   launchedToken(token: Address): Promise<LaunchedToken>
   verifySiwe(message: string, signature: Hex): Promise<boolean>
+  // Streams every factory log as it is mined; returns the unsubscribe. A no-op without a WebSocket URL.
+  watchFactory(onLog: (log: FactoryLog) => void): () => void
 }
+export type FactoryLog = { topic: Hex; blockNumber: bigint }
 
 const RPC_CONCURRENCY = 8
 
@@ -146,6 +149,17 @@ export function createChainReader(config: Config): ChainReader {
         pairToken: t.pairToken, creatorTaxBps: t.creatorTaxBps, buybackEnabled: t.buybackEnabled, graduationThreshold: t.graduationThreshold }
     },
     verifySiwe(message, signature) { return limited(() => verifySiweMessage(client, { message, signature })) },
+    watchFactory(onLog) {
+      if (!config.rpcWsUrl) return () => {}
+      // The socket reconnects on its own; a dropped subscription only means the feed falls back to its
+      // polling cadence until the next log arrives.
+      const socket = createPublicClient({ chain, transport: webSocket(config.rpcWsUrl, { reconnect: { attempts: Number.POSITIVE_INFINITY, delay: 2000 }, keepAlive: true, timeout: 10_000 }) })
+      return socket.watchEvent({
+        address: config.factory,
+        onLogs: logs => { for (const log of logs) if (log.topics[0] && log.blockNumber !== null) onLog({ topic: log.topics[0], blockNumber: log.blockNumber }) },
+        onError: error => console.error('factory watch', error.message.replace(/wss?:\/\/\S+/g, '[endpoint]').slice(0, 160)),
+      })
+    },
   }
 }
 

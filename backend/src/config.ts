@@ -12,6 +12,7 @@ const MAINNET_ROUTER: Address = '0xe33E9E479dF8802cb0866d5d05258bEc4cF62948'
 export type Config = {
   chainId: number
   rpcUrl: string
+  rpcWsUrl: string | null
   factory: Address
   router: Address
   host: string
@@ -69,6 +70,19 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     throw new ConfigError(`${rpcKey} must use https (or a local fork on 127.0.0.1)`)
   }
 
+  // Factory events arrive over a WebSocket when the provider offers one. PLUM_RPC_WS_URL sets it
+  // explicitly; an Alchemy HTTPS URL implies its wss twin; anything else runs on polling alone.
+  const wsRaw = read(env, 'PLUM_RPC_WS_URL')
+  let rpcWsUrl: string | null = null
+  if (wsRaw) {
+    let parsedWs: URL
+    try { parsedWs = new URL(wsRaw) } catch { throw new ConfigError('PLUM_RPC_WS_URL is not a URL') }
+    if (parsedWs.protocol !== 'wss:' && parsedWs.hostname !== '127.0.0.1' && parsedWs.hostname !== 'localhost') throw new ConfigError('PLUM_RPC_WS_URL must use wss')
+    rpcWsUrl = wsRaw
+  } else if (parsedRpc.protocol === 'https:' && parsedRpc.hostname.endsWith('.g.alchemy.com')) {
+    rpcWsUrl = `wss://${parsedRpc.host}${parsedRpc.pathname}`
+  }
+
   const sessionSecret = read(env, 'SESSION_SECRET')
   if (!sessionSecret || sessionSecret.length < 32) throw new ConfigError('SESSION_SECRET must be at least 32 characters')
 
@@ -79,6 +93,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   return {
     chainId,
     rpcUrl,
+    rpcWsUrl,
     factory: address(env, 'PLUM_FACTORY_ADDRESS', mainnet ? MAINNET_FACTORY : undefined),
     router: address(env, 'PLUM_ROUTER_ADDRESS', mainnet ? MAINNET_ROUTER : undefined),
     // Loopback for development; a container sets PLUM_HOST=0.0.0.0 so the platform can reach it.
@@ -95,7 +110,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     uploadDir: read(env, 'PLUM_UPLOAD_DIR') ?? new URL('../data/uploads', import.meta.url).pathname,
     mobulaApiKey: read(env, 'MOBULA_API_KEY') ?? null,
     mobulaBaseUrl: read(env, 'MOBULA_BASE_URL') ?? 'https://api.mobula.io',
-    reconcileIntervalMs: integer(env, 'PLUM_RECONCILE_INTERVAL_MS', 5000, 500),
+    reconcileIntervalMs: integer(env, 'PLUM_RECONCILE_INTERVAL_MS', 2000, 500),
     // Set to the same value as the Netlify signed-proxy token: every request except /api/health must
     // then carry Netlify's x-nf-sign signature, so the API cannot be reached around the proxy.
     proxySecret: read(env, 'PLUM_PROXY_SECRET') ?? null,

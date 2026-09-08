@@ -11,7 +11,7 @@ import { useSession } from './useSession'
 import { arrangeCoins, coinFromLaunch, coinFromPons, type Sort } from './launchModel'
 import './launch.css'
 
-const REFRESH_MS = 30_000
+const REFRESH_MS = 15_000
 const queryClient = new QueryClient()
 
 export default function ExplorePage() {
