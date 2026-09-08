@@ -29,7 +29,7 @@ export type Terms = {
 
 export type SimulationRecord =
   | { ok: true; gas: string; maxFeePerGas: string; maxPriorityFeePerGas: string; balanceWei: string; requiredWei: string; shortfallWei: string; simulatedAt: number }
-  | { ok: false; code: string; reason: string; balanceWei: string | null; simulatedAt: number }
+  | { ok: false; code: string; reason: string; balanceWei: string | null; requiredWei?: string; shortfallWei?: string; simulatedAt: number }
 
 type IntentRow = {
   id: string; idempotency_key: string; address: string; chain_id: number; target: string; calldata: string; value_wei: string; params_hash: string; salt: string
@@ -127,7 +127,7 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
     result.gas = result.gas + (result.gas * GAS_BUFFER_PCT) / 100n
     const required = tx.value + result.gas * result.maxFeePerGas
     const shortfall = balance === null ? 0n : required > balance ? required - balance : 0n
-    if (shortfall > 0n) return { ok: false, code: 'insufficient_funds', reason: 'Wallet balance cannot cover the creation fee plus gas', balanceWei: balance!.toString(), simulatedAt: now() }
+    if (shortfall > 0n) return { ok: false, code: 'insufficient_funds', reason: 'Wallet balance cannot cover the creation fee plus gas', balanceWei: balance!.toString(), requiredWei: required.toString(), shortfallWei: shortfall.toString(), simulatedAt: now() }
     return { ok: true, gas: result.gas.toString(), maxFeePerGas: result.maxFeePerGas.toString(), maxPriorityFeePerGas: result.maxPriorityFeePerGas.toString(),
       balanceWei: balance === null ? '' : balance.toString(), requiredWei: required.toString(), shortfallWei: '0', simulatedAt: now() }
   }

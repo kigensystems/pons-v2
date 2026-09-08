@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { api, ApiError, type Intent, type LaunchConfigResponse, type Session } from './api'
-import { describeIntent, formatBps, formatEth, gasAllowanceWei, isSettled, shortAddress } from './launchModel'
+import { describeIntent, describeSimulationFailure, formatBps, formatEth, gasAllowanceWei, isSettled, shortAddress } from './launchModel'
 import { sendPreparedTransaction, WalletError } from './wallet'
 import './launchLive.css'
 
@@ -134,6 +134,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
 
   const expiresIn = intent ? Math.max(0, intent.expiresAt - now) : 0
   const gasWei = gasAllowanceWei(intent?.simulation ?? null)
+  const shortfall = intent?.simulation && !intent.simulation.ok && intent.simulation.code === 'insufficient_funds' && intent.simulation.requiredWei ? intent.simulation : null
   const status = intent ? describeIntent(intent.status, intent.failure) : null
   const busy = stage === 'preparing' || stage === 'signing'
   const explorer = intent?.launch && config ? `${config.chainId === 4663 ? 'https://robinhoodchain.blockscout.com' : 'https://explorer.testnet.chain.robinhood.com'}/token/${intent.launch.token}` : null
@@ -173,7 +174,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
               <div><strong>{intent.tokenParams.name}</strong><span>${intent.tokenParams.symbol} · paired with ETH</span>{intent.tokenParams.description && <p>{intent.tokenParams.description}</p>}</div>
             </div>
             <p className="pad-fine">Terms were read from the factory at block {intent.terms.sourceBlock.toLocaleString('en-US')}. This quote expires in {Math.ceil(expiresIn / 60)} min; the wallet will show the same recipient, value and data.</p>
-            {intent.simulation && !intent.simulation.ok && <p className="pad-error" role="alert">Simulation failed: {intent.simulation.reason}</p>}
+            {intent.simulation && !intent.simulation.ok && <p className="pad-error" role="alert">{describeSimulationFailure(intent.simulation)}</p>}
           </div>}
 
           {stage === 'tracking' && intent && status && <div className="pad-status pad-wide" data-tone={status.tone} role="status" aria-live="polite">
@@ -186,13 +187,13 @@ export default function LaunchForm({ session, config, connecting, connected, onC
 
         <aside className="pad-quote" aria-label="Launch terms"><p className="pad-kicker">{intent ? 'Your terms' : 'Live terms'}</p><dl>
           <Line label="Creation fee" value={config ? `${formatEth(config.launchFeeWei)} ETH` : '…'} />
-          <Line label="Network gas" value={gasWei !== null ? `≤ ${formatEth(gasWei)} ETH` : intent ? 'Not estimated' : 'Estimated after review'} note={gasWei !== null ? 'allowance at the current fee cap' : undefined} />
+          <Line label="Network gas" value={gasWei !== null ? `≤ ${formatEth(gasWei)} ETH` : shortfall ? `≤ ${formatEth(BigInt(shortfall.requiredWei!) - BigInt(intent!.transaction.value))} ETH` : intent ? 'Not estimated' : 'Estimated after review'} note={gasWei !== null || shortfall ? 'allowance at the current fee cap' : undefined} />
           <Line label="Initial buy" value="None" />
           <Line label="Base trade fee" value={config?.configs[0] ? formatBps(Number(config.configs[0].curveFeeBps)) : '…'} />
           <Line label="Creator fee" value={taxValid ? formatBps(taxBps) : '—'} />
           <Line label="Total trade fee" value={config?.configs[0] && taxValid ? formatBps(Number(config.configs[0].curveFeeBps) + taxBps) : '—'} strong />
-        </dl><div className="pad-quote-total" aria-live="polite" aria-atomic="true"><span>{gasWei !== null ? 'Up to, including gas' : 'Creation fee · excluding gas'}</span><strong>{config ? `${formatEth(BigInt(config.launchFeeWei) + (gasWei ?? 0n))} ETH` : '…'}</strong></div>
-        <p className="pad-fine">{intent?.simulation?.ok ? `Wallet balance ${formatEth(intent.simulation.balanceWei)} ETH.` : config ? `Read at block ${Number(config.blockNumber).toLocaleString('en-US')}. Gas is estimated for your wallet during review.` : 'Reading the factory…'}</p></aside>
+        </dl><div className="pad-quote-total" aria-live="polite" aria-atomic="true"><span>{gasWei !== null || shortfall ? 'Up to, including gas' : 'Creation fee · excluding gas'}</span><strong>{shortfall ? `${formatEth(shortfall.requiredWei!, 4)} ETH` : config ? `${formatEth(BigInt(config.launchFeeWei) + (gasWei ?? 0n))} ETH` : '…'}</strong></div>
+        <p className="pad-fine">{intent?.simulation?.ok ? `Wallet balance ${formatEth(intent.simulation.balanceWei)} ETH.` : shortfall ? `Wallet balance ${formatEth(shortfall.balanceWei!)} ETH.` : config ? `Read at block ${Number(config.blockNumber).toLocaleString('en-US')}. Gas is estimated for your wallet during review.` : 'Reading the factory…'}</p></aside>
       </div>
       <div className="pad-form-foot">
         {!session

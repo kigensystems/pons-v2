@@ -41,6 +41,15 @@ export function gasAllowanceWei(simulation: Simulation | null): bigint | null {
   return BigInt(simulation.gas) * BigInt(simulation.maxFeePerGas)
 }
 
+// What a failed simulation should say. A short balance names the numbers; anything else keeps the API's reason.
+export function describeSimulationFailure(simulation: Simulation): string {
+  if (simulation.ok) return ''
+  if (simulation.code === 'insufficient_funds' && simulation.balanceWei !== null && simulation.requiredWei) {
+    return `Your wallet holds ${formatEth(simulation.balanceWei)} ETH on Robinhood Chain; this launch needs about ${formatEth(simulation.requiredWei, 4)} ETH including gas${simulation.shortfallWei ? `, ${formatEth(simulation.shortfallWei, 4)} ETH more` : ''}.`
+  }
+  return `Simulation failed: ${simulation.reason}`
+}
+
 export function describeIntent(status: IntentStatus, failure: string | null): { label: string; detail: string; tone: 'quiet' | 'active' | 'good' | 'bad' } {
   switch (status) {
     case 'prepared': return { label: 'Ready to sign', detail: 'Review the terms, then confirm in your wallet.', tone: 'quiet' }

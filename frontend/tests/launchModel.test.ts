@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { arrangeCoins, coinFromLaunch, coinFromPons, describeIntent, formatBps, formatChange, formatEth, formatUsd, gasAllowanceWei, relativeAge, shortAddress } from '../src/launch/launchModel.ts'
+import { arrangeCoins, coinFromLaunch, coinFromPons, describeIntent, describeSimulationFailure, formatBps, formatChange, formatEth, formatUsd, gasAllowanceWei, relativeAge, shortAddress } from '../src/launch/launchModel.ts'
 import type { Launch, PonsCoin } from '../src/launch/api.ts'
 
 test('wei amounts format from integers without floating-point drift', () => {
@@ -69,4 +69,11 @@ test('registry rows and Pons feed coins map to one card shape, and Explore keeps
   const older = { ...pons, token: '0x2222222222222222222222222222222222222222' as const, since: 800, marketCapUsd: 99_000 }
   assert.deepEqual(arrangeCoins([older, curve, pons], 'newest').map(c => c.since), [950, 800])
   assert.deepEqual(arrangeCoins([pons, curve, older], 'marketcap').map(c => c.marketCapUsd), [99_000, 53_626])
+})
+
+test('a short balance is described with the numbers; other failures keep the reason', () => {
+  const short = describeSimulationFailure({ ok: false, code: 'insufficient_funds', reason: 'Wallet balance cannot cover the creation fee plus gas', balanceWei: '0', requiredWei: '1940000000000000', shortfallWei: '1940000000000000' })
+  assert.equal(short, 'Your wallet holds 0 ETH on Robinhood Chain; this launch needs about 0.0019 ETH including gas, 0.0019 ETH more.')
+  assert.equal(describeSimulationFailure({ ok: false, code: 'NotWhitelisted', reason: 'Factory rejected the launch: NotWhitelisted', balanceWei: '5' }), 'Simulation failed: Factory rejected the launch: NotWhitelisted')
+  assert.equal(describeSimulationFailure({ ok: false, code: 'insufficient_funds', reason: 'Wallet balance cannot cover the creation fee plus gas', balanceWei: null }), 'Simulation failed: Wallet balance cannot cover the creation fee plus gas')
 })

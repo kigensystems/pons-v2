@@ -19,7 +19,7 @@ export type LaunchConfigResponse = {
 
 export type Simulation =
   | { ok: true; gas: string; maxFeePerGas: string; balanceWei: string; requiredWei: string }
-  | { ok: false; code: string; reason: string; balanceWei: string | null }
+  | { ok: false; code: string; reason: string; balanceWei: string | null; requiredWei?: string; shortfallWei?: string }
 
 export type IntentStatus = 'prepared' | 'submitted' | 'included' | 'confirmed' | 'reverted' | 'rejected' | 'expired' | 'unresolved'
 
