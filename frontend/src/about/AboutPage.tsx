@@ -65,7 +65,6 @@ export default function AboutPage() {
       <section className="about-signoff" aria-labelledby="about-signoff-title">
         <h2 id="about-signoff-title">See it <em>clearly</em>.</h2>
         <a className="pad-btn pad-btn--dark" href="/explore">Open Explore</a>
-        <p className="about-signature">[Name] and [Name] · Plum, [City] · September 2026</p>
       </section>
 
       <p className="about-fine">Launches through Plum are real and on Robinhood Chain. Market figures come from an indexer and may lag; we say so when they do. Plum is independent and not affiliated with Pons or Robinhood.</p>

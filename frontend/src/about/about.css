@@ -37,7 +37,6 @@
 .about-signoff h2 { font-size: clamp(53px, 6vw, 82px); }
 .about-signoff em { color: #677457; }
 .about-signoff .pad-btn { margin-top: 26px; min-width: 170px; }
-.about-signature { margin: 40px 0 0; font-size: 17px; color: var(--ink-2); }
 .about-fine { max-width: 1200px; margin: 0 auto; padding: 20px 24px 56px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.55; color: var(--ink-2); }
 @media (max-width: 1100px) {
   .about-section { padding-left: 28px; padding-right: 28px; }
@@ -65,6 +64,5 @@
   .about-list--3, .about-list--4 { grid-template-columns: 1fr; }
   .about-signoff { padding: 48px 20px 40px; }
   .about-signoff h2 { font-size: 50px; }
-  .about-signature { margin-top: 30px; }
   .about-fine { margin: 0 24px; padding: 18px 0 44px; }
 }
