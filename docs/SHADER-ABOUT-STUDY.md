@@ -49,6 +49,8 @@ Kept, after the user's review on September 7 ("grain, blur, dreamy retro vintage
 - A soft diffusion pass on the Macintosh and a warm bloom of its highlights that breathes on Shader's three-sine curve. The bloom layer overhangs the image so the halo is not cut flat.
 - A light vignette. The existing headline glow stays.
 
+Revised September 7 night, when About became a letter under the three-person photograph on paper: the diffusion pass, the bloom overhang and the headline glow went with the dark ground and the Macintosh. What remains, contained in the photograph, is the grain canvas, a bloom made in CSS (the same picture blurred, highlights kept, screened over, breathing on one slow keyframe rather than three sines) and the vignette.
+
 Tried and removed at the user's request:
 
 - Scanlines. The `.pad` scanline overlay is switched off on About.

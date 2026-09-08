@@ -2,7 +2,7 @@
 
 ## Reuse in Plum's Explore and About pages
 
-The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; About uses CSS brightness/saturation grading over a dark green background. Explore's hero used the same artwork with sepia grading and multiply blending until September 7, when it was replaced by the CRT close-up recorded below. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
+The initial September 7 Explore/About implementation reused the existing Macintosh artwork and self-hosted Instrument Serif and VT323 fonts described below. The later Apple Garamond update now applies only to page and section titles; the earlier body and supporting fonts are restored. The artwork file is unchanged; About used CSS grading over a dark green background until September 7 night, when its picture became the photograph recorded below. Explore's hero used the same artwork with sepia grading and multiply blending until September 7, when it was replaced by the CRT close-up recorded below. Paper grain and the muted color rule are authored CSS/SVG effects. No additional third-party assets were adopted. The generated coin illustration trial was rejected and is not included in the application.
 
 ## Monitor channels
 
@@ -54,6 +54,13 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - Source: the user's `explore-monitor.png` (1448 × 1086 RGB render of a compact Macintosh front on a checkerboard), supplied at the repository root on September 7, 2026 and kept there untracked. Cropped with sips to the screen and bezel (offset 232, 62 from the top left) and re-encoded as JPEG; no other pixel edits.
 - Author, generator, and license were not supplied and remain unknown. No public-use license is asserted; public deployment remains deferred.
 - Use: the Explore hero. The bezel multiplies onto the paper; the newest coin's logo or initials are drawn over the glass in CSS. Nothing in the file itself changes at runtime.
+
+## About photograph
+
+- File: `images/about-banner.jpg`, 1800 × 600, sRGB JPEG (quality 82), 231,316 bytes.
+- Source: the user's three-person photograph, `assets/reference/loading-banner-source.png` (2172 × 724; the same bytes as the `banner.png` the user placed at the repository root on September 7, 2026). Downscaled and re-encoded with sips on September 7, 2026; no crop or other pixel edit.
+- Author, generator, and license were not supplied and remain unknown. No public-use license is asserted; public deployment remains deferred.
+- Use: the About page's picture, full bleed under the header, multiplied onto the paper with a CSS bloom, canvas grain and a vignette. Mobile shows a 16:9 centre crop through `object-fit`.
 
 ## Macintosh artwork
 
