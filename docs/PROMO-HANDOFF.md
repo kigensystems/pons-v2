@@ -2,6 +2,8 @@
 
 This is the current creative direction from the conversation. It supersedes the Macintosh-led film concept in [PROMO-PROMPT-GUIDE.md](PROMO-PROMPT-GUIDE.md) and the original hardware studies in [PROMO-VIDEOS.md](PROMO-VIDEOS.md). Those documents remain historical records. No final film, duration, format, or winning model has been selected.
 
+The [reference image pack](../outputs/promo-reference-pack-2026-09-07/START-HERE.md) contains current Plum and Shader screenshots, selected period photographs, the exact Plum mark, and sources. Attach images 01–07; 08 is an optional mood reference. No test videos or frames from those tests are included in that pack.
+
 ## Copy-and-paste creative prompt
 
 You are helping art-direct and produce a short brand film for **Plum**, a software/infrastructure project with a nostalgic visual identity. Develop the concept, shot ideas, generation prompts, edit, sound, and ending from this brief. Preserve its ambiguity and personality.
