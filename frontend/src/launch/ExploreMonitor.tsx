@@ -49,8 +49,9 @@ export default function ExploreMonitor({ config, error }: Props) {
           <feComponentTransfer result="halation"><feFuncA type="linear" slope=".32" /></feComponentTransfer>
           <feBlend in="exposed" in2="halation" mode="screen" />
         </filter>
-        {/* The screen's light on the bezel recess: the glass shape itself, blurred, added over the casing. */}
-        <filter id={`${id}-spill`} x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="14" /></filter>
+        {/* A short light falloff onto the recess, with a softer bounce beneath it. */}
+        <filter id={`${id}-spill`} x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="7" /></filter>
+        <filter id={`${id}-glass-edge`} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2" /></filter>
         <filter id={`${id}-key-planes`} colorInterpolationFilters="sRGB">
           <feColorMatrix type="saturate" values="0" />
           <feComponentTransfer>
@@ -69,8 +70,8 @@ export default function ExploreMonitor({ config, error }: Props) {
         </radialGradient>
         {/* The tube at rest: dark phosphor, lighter where the beam lands, with the glass curving away at the edges. */}
         <radialGradient id={`${id}-tube`} cx=".48" cy=".46" r=".62">
-          <stop offset="0" stopColor="#2b3329" />
-          <stop offset=".55" stopColor="#171d17" />
+          <stop offset="0" stopColor="#343e31" />
+          <stop offset=".55" stopColor="#1c251c" />
           <stop offset="1" stopColor="#0a0e0b" />
         </radialGradient>
         <radialGradient id={`${id}-glass-shade`} r=".7">
@@ -78,22 +79,20 @@ export default function ExploreMonitor({ config, error }: Props) {
           <stop offset=".8" stopColor="#080c10" stopOpacity=".12" />
           <stop offset="1" stopColor="#080c10" stopOpacity=".55" />
         </radialGradient>
-        <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2=".6" y2="1">
-          <stop offset="0" stopColor="#f7efe0" stopOpacity=".09" />
-          <stop offset=".35" stopColor="#f7efe0" stopOpacity="0" />
-        </linearGradient>
       </defs>
       {/* Shade the artwork's silhouette into the room; the lit screen is added above it. */}
       <rect width="1536" height="1024" fill={`url(#${id}-room-shadow)`} mask={`url(#${id}-artwork)`} aria-hidden="true" />
       <g className="pad-tv-light" aria-hidden="true">
-        <path d={BEZEL_PATH} fill="#f6e9cc" filter={`url(#${id}-spill)`} />
-        <path d={BEZEL_PATH} fill="none" stroke="#f6e9cc" strokeWidth="10" filter={`url(#${id}-spill)`} />
+        <path d={BEZEL_PATH} fill="none" stroke="#ede7cb" strokeWidth="12" filter={`url(#${id}-spill)`} />
         <g clipPath={`url(#${id}-keyboard)`} mask={`url(#${id}-key-receiver)`}>
           <ellipse cx="632" cy="708" rx="230" ry="70" transform="rotate(10 632 708)" fill={`url(#${id}-reflection)`} />
         </g>
       </g>
       <g clipPath={`url(#${id}-glass)`}>
         <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-tube)`} />
+        {/* Reuse the tube's baked reflection, registered to the artwork, so its curvature
+            and surface stay continuous with the bezel instead of laying a flat sheen over it. */}
+        <image href="/images/macintosh-render.png" width="1536" height="1024" opacity=".24" style={{ mixBlendMode: 'screen' }} aria-hidden="true" />
         <g filter={`url(#${id}-exposure)`}>
           <foreignObject width="640" height="480" transform={BEZEL_PICTURE_TRANSFORM}>
             <div className="pad-channel" role="group" aria-label="Launch fees through Plum">
@@ -110,9 +109,9 @@ export default function ExploreMonitor({ config, error }: Props) {
             </div>
           </foreignObject>
         </g>
-        {/* The glass over the phosphor: its curve darkens the edges and catches the room once, top left. */}
+        {/* Contact shadow where the glass tucks under the casing, contained inside the glass. */}
         <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-glass-shade)`} aria-hidden="true" />
-        <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-sheen)`} aria-hidden="true" />
+        <path d={BEZEL_PATH} fill="none" stroke="#030705" strokeWidth="8" strokeOpacity=".8" filter={`url(#${id}-glass-edge)`} aria-hidden="true" />
       </g>
     </svg>
   )
