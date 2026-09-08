@@ -1,6 +1,7 @@
 [build]
   base = "frontend"
-  command = "npm run build"
+  # The licensed Macintosh model stays in the repository for the Three.js comparison view but is not published.
+  command = "npm run build && rm -rf dist/models"
   publish = "dist"
 
 [build.environment]
@@ -23,3 +24,35 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Hashed build output is immutable; the unhashed statics under stable names revalidate daily.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=2592000"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+# The site signs transactions, so nobody may frame it. Local dev servers send none of these,
+# so the scratch iframe page used for mobile checks still works against 127.0.0.1.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Content-Security-Policy = "frame-ancestors 'none'"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

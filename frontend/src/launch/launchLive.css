@@ -1,5 +1,6 @@
 /* Live launch states layered on the Explore paper styles. */
-.pad-card-link { text-decoration: none; }
+.pad-card-link { text-decoration: none; padding: 8px 4px; margin: -8px -4px; }
+.pad-change small { margin-left: 3px; color: var(--ink-3); font: 11px var(--font-body); letter-spacing: .08em; }
 .pad-card-link:hover { text-decoration: underline; }
 .pad-market-note { font: 11px/1.4 var(--font-body); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
 .pad-change[data-neg='true'] .pad-market-note { color: var(--ink-3); }
@@ -11,7 +12,8 @@
 .pad-steps { display: flex; gap: 14px; margin: 0 0 16px; padding: 0; list-style: none; font: 12px/1.5 var(--font-body); text-transform: uppercase; letter-spacing: .14em; color: var(--ink-3); }
 .pad-steps li[aria-current='step'] { color: var(--ink); }
 .pad-steps li::before { content: counter(step) ' · '; counter-increment: step; }
-.pad-steps { counter-reset: step; }
+.pad-steps { counter-reset: step; flex-wrap: wrap; row-gap: 4px; }
+.pad-steps li { white-space: nowrap; }
 
 .pad-review { display: grid; gap: 14px; }
 .pad-review-card { display: flex; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--line); background: var(--paper); }

@@ -84,7 +84,7 @@ function App() {
       <div className="vignette" aria-hidden="true" />
 
       <section className="intro" aria-labelledby="scene-title">
-        <h1 id="scene-title">A familiar feeling.<br /><em>A new window.</em></h1>
+        <h1 id="scene-title">A familiar feeling.{' '}<br /><em>A new window.</em></h1>
         {/* The only way in. A keycap in the Macintosh's plastic and the word in the headline's voice. */}
         <a className="enter-cue" href="/explore">
           <span className="enter-cue-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M19 5v6a3 3 0 0 1-3 3H7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /><path d="M10 10l-4 4 4 4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></span>

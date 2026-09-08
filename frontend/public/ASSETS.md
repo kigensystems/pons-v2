@@ -28,7 +28,7 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 
 ## Live Macintosh 512K
 
-- File: `models/macintosh-512k.glb` (licensed export tracked in this private repository for the owner's other-PC use).
+- File: `models/macintosh-512k.glb` (licensed export tracked in this private repository for the owner's other-PC use; the Netlify build command removes `dist/models`, so it is not published).
 - Author: Shrednector / Shane Deptula.
 - Purchased source: [Mac Computer 1984](https://www.cgtrader.com/3d-models/electronics/computer/retro-mac-computer-80s), supplied by the user as FBX/OBJ and ten texture files.
 - Listing license: Royalty Free License (no AI). Model files were used locally for Blender processing and application rendering. They were not uploaded to an image generator or shared as source assets. The listing/source record is in `assets/source/macintosh-512k/README.md`; no license document was included in the supplied folder.

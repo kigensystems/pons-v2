@@ -42,6 +42,10 @@ Next: push that commit when the user says so; fund the launching wallet with abo
 
 Open decisions, in order: darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
 
+## Handoff, review triage
+
+Four reviews of the live site were consolidated into [Review triage](REVIEW-TRIAGE.md). The user set the product decisions (a Plum token, the fee claims, who Enter is for) aside and asked for bugs, UX and stability first. That pass is in the working tree, uncommitted, awaiting review: desk drafts kept in `sessionStorage`, visible field validation, a stale-read label that also fires on a lost refresh, an accurate visible launch notice, card labels and link hit areas, lazy-loaded paper pages so the opening ships no wallet code, Netlify cache and security headers, the licensed model kept out of the publish, `robots.txt` and `sitemap.xml`. The triage file's section 0 lists each change and the next session's order.
+
 ## About as a letter, September 7 night
 
 On the `claude/about-us-page-design-ce41b1` worktree branch, shown in the user's Chrome at 1440 × 900 and 390 × 844 (scratch iframe page). The user's brief: use the banner photo as the hero, keep the three rules and the desk list (the plainest writing on the site), swap the h1 to "A second window on Pons launches." (reverted the same night: the user preferred "Pons is winning. The edges are sharp.", so that is the title and the second-window line opens the standfirst), set the h2s plain, replace "try a demo coin" with "and, if you want, launch one", rewrite the edition note to what is true now, drop the diamond divider and paired 13px labels, cut generated-sounding copy, and add the positioning: fees (creator tax capped at 3% against Pons v2's 10% and shown on the coin, transfer tax halved, protocol fee 35% lower, the stacked round-trip example), stock pairs as an option rather than the point, "not another launchpad" as the fatigue, no cashback story, and the future list (fee truth, gas before signing, failed-trade reasons, holders, launch-and-buy in one transaction, float squeeze radar, a truth chip for terminals, dividend mode, an optional fair lane).
@@ -75,5 +79,6 @@ Prioritize one visible discrepancy, make a small change, inspect it against Shad
 - [Validation evidence](SCENE-VALIDATION.md)
 - [Historical brief](SCENE-HISTORY.md) — superseded decisions; consult only when needed.
 - [Other-PC setup](OTHER-PC-SETUP.md)
+- [Review triage](REVIEW-TRIAGE.md) — consolidated, verified findings from the September reviews and the order to work them
 
 Preserve original research and desktop assets. Keep purchased sources private; Netlify hosts the frontend and Render the API once the steps in [Deploying Plum](DEPLOY.md) run. Commands and preview instructions are in [AGENTS.md](../AGENTS.md).

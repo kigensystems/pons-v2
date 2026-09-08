@@ -23,7 +23,7 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
       ? <div className="pad-empty" role="status"><h3>Nothing has migrated yet.</h3><p>Coins appear here once they leave the curve. The feed refreshes every half minute.</p></div>
       : <div className="pad-empty" role="status"><h3>No Plum coin has migrated yet.</h3><p>Plum coins are the ones created here; they appear once they leave the curve. The first one could be yours.</p></div>
   }
-  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker or address.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
+  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Nothing among the {shown.length} coins loaded matches. Try a different name, ticker or address.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
 
   return (
     <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
@@ -39,12 +39,12 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
             {coin.description && <p className="pad-sr-only">{coin.description}</p>}
             <div className="pad-card-row">
               <span className="pad-mc">{formatUsd(coin.marketCapUsd)}<small>MC</small></span>
-              <span className="pad-change" data-neg={(coin.priceChange24hPct ?? 0) < 0}>{coin.marketNote ? <small className="pad-market-note">{coin.marketNote}</small> : formatChange(coin.priceChange24hPct)}</span>
+              <span className="pad-change" data-neg={(coin.priceChange24hPct ?? 0) < 0}>{coin.marketNote ? <small className="pad-market-note">{coin.marketNote}</small> : <>{formatChange(coin.priceChange24hPct)}<small>24h</small></>}</span>
             </div>
             <div className="pad-card-meta">
-              {coin.explorer ? <a className="pad-card-link" href={coin.explorer} target="_blank" rel="noreferrer" title={coin.token}>{shortAddress(coin.token)}</a> : <span title={coin.token}>{shortAddress(coin.token)}</span>}
-              {coin.chart && <a className="pad-card-link" href={coin.chart} target="_blank" rel="noreferrer">Chart</a>}
-              {coin.since !== null && <span>{relativeAge(coin.since)}</span>}
+              {coin.explorer ? <a className="pad-card-link" href={coin.explorer} target="_blank" rel="noreferrer" title={coin.token} aria-label={`${shortAddress(coin.token)} on Blockscout`}>{shortAddress(coin.token)}</a> : <span title={coin.token}>{shortAddress(coin.token)}</span>}
+              {coin.chart && <a className="pad-card-link" href={coin.chart} target="_blank" rel="noreferrer" aria-label={`Chart for $${coin.symbol}`}>Chart</a>}
+              {coin.since !== null && <AgeLabel event={source === 'pons' ? 'Migrated' : 'Launched'} age={relativeAge(coin.since)} />}
               {source === 'pons' && coin.madeWithPlum && <span className="pad-card-plum">Plum</span>}
             </div>
           </div>
@@ -52,4 +52,10 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
       ))}
     </ul></>
   )
+}
+
+// The card shows "4m"; the title and screen readers get "Migrated 4m ago" so the number has a meaning.
+function AgeLabel({ event, age }: { event: string; age: string }) {
+  const when = age === 'now' ? 'just now' : `${age} ago`
+  return <span title={`${event} ${when}`}><span className="pad-sr-only">{event.toLowerCase()} </span>{age}<span className="pad-sr-only">{age === 'now' ? '' : ' ago'}</span></span>
 }

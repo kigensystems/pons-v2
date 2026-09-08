@@ -8,6 +8,27 @@ type Props = { session: Session | null; config: LaunchConfigResponse | null; con
 type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 
 const POLL_MS = 2000
+// The draft outlives the dialog: the desk closes for the wallet picker, and a phone wallet can reload the page.
+const DRAFT_KEY = 'plum-desk-draft'
+type Draft = { name: string; ticker: string; description: string; website: string; creatorTax: string }
+const EMPTY_DRAFT: Draft = { name: '', ticker: '', description: '', website: '', creatorTax: '0' }
+function readDraft(): Draft {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY)
+    if (!raw) return EMPTY_DRAFT
+    const parsed = JSON.parse(raw) as Partial<Record<keyof Draft, unknown>>
+    const draft = { ...EMPTY_DRAFT }
+    for (const key of Object.keys(EMPTY_DRAFT) as (keyof Draft)[]) if (typeof parsed[key] === 'string') draft[key] = parsed[key] as string
+    return draft
+  } catch { return EMPTY_DRAFT }
+}
+function writeDraft(draft: Draft) {
+  try {
+    const untouched = (Object.keys(EMPTY_DRAFT) as (keyof Draft)[]).every(key => draft[key] === EMPTY_DRAFT[key])
+    if (untouched) sessionStorage.removeItem(DRAFT_KEY); else sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+  } catch { /* storage unavailable; the draft lives in memory only */ }
+}
+function clearDraft() { try { sessionStorage.removeItem(DRAFT_KEY) } catch { /* ignore */ } }
 const ZERO = '0x0000000000000000000000000000000000000000'
 const nowSeconds = () => Math.floor(Date.now() / 1000)
 
@@ -15,14 +36,15 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   const dialog = useRef<HTMLDialogElement>(null)
   const nameInput = useRef<HTMLInputElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
-  const [name, setName] = useState('')
-  const [ticker, setTicker] = useState('')
-  const [description, setDescription] = useState('')
-  const [website, setWebsite] = useState('')
+  const [draft] = useState(readDraft)
+  const [name, setName] = useState(draft.name)
+  const [ticker, setTicker] = useState(draft.ticker)
+  const [description, setDescription] = useState(draft.description)
+  const [website, setWebsite] = useState(draft.website)
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState('')
   const [imageError, setImageError] = useState('')
-  const [creatorTax, setCreatorTax] = useState('0')
+  const [creatorTax, setCreatorTax] = useState(draft.creatorTax)
   const [stage, setStage] = useState<Stage>('form')
   const [intent, setIntent] = useState<Intent | null>(null)
   const [problem, setProblem] = useState('')
@@ -42,6 +64,8 @@ export default function LaunchForm({ session, config, connecting, connected, onC
     return () => { element?.close(); document.body.style.overflow = overflow; opener?.focus() }
   }, [])
 
+  useEffect(() => { writeDraft({ name, ticker, description, website, creatorTax }) }, [name, ticker, description, website, creatorTax])
+
   useEffect(() => {
     if (!preview) return
     return () => URL.revokeObjectURL(preview)
@@ -58,7 +82,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   }, [stage, intent])
 
   useEffect(() => {
-    if (intent && (intent.status === 'included' || intent.status === 'confirmed') && !notified.current) { notified.current = true; onLaunched(intent) }
+    if (intent && (intent.status === 'included' || intent.status === 'confirmed') && !notified.current) { notified.current = true; clearDraft(); onLaunched(intent) }
   }, [intent, onLaunched])
 
   // Keep the quote countdown honest while a prepared intent is on screen.
@@ -77,9 +101,10 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   const maxTax = config?.maxCreatorTaxBps ?? 1000
   const taxValid = Number.isFinite(Number(creatorTax)) && taxBps >= 0 && taxBps <= maxTax
   const websiteValid = !website.trim() || /^https:\/\/\S+$/.test(website.trim())
+  const tickerValid = /^[A-Z0-9]{1,12}$/.test(ticker)
   const gateOpen = Boolean(config?.launchEnabled && config.configs[0]?.enabled)
   const eligible = config?.eligibility?.canLaunch ?? true
-  const ready = Boolean(session && config && gateOpen && eligible && name.trim() && /^[A-Z0-9]{1,12}$/.test(ticker) && taxValid && websiteValid && !imageError)
+  const ready = Boolean(session && config && gateOpen && eligible && name.trim() && tickerValid && taxValid && websiteValid && !imageError)
 
   function chooseImage(next?: File) {
     setFile(null); setPreview(''); setImageError('')
@@ -154,17 +179,17 @@ export default function LaunchForm({ session, config, connecting, connected, onC
           </p>
           {problem && <p className="pad-error pad-wide" role="alert">{problem}</p>}
           {config && !gateOpen && <p className="pad-error pad-wide" role="alert">Public launches are closed on the factory right now.</p>}
-          {config && !eligible && <p className="pad-error pad-wide" role="alert">This wallet is not eligible to launch right now.</p>}
+          {config && !eligible && <p className="pad-error pad-wide" role="alert">The Pons factory does not allow this wallet to launch right now.</p>}
 
           {(stage === 'form' || stage === 'preparing') && <>
             <label><span>Name</span><input ref={nameInput} required value={name} onChange={event => setName(event.target.value)} placeholder="Your bright idea" maxLength={40} disabled={busy} /></label>
-            <label><span>Ticker</span><input required value={ticker} onChange={event => setTicker(event.target.value.toUpperCase())} placeholder="SYMBOL" maxLength={12} pattern="[A-Z0-9]{1,12}" title="1 to 12 letters or numbers" disabled={busy} /></label>
+            <label><span>Ticker</span><input required value={ticker} onChange={event => setTicker(event.target.value.toUpperCase())} placeholder="SYMBOL" maxLength={12} pattern="[A-Z0-9]{1,12}" title="1 to 12 letters or numbers" disabled={busy} aria-invalid={ticker ? !tickerValid : undefined} aria-describedby={ticker && !tickerValid ? 'pad-ticker-error' : undefined} />{ticker && !tickerValid && <small className="pad-error" id="pad-ticker-error">1 to 12 letters or numbers.</small>}</label>
             <label className="pad-wide"><span>Description <small>(optional)</small></span><textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="A few words about your idea…" maxLength={280} rows={2} disabled={busy} /></label>
             <label className="pad-wide pad-file"><span>Coin image <small>(optional)</small></span><input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={event => chooseImage(event.target.files?.[0])} aria-describedby="pad-upload-help" disabled={busy} /><small className="pad-fine" id="pad-upload-help">PNG, JPG, WebP or GIF · Up to 2 MB · Stored by Plum and linked from the token</small></label>
             {preview && <div className="pad-wide pad-upload-preview"><img src={preview} alt="Your coin preview" /><button type="button" onClick={() => { chooseImage(); if (fileInput.current) fileInput.current.value = '' }}>Remove image</button></div>}
             {imageError && <p className="pad-error pad-wide" role="alert">{imageError}</p>}
-            <label><span>Website <small>(optional)</small></span><input type="url" value={website} onChange={event => setWebsite(event.target.value)} placeholder="https://" disabled={busy} aria-invalid={!websiteValid} /></label>
-            <label><span>Creator fee (%)</span><input type="number" min="0" max={maxTax / 100} step="0.01" inputMode="decimal" value={creatorTax} onChange={event => setCreatorTax(event.target.value)} disabled={busy} aria-invalid={!taxValid} /></label>
+            <label><span>Website <small>(optional)</small></span><input type="url" value={website} onChange={event => setWebsite(event.target.value)} placeholder="https://" disabled={busy} aria-invalid={website.trim() ? !websiteValid : undefined} aria-describedby={!websiteValid ? 'pad-website-error' : undefined} />{!websiteValid && <small className="pad-error" id="pad-website-error">Use a full address starting with https://</small>}</label>
+            <label><span>Creator fee (%)</span><input type="number" min="0" max={maxTax / 100} step="0.01" inputMode="decimal" value={creatorTax} onChange={event => setCreatorTax(event.target.value)} disabled={busy} aria-invalid={!taxValid} aria-describedby={!taxValid ? 'pad-fee-error' : undefined} />{!taxValid && <small className="pad-error" id="pad-fee-error">Between 0% and {maxTax / 100}%, in steps of 0.01.</small>}</label>
             <p className="pad-fine pad-wide">Paired with ETH. Initial buys and other pairs arrive once they are validated. The creator fee is fixed at launch and cannot be raised later.</p>
           </>}
 
