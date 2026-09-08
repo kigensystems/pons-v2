@@ -2,16 +2,19 @@ import { useEffect, useId, useRef } from 'react'
 import { createMonitorPlayback } from './monitorPlayback'
 import { deriveTvLighting } from './tvLighting'
 
-type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void }
+type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void; onSwitch: () => void; switchLabel: string }
 
+// The inside of the original image's curved glass, in artwork coordinates.
+const GLASS_PATH = 'M 596 138 C 691 137 824 146 912 154 Q 929 156 929 178 L 920 428 Q 919 445 901 446 C 801 446 655 434 588 423 Q 570 420 567 399 C 557 311 562 213 574 161 Q 578 138 596 138 Z'
 // Lift dark footage while retaining separation near white instead of clipping at 1 / exposure.
 const CRT_EXPOSURE = '0 .18 .4 .58 .72 .82 .89 .94 .97 .99 1'
 
 /** Original pixels stay intact; registered shading and CRT light integrate the artwork. */
-export default function ImageTelevision({ active, sound, onSoundBlocked }: Props) {
+export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitch, switchLabel }: Props) {
   const clipId = useId()
   const svgRef = useRef<SVGSVGElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const cueRef = useRef<HTMLSpanElement>(null)
   const playbackRef = useRef<ReturnType<typeof createMonitorPlayback> | null>(null)
   const activeRef = useRef(active)
   const syncRef = useRef(() => {})
@@ -68,6 +71,12 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
     }
     const playback = createMonitorPlayback(invalidate, onSoundBlocked, import.meta.env.DEV ? canvas : undefined, canvas)
     playbackRef.current = playback
+    // The caption is sized in screen pixels; report how large one canvas unit is on screen.
+    const svg = svgRef.current!
+    const measure = () => playback.setScale(svg.getBoundingClientRect().width / 1536 * 0.585)
+    const resizeObserver = new ResizeObserver(measure)
+    resizeObserver.observe(svg)
+    measure()
     const sync = () => {
       cancelAnimationFrame(frame)
       frame = 0
@@ -78,6 +87,7 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
     syncRef.current = sync
     sync()
     return () => {
+      resizeObserver.disconnect()
       cancelAnimationFrame(frame)
       playback.dispose()
       playbackRef.current = null
@@ -86,6 +96,7 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
   }, [onSoundBlocked])
 
   return (
+    <>
     <svg ref={svgRef} className="image-television" viewBox="0 0 1536 1024" aria-label="Television screen">
       <defs>
         <mask id={`${clipId}-artwork`} maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024" style={{ maskType: 'alpha' }}>
@@ -97,9 +108,8 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
           <stop offset=".7" stopColor="#080e0c" stopOpacity=".5" />
           <stop offset="1" stopColor="#080e0c" stopOpacity=".68" />
         </linearGradient>
-        {/* Coordinates follow the inside of the original image's curved glass. */}
         <clipPath id={clipId}>
-          <path d="M 596 138 C 691 137 824 146 912 154 Q 929 156 929 178 L 920 428 Q 919 445 901 446 C 801 446 655 434 588 423 Q 570 420 567 399 C 557 311 562 213 574 161 Q 578 138 596 138 Z" />
+          <path d={GLASS_PATH} />
         </clipPath>
         <clipPath id={`${clipId}-keyboard`}>
           <path d="M 350 630 L 949 738 L 911 901 L 112 803 Z" />
@@ -160,6 +170,27 @@ export default function ImageTelevision({ active, sound, onSoundBlocked }: Props
       <g clipPath={`url(#${clipId})`} aria-hidden="true">
         <rect x="560" y="135" width="375" height="315" fill={`url(#${clipId}-glass-shade)`} />
       </g>
+      {/* The glass is the only control: it plays, unmutes, and mutes. The focus ring follows its curve. */}
+      <path className="tv-glass-focus" d={GLASS_PATH} aria-hidden="true" />
+      <foreignObject className="tv-switch-area" x="557" y="135" width="375" height="313">
+        <button
+          className="tv-switch"
+          type="button"
+          onClick={onSwitch}
+          aria-label={switchLabel}
+          onPointerMove={(event) => {
+            const cue = cueRef.current
+            if (!cue || event.pointerType !== 'mouse') return
+            const box = svgRef.current!.getBoundingClientRect()
+            cue.style.translate = `${event.clientX - box.left}px ${event.clientY - box.top}px`
+            cue.dataset.visible = ''
+          }}
+          onPointerLeave={() => { delete cueRef.current?.dataset.visible }}
+        />
+      </foreignObject>
     </svg>
+    {/* Follows the pointer over the glass; the screen face names the action, the way the Enter key does. */}
+    <span ref={cueRef} className="tv-cue" aria-hidden="true">{switchLabel}</span>
+    </>
   )
 }

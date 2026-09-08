@@ -2,21 +2,31 @@ import { useCallback, useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
 import ImageTelevision from './ImageTelevision'
 import ImageGrounding from './ImageGrounding'
-import ExplorePage from './launch/LaunchPage'
-import useScreenJourney from './useScreenJourney'
 import './openingNavigation.css'
-import './screenJourney.css'
 
 function App() {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(true)
+  // The boot screen stays up for at least this long on the first visit of a session, so the lockup
+  // reads as an opening rather than a flash. Reduced motion and later visits skip the hold.
+  const [held, setHeld] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('plum-booted') === '1')
   const [imageError, setImageError] = useState(false)
   const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [hidden, setHidden] = useState(() => document.hidden)
   const [sound, setSound] = useState(false)
   const handleSoundBlocked = useCallback(() => setSound(false), [])
-  const dismissLoading = useCallback(() => setLoading(false), [])
-  const { journeyRef, worldRef, artworkRef, portalRef, entered, tvVisible } = useScreenJourney(!loading, imageError)
+  // The screen is the only control. Paused (reduced motion), a click plays with sound; playing, it toggles the sound.
+  const switchTv = useCallback(() => {
+    if (paused) { setPaused(false); setSound(true) } else setSound((value) => !value)
+  }, [paused])
+  const switchLabel = paused ? 'Play the TV with sound' : sound ? 'Mute the TV' : 'Unmute the TV'
+  const dismissLoading = useCallback(() => { setLoading(false); sessionStorage.setItem('plum-booted', '1') }, [])
+
+  useEffect(() => {
+    if (held) return
+    const timeout = window.setTimeout(() => setHeld(true), 1800)
+    return () => window.clearTimeout(timeout)
+  }, [held])
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -32,11 +42,8 @@ function App() {
 
   return (
     <>
-    {loading && <LoadingScreen progress={progress} complete={progress === 100} onExited={dismissLoading} />}
-    <div className="opening-journey" ref={journeyRef}>
-    <a className="journey-skip" href="/explore" inert={loading || entered}>Skip to Explore</a>
-    <main className="opening" inert={loading || entered} aria-busy={loading} data-motion="paused">
-      <div className="opening-world" ref={worldRef}>
+    {loading && <LoadingScreen progress={progress} complete={progress === 100 && held} onExited={dismissLoading} />}
+    <main className="opening" inert={loading} aria-busy={loading} data-motion="paused">
       <div className="room" aria-hidden="true">
         <div className="window-light" />
         <div className="window-frame" />
@@ -45,7 +52,12 @@ function App() {
         <div className="mist mist--back" />
       </div>
 
-      <div className="scene-object scene-object--still" ref={artworkRef}>
+      <header className="masthead">
+        <span className="working-name"><span className="working-name-row"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</span><span className="name-note">A companion to Pons</span></span>
+        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
+      </header>
+
+      <div className="scene-object scene-object--still">
         {!imageError && <ImageGrounding />}
         <img
           className="macintosh macintosh--still"
@@ -59,7 +71,7 @@ function App() {
           onError={() => { setImageError(true); dismissLoading() }}
         />
         {!imageError && <>
-          <ImageTelevision active={!paused && !hidden && !loading && tvVisible} sound={sound} onSoundBlocked={handleSoundBlocked} />
+          <ImageTelevision active={!paused && !hidden && !loading} sound={sound} onSoundBlocked={handleSoundBlocked} onSwitch={switchTv} switchLabel={switchLabel} />
         </>}
         {imageError && <div className="model-status">
           <p role="status">The Macintosh image could not load.</p>
@@ -69,42 +81,21 @@ function App() {
 
       <div className="foreground-haze" aria-hidden="true" />
       <div className="mist mist--front" aria-hidden="true" />
-      </div>
       <div className="grain" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
 
-      <header className="masthead">
-        <span className="working-name">Plum<span className="name-note">A companion to Pons</span></span>
-        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
-      </header>
-
       <section className="intro" aria-labelledby="scene-title">
-        <p className="eyebrow"><span className="signal" /> A companion to Pons</p>
         <h1 id="scene-title">A familiar feeling.<br /><em>A new window.</em></h1>
-        <p className="intro-description">An independent companion to the Pons launchpad.<br className="desktop-break" /> A world of its own, beginning here.</p>
-        <a className="journey-cue" href="/explore">Scroll to explore <span aria-hidden="true">↓</span><span className="sr-only"> or select to skip the opening</span></a>
+        <p className="intro-description">An independent companion to the Pons launchpad.</p>
+        <a className="enter-cue" href="/explore"><span className="enter-cue-key">↵</span> Enter</a>
       </section>
 
       <footer className="scene-footer">
         <div className="scene-note">
-          <span className="scene-index">001 — THE OPENING</span>
-          <span className="scene-caption">Somewhere between then and what’s next.</span>
-        </div>
-        <div className="tv-controls">
-          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={!paused} onClick={() => setPaused((value) => !value)}>
-            {paused ? 'Play TV' : 'Pause TV'}
-          </button>
-          <button className="tv-sound" type="button" disabled={imageError} aria-pressed={sound} onClick={() => setSound((value) => !value)}>
-            TV sound {sound ? 'on' : 'off'}
-          </button>
+          <span className="scene-index">The opening</span>
         </div>
       </footer>
     </main>
-    <div className="journey-runway" aria-hidden="true" />
-    <div className="journey-portal" ref={portalRef} inert={!entered}>
-      <ExplorePage active={entered} />
-    </div>
-    </div>
     </>
   )
 }

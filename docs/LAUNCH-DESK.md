@@ -11,7 +11,7 @@ The user subsequently selected **Plum** as the name, asked for refinement of bot
 ## Pages and code
 
 - `/`: the existing opening, with Plum naming and links to Explore/About. Only the header, loader name, metadata, and a small navigation stylesheet changed. TV playback, composited lighting, scene artwork, and the retained Three.js implementation are untouched.
-- `/explore`: the collection, search, four filter chips, sample statistics, and native creation dialog. `/launch` remains an exact-path alias; trailing slashes work. No router dependency was added.
+- `/explore`: the collection, search, four filter chips, a one-line collection status, and native creation dialog. `/launch` remains an exact-path alias; trailing slashes work. No router dependency was added.
 - `/about`: a dark green opening with the existing Macintosh, followed by the story, principles, prototype note, and an Explore link.
 - `frontend/src/launch/LaunchPage.tsx` exports `ExplorePage`. The existing directory is retained for continuity with Claude's feature. `PaperChrome.tsx` provides shared navigation/footer; `TokenGrid.tsx` holds the sample collection; `LaunchForm.tsx` owns the creation dialog; `launchModel.ts` contains the illustrative quote calculation.
 - `frontend/src/about/` holds the About component and scoped styles. `index.css` is unchanged. No dependency or hosting configuration changes.
@@ -20,11 +20,11 @@ The user subsequently selected **Plum** as the name, asked for refinement of bot
 
 The user clarified Apple Garamond for titles only; see [Typography](TYPOGRAPHY.md#current-titles-only) for the current treatment, comparisons and font provenance.
 
-Retain the six-column desktop card layout and two-column mobile layout. Give it calmer spacing, clear name/ticker hierarchy, square muted placeholder art, and comfortable search/filter controls. The mobile hero omits the decorative image to bring the collection closer.
+Retain the six-column desktop card layout and two-column mobile layout. Give it calmer spacing, clear name/ticker hierarchy, square muted placeholder art, and comfortable search/filter controls. The hero figure is a close crop of the Macintosh CRT (`frontend/public/images/crt-close.jpg`) showing the newest coin the way a card does: its logo, or two-letter initials in phosphor Garamond, over dark glass, with a ChicagoFLF NO SIGNAL whenever there is no coin to show (empty collection, loading, or registry unreachable) and a caption naming the coin. It is live data, so it also shows on mobile, replacing the earlier decorative Macintosh that mobile omitted.
 
-Use self-hosted Apple Garamond for page and section titles, Georgia for the Plum name and body copy, Instrument Serif for editorial details/cards, and VT323 for terminal labels, with warm paper, green ink, restrained plum accents, and a thin muted color rule. Static grain, very faint scanlines, and restrained color fringing support the material without distorting controls. About's asymmetric Macintosh scene connects to our existing opening; its editorial layout and copy are original. The [live Shader About reference](https://www.shader.se/#about-us) and the repository's [user favorites](../reviews/2026-09-06/USER-FAVORITES.md) informed the review.
+Use self-hosted Apple Garamond for titles, body, and tracked-capital labels, and ChicagoFLF for controls (superseding the earlier Georgia, Instrument Serif, and VT323 roles on September 7), with warm paper, green ink, restrained plum accents, and a thin muted color rule. Static grain, very faint scanlines, and restrained color fringing support the material without distorting controls. About's asymmetric Macintosh scene connects to our existing opening; its editorial layout and copy are original. The [live Shader About reference](https://www.shader.se/#about-us) and the repository's [user favorites](../reviews/2026-09-06/USER-FAVORITES.md) informed the review.
 
-The first rendered pass was revised to compact Explore's hero, improve small-label legibility using our existing terminal font, and focus the Name field when the dialog opens. The final cross-page comparison aligned the main headlines and Plum name with the opening's Georgia treatment. Desktop and mobile were inspected at normal size. Existing artwork/fonts are reused without file edits; [provenance](../frontend/public/ASSETS.md) records the CSS treatment.
+The first rendered pass was revised to compact Explore's hero, improve small-label legibility using our existing terminal font, and focus the Name field when the dialog opens. The final cross-page comparison aligned the main headlines and Plum name with the opening's Georgia treatment. Desktop and mobile were inspected at normal size. Existing artwork and fonts were reused without file edits at that stage; [provenance](../frontend/public/ASSETS.md) records the CSS treatment and the later CRT close-up.
 
 ## Prototype behavior
 
@@ -61,4 +61,4 @@ The Explore before/after pairs use matching CSS viewports (1440 × 900 and 390 �
 | Create | Revised dialog | [Desktop](screenshots/create-desktop.jpg) · [Mobile](screenshots/create-mobile.jpg) |
 | Opening | Naming and navigation only | [Desktop](screenshots/plum-opening-desktop.jpg) · [Mobile](screenshots/plum-opening-mobile.jpg) |
 
-No deployment was performed. Work continues on `main`; Claude's next feature should branch from the updated remote main.
+No deployment was performed. Work continues on `main`. The About page was rewritten on September 7; see [Shader About study](SHADER-ABOUT-STUDY.md) for the treatment it ports.

@@ -5,11 +5,11 @@ Use Git with access to the private `kigensystems/pons-v2` repository and Node.js
 ```sh
 git clone https://github.com/kigensystems/pons-v2.git
 cd pons-v2
-npm --prefix frontend ci
+npm --prefix frontend install --legacy-peer-deps
 npm --prefix frontend run dev
 ```
 
-Open the local URL printed by Vite. For an existing checkout, preserve any local changes and pull the latest `main` before running `npm --prefix frontend ci`.
+Open the local URL printed by Vite. For an existing checkout, preserve any local changes and pull the latest `main` before running `npm --prefix frontend install --legacy-peer-deps`.
 
 The checkout includes the runtime Macintosh GLB, purchased source copies, current Blender files and study renders, fonts, fallback artwork, all `reports-examples/` research files, and `reviews/`. There is no separate model restoration step. Blender is needed only to regenerate or edit the model. Numbered Blender save backups are intentionally excluded; current `.blend` files are included.
 

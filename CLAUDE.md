@@ -1,39 +1,29 @@
 # CLAUDE.md
 
-Read `AGENTS.md` first. It holds the durable project rules: scope, Shader reference rules, visual standards, validation, and commands. Then read `docs/PROJECT-BRIEF.md` for the selected direction and current handoff. This file only adds what those two do not cover.
+Read `AGENTS.md` (scope, visual rules, commands), `DESIGN.md` (tokens, type, motion budget), then `docs/PROJECT-BRIEF.md` (direction and handoff).
 
-## Two sessions on one repo
+## Workflow
 
-A ChatGPT session commits directly to `main` and owns the landing page: `frontend/src/App.tsx`, `frontend/src/MacintoshScene.tsx`, `frontend/src/LoadingScreen.tsx`, `frontend/src/sceneFraming.ts`, `frontend/src/index.css`, `frontend/index.html`, `docs/PROJECT-BRIEF.md`, `docs/SCENE-VALIDATION.md`, and `frontend/public/`. Treat those as its files unless the user reassigns them.
+- Work on `main` in this checkout. No branches or worktrees unless asked.
+- `git pull --ff-only origin main` before starting; push after each approved commit. Never force-push, rebase, reset, or amend anything on `origin/main`.
+- Use the `frontend-design` skill for any new or reshaped UI, with `DESIGN.md` as the brief. List violations of it before showing work.
+- Show visual work in the user's Chrome and wait for their go-ahead before committing. Build, lint, and self-checks are not approval.
+- Page styles live in the page's own stylesheet; `index.css` holds the opening scene and shared tokens only.
+- New docs are new files under `docs/`. Update `PROJECT-BRIEF.md` when direction or handoff changes. Before closing out, correct every doc statement the work made false.
 
-This session works on separate features. Rules:
+## Inspect and iterate
 
-- Work in a git worktree under `.claude/worktrees/`, never in the main checkout, which ChatGPT is editing. Create `feature/<name>` off `origin/main` for each feature. Never commit to `main` directly except for this file and `.claude/` config.
-- Before every push and before opening a PR: `git fetch origin` then `git rebase origin/main`. Resolve conflicts here, never on `main`.
-- Never force-push, rebase, reset, or amend anything already on `origin/main`.
-- Keep new work in new files or components. Shared files are the conflict risk: `App.tsx`, `main.tsx`, `index.css`, `index.html`, `package.json`, `vite.config.ts`. Touch them with the smallest possible hunk, ideally one import plus one JSX line, and say so in the PR.
-- Add new styles in a new stylesheet imported from the new component, not in `index.css`.
-- Add new docs as new files under `docs/`, not as edits to `PROJECT-BRIEF.md`.
-- Open a PR to `main` when a feature is done and rebased. The user merges PRs; never merge one yourself.
-- Keep pushing the feature branch at each verified working state so the other PC and the other session can see it.
+The user reviews in their own Chrome through the Claude in Chrome extension. Use that browser for your own checks too; it has the console, network, and viewport tools.
 
-## Commands
+1. Start `npm --prefix frontend run dev` in the background with the sandbox disabled (port binding is blocked inside it). Explore's hero and collection read from the API, so add `npm --prefix backend run dev` for that page; it reads the root `.env`. `.claude/launch.json` has entries for both servers.
+2. Open `http://127.0.0.1:5173`, not `localhost`; the API refuses writes from other origins. Reuse one tab.
+3. Check 1440 × 900 and 390 × 844 with `resize_window`. For lighting comparisons, emulate `prefers-reduced-motion` so the TV holds its poster. Read the console for errors.
+4. Keep `https://www.shader.se/` in a second tab when comparing against the reference.
+5. One screenshot per iteration at normal size. Save keepers to `docs/screenshots/` only after the user accepts the change.
 
-Run from the repository root. Node 24, npm.
+## Environment
 
-```sh
-npm --prefix frontend ci
-npm --prefix frontend run dev
-npm --prefix frontend run build
-npm --prefix frontend run lint
-npm --prefix frontend test
-```
-
-Build, lint, and the Node test runner are scaffold checks. Visual work is validated in a browser against the live Shader site and the documented targets, as `AGENTS.md` requires. Report the two separately.
-
-## Environment notes
-
-- `origin` is SSH via the `github-kigensystems` host alias. Git network commands fail inside the Bash sandbox; run fetch, pull, and push with the sandbox disabled.
-- Git prints a harmless `xcrun_db` cache warning inside the sandbox. Ignore it.
-- Do not deploy. Netlify config exists but hosting is deferred.
-- Keep the future crypto API out of the scene. No API clients, keys, or Vite-exposed secrets.
+- Node 24, npm. `npm --prefix frontend install --legacy-peer-deps`; `npm ci` fails on the frontend lock file. Other commands are in `AGENTS.md`.
+- `origin` is SSH via the `github-kigensystems` host alias. Git network commands need the sandbox disabled. Ignore the `xcrun_db` warning.
+- Do not deploy. No secrets reach the browser; the only `VITE_` value is the public Reown project id.
+- The launch API lives in `backend/` and `frontend/src/launch/`; see `docs/LAUNCH-API.md`. Keep it out of the landing scene.

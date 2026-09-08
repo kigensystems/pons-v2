@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PaperHeader, PaperFooter } from '../launch/PaperChrome'
+import { AboutComputer, AboutGrain } from './AboutHeroSurface'
 import '../launch/launch.css'
 import './about.css'
 
@@ -10,37 +11,50 @@ export default function AboutPage() {
     <PaperHeader page="about" />
     <main id="paper-main">
       <section className="about-intro" aria-labelledby="about-title">
-        <div className="about-intro-copy"><p className="pad-kicker"><span className="pad-dot" /> A little about Plum</p>
-          <h1 id="about-title">A familiar feeling.<br /><em>A new possibility.</em></h1>
-          <p className="about-intro-sub">For the curious.<br />For the ones just getting started.<br />For the simple joy of finding something new.</p>
-          <a href="#our-story" className="about-story-link">A note from the desk <span aria-hidden="true">↓</span></a>
+        <div className="about-tube">
+          <div className="about-intro-copy"><p className="pad-kicker"><span className="pad-dot" /> About Plum</p>
+            <h1 id="about-title">Pons is winning.<br /><em>The edges are sharp.</em></h1>
+            <p className="about-intro-sub">Plum is a second window on Pons launches.<br />What you’ll pay. What you’ve earned. Who’s real.</p>
+            <a href="#our-story" className="about-story-link">Why we made it <span aria-hidden="true">↓</span></a>
+          </div>
+          <figure className="about-computer"><AboutComputer src="/images/macintosh-render.png" alt="An ivory Macintosh with its keyboard and mouse in a softly lit green room" /></figure>
+          <div className="about-atmosphere" aria-hidden="true" />
         </div>
-        <figure className="about-computer"><img src="/images/macintosh-render.png" alt="An ivory Macintosh with its keyboard and mouse in a softly lit green room" width="1536" height="1024" /><figcaption>PERSONAL COMPUTING / NEW POSSIBILITIES</figcaption></figure>
-        <div className="about-hero-foot"><span>002 — ABOUT PLUM</span><span>Somewhere between then and what’s next.</span></div>
-        <div className="about-atmosphere" aria-hidden="true" />
+        <AboutGrain />
       </section>
 
       <section id="our-story" className="about-editorial" aria-labelledby="about-story">
-        <div className="about-section-label"><span className="pad-kicker">01 / A note from the desk</span><span className="pad-kicker">Human curiosity. Personal computing.</span></div>
+        <div className="about-section-label"><span className="pad-kicker">Why Plum</span><span className="pad-kicker">On top of Pons. Not instead of it.</span></div>
         <div className="about-columns">
-          <div><h2 id="about-story">The internet should<br />still feel like <em>possibility.</em></h2><p className="about-lede">Remember when a computer felt like a doorway, and opening a new window meant finding a whole new world?</p></div>
-          <div className="about-story-body"><p>That feeling is where we begin. Plum is an independent companion to the world of Pons: a place to discover coins, try an idea, and take a closer look.</p><p>We like things with a little character. Warm paper. A well-worn keyboard. Clear words and room to think. Familiar details that make somewhere new feel a little more like your own.</p><p>Explore is our first sketch of that place. A collection to browse, a creation desk to experiment with, and the beginnings of something we can shape with care.</p><a className="pad-link" href="/explore">Take a look around <span aria-hidden="true">↗</span></a></div>
+          <div><h2 id="about-story">Nobody asked for<br />another <em>launchpad.</em></h2><p className="about-lede">They asked for the one they already use to stop hiding things.</p></div>
+          <div className="about-story-body"><p>Pons is the biggest pad on Robinhood chain, and people keep coming back to it. They also keep hitting the same walls. Gas that surprises you. Creator fees that read zero for a day. Coins that borrow a famous name and vanish.</p><p>Plum sits on top of all that. It doesn’t launch coins and it doesn’t hold your money. It reads the chain and tells you what it finds, in plain words, before you click.</p><p>Explore is the first piece: a place to browse what’s out there and try a demo coin.</p><a className="pad-link" href="/explore">Take a look around</a></div>
         </div>
       </section>
 
       <div className="about-divider" aria-hidden="true"><span /><i /><span /></div>
 
       <section className="about-principles" aria-labelledby="about-principles-title">
-        <div className="about-principles-heading"><p className="pad-kicker">02 / A few things we believe</p><h2 id="about-principles-title">A little character.<br /><em>A lot of intention.</em></h2><p>Some things are worth taking our time over.</p></div>
+        <div className="about-principles-heading"><p className="pad-kicker">Three rules</p><h2 id="about-principles-title">Chain truth.<br /><em>Plain words.</em></h2><p>We don’t bend these.</p></div>
         <div className="about-principle-list">
-          <article><span>01</span><div><h3>Curiosity comes first.</h3><p>A good place to explore leaves room for an unexpected discovery. Follow a thread, look closer, and make up your own mind.</p></div></article>
-          <article><span>02</span><div><h3>Clarity is part of the craft.</h3><p>The small print deserves as much care as the headline. Examples should look like examples, and unknowns should stay visible.</p></div></article>
-          <article><span>03</span><div><h3>The details make it personal.</h3><p>A tactile surface. A thoughtful interaction. A familiar typeface. Small things that add up to a place worth spending time in.</p></div></article>
+          <article><div><h3>Show the chain, not the guess.</h3><p>If a number comes from an indexer that’s behind, we say so. Zero means zero, never “still loading”.</p></div></article>
+          <article><div><h3>Say the cost before the click.</h3><p>Gas, platform fee, holder share. One line, in the asset you’re paying with, before you sign anything.</p></div></article>
+          <article><div><h3>Unverified means unverified.</h3><p>A famous name on a coin proves nothing. Until an account proves it’s theirs, we say so where you can’t miss it.</p></div></article>
         </div>
       </section>
 
-      <aside className="about-edition"><span className="pad-kicker">A work in progress</span><p>You’re looking at an early edition of Plum. The coins and figures are examples. Try the creation desk, make a demo coin, and look around. There is no live trading or wallet connection yet.</p><span className="about-edition-number">No. 001</span></aside>
-      <section className="about-signoff" aria-labelledby="about-signoff-title"><p className="pad-kicker">The next window is yours.</p><h2 id="about-signoff-title">Stay a little <em>curious.</em></h2><a className="pad-btn pad-btn--dark" href="/explore">Open Explore <span aria-hidden="true">↗</span></a></section>
+      <section className="about-desk" aria-labelledby="about-desk-title">
+        <div className="about-section-label"><span className="pad-kicker">On the desk</span><span className="pad-kicker">Nothing here is live yet.</span></div>
+        <h2 id="about-desk-title">What we’re <em>building.</em></h2>
+        <ul className="about-desk-list">
+          <li><strong>Fee truth.</strong> Claimable, pending, claimed. With the transaction.</li>
+          <li><strong>Gas before you sign.</strong> The real cost, shown in what you’re paying with.</li>
+          <li><strong>Why a trade failed.</strong> The chain’s reason, not a spinner.</li>
+          <li><strong>Who holds it.</strong> Top wallets and clusters, on every coin.</li>
+        </ul>
+      </section>
+
+      <aside className="about-edition"><span className="pad-kicker">Early edition</span><p>The coins and figures on Explore are examples. There’s no live trading or wallet connection yet. Plum is independent and not affiliated with Pons or Robinhood.</p></aside>
+      <section className="about-signoff" aria-labelledby="about-signoff-title"><h2 id="about-signoff-title">See it <em>clearly.</em></h2><a className="pad-btn pad-btn--dark" href="/explore">Open Explore</a></section>
     </main>
     <PaperFooter />
   </div>

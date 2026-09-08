@@ -1,4 +1,5 @@
-export const CHANNEL_URLS = [1, 2, 3, 4].map((channel) => `/videos/channels/channel-0${channel}.mp4`)
+// Play order is the user's priority, not file order: channel 4 opens, then 2, 3, 1.
+export const CHANNEL_URLS = [4, 2, 3, 1].map((channel) => `/videos/channels/channel-0${channel}.mp4`)
 export const STATIC_SECONDS = 0.24
 const STALL_SECONDS = 8
 
@@ -30,6 +31,58 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
   let audio: AudioContext | undefined
   let burst: AudioBufferSourceNode | undefined
   const failed = new Set<number>()
+  // The only mark on the picture: a small 1-bit speaker in the corner, the Sound control panel's
+  // icon, crossed while the sound is off, ringed with its waves for a moment once it comes on.
+  // Sizes are screen pixels; `scale` converts them to canvas units so the glyph stays legible
+  // however small the CRT is drawn.
+  let scale = 0.4
+  let wavesShownAt = -1
+  let poster: HTMLImageElement | undefined
+  const drawSpeaker = (u: number, kind: 'off' | 'on' | 'play', alpha: number) => {
+    ctx.save()
+    ctx.globalAlpha = alpha
+    ctx.translate(640 - 36 * u, 38 * u)
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+    // Icons of the period were white with a black outline, which also reads on bright footage.
+    const outline = (draw: () => void, fill: boolean) => {
+      ctx.strokeStyle = '#0b0f0c'
+      ctx.lineWidth = (fill ? 3.2 : 5) * u
+      draw()
+      ctx.stroke()
+      ctx.strokeStyle = '#eef1e4'
+      ctx.fillStyle = '#eef1e4'
+      ctx.lineWidth = 1.8 * u
+      draw()
+      if (fill) ctx.fill()
+      else ctx.stroke()
+    }
+    if (kind === 'play') {
+      outline(() => { ctx.beginPath(); ctx.moveTo(-7 * u, -9 * u); ctx.lineTo(9 * u, 0); ctx.lineTo(-7 * u, 9 * u); ctx.closePath() }, true)
+    } else {
+      outline(() => { ctx.beginPath(); ctx.moveTo(-12 * u, -4 * u); ctx.lineTo(-7 * u, -4 * u); ctx.lineTo(-1 * u, -10 * u); ctx.lineTo(-1 * u, 10 * u); ctx.lineTo(-7 * u, 4 * u); ctx.lineTo(-12 * u, 4 * u); ctx.closePath() }, true)
+      if (kind === 'off') outline(() => { ctx.beginPath(); ctx.moveTo(4 * u, -4.5 * u); ctx.lineTo(12 * u, 4.5 * u); ctx.moveTo(12 * u, -4.5 * u); ctx.lineTo(4 * u, 4.5 * u) }, false)
+      else outline(() => { ctx.beginPath(); ctx.arc(0, 0, 6 * u, -0.85, 0.85); ctx.moveTo(10.5 * u, -8 * u); ctx.arc(0, 0, 10.5 * u, -0.85, 0.85) }, false)
+    }
+    ctx.restore()
+  }
+  const drawOsd = () => {
+    const u = Math.min(1 / scale, 4)
+    if (!active) drawSpeaker(u, 'play', 1)
+    else if (!audible) drawSpeaker(u, 'off', 1)
+    else if (wavesShownAt >= 0) {
+      const age = Date.now() - wavesShownAt
+      if (age > 2400) { wavesShownAt = -1; return }
+      drawSpeaker(u, 'on', Math.min(1, (2400 - age) / 600))
+    }
+  }
+  const redrawStill = () => {
+    if (disposed) return
+    if (phase === 'video' && lastMediaTime >= 0) drawPicture(videos[channel], videos[channel].videoWidth, videos[channel].videoHeight)
+    else if (phase === 'waiting' && lastMediaTime < 0 && poster) drawPicture(poster, poster.naturalWidth, poster.naturalHeight)
+    else return
+    invalidate()
+  }
 
   const report = () => {
     if (!diagnostics) return
@@ -50,10 +103,11 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
   const drawPicture = (image: CanvasImageSource, width: number, height: number) => {
     // Fill the CRT edge to edge; center-crop widescreen footage without
     // stretching faces. The poster uses the same framing as the live video.
-    const scale = Math.max(640 / width, 480 / height)
+    const cover = Math.max(640 / width, 480 / height)
     ctx.fillStyle = '#020504'
     ctx.fillRect(0, 0, 640, 480)
-    ctx.drawImage(image, (640 - width * scale) / 2, (480 - height * scale) / 2, width * scale, height * scale)
+    ctx.drawImage(image, (640 - width * cover) / 2, (480 - height * cover) / 2, width * cover, height * cover)
+    drawOsd()
     finishFrame()
   }
   const drawMessage = () => {
@@ -135,14 +189,13 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
     return video
   })
   drawMessage()
-  const poster = new Image()
-  poster.onload = () => {
-    if (!disposed && phase === 'waiting' && lastMediaTime < 0) {
-      drawPicture(poster, poster.naturalWidth, poster.naturalHeight)
-      invalidate()
-    }
+  const posterImage = new Image()
+  posterImage.onload = () => {
+    if (disposed) return
+    poster = posterImage
+    redrawStill()
   }
-  poster.src = '/videos/channels/channel-poster.jpg'
+  posterImage.src = '/videos/channels/channel-poster.jpg'
 
   const startVideo = () => {
     if (starting || !active || disposed || phase === 'unavailable') return
@@ -225,7 +278,12 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
         videos.forEach((video) => video.pause())
         stopBurst()
       } else if (phase === 'video' || phase === 'waiting') startVideo()
+      redrawStill()
       report()
+    },
+    setScale(value: number) {
+      scale = value
+      redrawStill()
     },
     async setSound(value: boolean) {
       const attempt = ++audioAttempt
@@ -240,10 +298,13 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
           if (audio.state !== 'running') throw new Error('Audio is suspended')
           audible = true
           videos[channel].muted = false
+          wavesShownAt = Date.now()
+          if (phase === 'static' && elapsed < STATIC_SECONDS) playStatic()
         } catch {
           if (!disposed && attempt === audioAttempt) soundBlocked()
         }
       }
+      redrawStill()
       report()
     },
     update(delta: number) {
@@ -259,7 +320,7 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
       audioAttempt++
       stopBurst()
       void audio?.close().catch(() => {})
-      poster.onload = null
+      posterImage.onload = null
       videos.forEach((video) => {
         video.onended = video.onerror = null
         video.pause()

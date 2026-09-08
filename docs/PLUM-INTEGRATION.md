@@ -4,6 +4,8 @@ Updated September 7, 2026. Technical handoff for replacing Plum's launch prototy
 
 For the next session's starting state, preserved decisions and implementation order, use the [integration handoff](LAUNCH-INTEGRATION-HANDOFF.md).
 
+Implementation status, routes and verification evidence for the built API are in [Plum launch API](LAUNCH-API.md). The next session starts from [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md).
+
 ## 1. Decision and readiness
 
 Use **Alchemy for chain access**, **pons v2 for creation**, **a Plum-owned registry for Explore membership**, and **Mobula for market enrichment**. Keep our existing visual identity and grid. Explore must contain launches created through Plum, not a general pons or Robinhood discovery feed.

@@ -9,6 +9,7 @@ test('plays into a supplied DOM canvas using only 2D and ignores late callbacks 
     fillStyle: '', textAlign: '', font: '', imageSmoothingEnabled: true,
     fillRect() { drawings++ }, fillText() { drawings++ },
     drawImage() { drawings++ }, putImageData() { drawings++ },
+    measureText: () => ({ width: 100 }), beginPath() {}, roundRect() {}, fill() {}, stroke() {}, strokeRect() {}, save() {}, restore() {}, translate() {}, moveTo() {}, lineTo() {}, arc() {}, closePath() {}, lineWidth: 1, strokeStyle: '', globalAlpha: 1, textBaseline: '', shadowColor: '', shadowBlur: 0, lineJoin: '', lineCap: '',
     createImageData: (width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
     createRadialGradient: () => ({ addColorStop() {} }),
   }
@@ -75,9 +76,10 @@ test('plays into a supplied DOM canvas using only 2D and ignores late callbacks 
   posterLoaded()
   assert.equal(invalidations, 1)
   monitor.setActive(true)
+  assert.equal(invalidations, 2, 'Activation redraws the poster so its caption reflects the new state.')
   assert.equal(monitor.update(1 / 30), true, 'A decoded video frame is drawn into the supplied canvas.')
   assert.equal(monitor.update(1 / 30), false, 'An unchanged media frame is not redrawn.')
-  assert.equal(invalidations, 1, 'Frame updates do not recursively invalidate the animation loop.')
+  assert.equal(invalidations, 2, 'Frame updates do not recursively invalidate the animation loop.')
   monitor.dispose()
   const drawingsAtDisposal = drawings
   posterLoaded()
@@ -88,7 +90,7 @@ test('plays into a supplied DOM canvas using only 2D and ignores late callbacks 
   monitor.setActive(true)
   assert.equal(monitor.update(100), false)
   assert.equal(drawings, drawingsAtDisposal)
-  assert.equal(invalidations, 1)
+  assert.equal(invalidations, 2)
   assert.ok(videos.every(video => video.paused && video.src === '' && !video.onerror && !video.onended))
   assert.equal(posters[0].onload, null)
 })

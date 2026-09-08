@@ -1,89 +1,57 @@
-import type { LaunchedToken } from './LaunchForm'
+import type { Launch } from './api'
+import { formatChange, formatUsd, launchBadge, relativeAge, shortAddress } from './launchModel'
+import './launchLive.css'
 
-export type Filter = 'all' | 'graduated' | 'curve' | 'stocks'
+export type Filter = 'all' | 'graduated' | 'curve' | 'mine'
 
-type Card = {
-  id: string
-  ticker: string
-  name: string
-  mc: string
-  change: string
-  age: string
-  paired: string
-  progress: number
-  graduated: boolean
-  address: string
-  hue: number
-  image?: string
-  description?: string
-}
+type Props = { launches: Launch[]; loading: boolean; error: string | null; filter: Filter; search: string; viewer: string | null; onReset: () => void; onRetry: () => void }
 
-// Placeholder cards. Shapes follow the Pons explore grid; every value is invented.
-const SAMPLE = [
-  { ticker: 'SAMPLE', name: 'Sample Token', mc: '$1.20M', change: '+4.2%', age: '3d', paired: 'ETH', progress: 100, graduated: true, address: '0x0000…0001', hue: 28 },
-  { ticker: 'PLCHLD', name: 'Placeholder', mc: '$840.0K', change: '−1.1%', age: '5d', paired: 'ETH', progress: 100, graduated: true, address: '0x0000…0002', hue: 200 },
-  { ticker: 'DEMO', name: 'Demo Coin', mc: '$412.5K', change: '+12.8%', age: '1d', paired: 'USDG', progress: 100, graduated: true, address: '0x0000…0003', hue: 120 },
-  { ticker: 'PAPER', name: 'Paper Stock', mc: '$390.2K', change: '+0.4%', age: '2d', paired: 'HOOD', progress: 100, graduated: true, address: '0x0000…0004', hue: 300 },
-  { ticker: 'CREAM', name: 'Cream Ledger', mc: '$221.7K', change: '−6.3%', age: '4d', paired: 'ETH', progress: 100, graduated: true, address: '0x0000…0005', hue: 48 },
-  { ticker: 'TEST', name: 'Test Pair', mc: '$96.2K', change: '+31.0%', age: '2h', paired: 'ETH', progress: 68, graduated: false, address: '0x0000…0006', hue: 10 },
-  { ticker: 'MOCK', name: 'Mock Launch', mc: '$41.7K', change: '+8.9%', age: '40m', paired: 'cbBTC', progress: 41, graduated: false, address: '0x0000…0007', hue: 260 },
-  { ticker: 'STUB', name: 'Stub Asset', mc: '$18.3K', change: '−2.2%', age: '12m', paired: 'ETH', progress: 22, graduated: false, address: '0x0000…0008', hue: 170 },
-  { ticker: 'FIXT', name: 'Fixture', mc: '$9.9K', change: '+0.9%', age: '4m', paired: 'AAPL', progress: 9, graduated: false, address: '0x0000…0009', hue: 80 },
-  { ticker: 'DUMMY', name: 'Dummy Row', mc: '$5.1K', change: '0.0%', age: 'now', paired: 'ETH', progress: 3, graduated: false, address: '0x0000…0010', hue: 330 },
-]
-
-const STOCK_PAIRS = new Set(['HOOD', 'AAPL', 'TSLA', 'NVDA'])
-
-export default function TokenGrid({ launched, filter, search, onReset }: { launched: LaunchedToken[]; filter: Filter; search: string; onReset: () => void }) {
-  const cards: Card[] = [
-    ...launched.map((token, index) => ({
-      id: token.id,
-      ticker: token.ticker,
-      name: token.name,
-      mc: '—',
-      change: 'demo',
-      age: 'now',
-      paired: token.paired,
-      progress: 0,
-      graduated: false,
-      address: 'this visit',
-      hue: (index * 67) % 360,
-      image: token.image,
-      description: token.description,
-    })),
-    ...SAMPLE.map(card => ({ ...card, id: card.address })),
-  ]
-  const visible = cards.filter((card) => {
-    if (filter === 'graduated' && !card.graduated) return false
-    if (filter === 'curve' && (card.graduated || card.address === 'this visit')) return false
-    if (filter === 'stocks' && !STOCK_PAIRS.has(card.paired)) return false
-    return `${card.name} ${card.ticker} ${card.address}`.toLowerCase().includes(search.trim().toLowerCase())
+export default function TokenGrid({ launches, loading, error, filter, search, viewer, onReset, onRetry }: Props) {
+  const visible = launches.filter(launch => {
+    if (filter === 'graduated' && !launch.protocol?.graduated) return false
+    if (filter === 'curve' && (launch.protocol ? !launch.protocol.onCurve : false)) return false
+    if (filter === 'mine' && (!viewer || launch.creator.toLowerCase() !== viewer.toLowerCase())) return false
+    return `${launch.name} ${launch.symbol} ${launch.token}`.toLowerCase().includes(search.trim().toLowerCase())
   })
 
-  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker or filter.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins ↗</button></div>
+  if (error && launches.length === 0) {
+    return <div className="pad-empty" role="status"><h3>The collection is out of reach.</h3><p>{error}</p><button type="button" className="pad-btn" onClick={onRetry}>Try again</button></div>
+  }
+  if (loading && launches.length === 0) return <div className="pad-empty" role="status" aria-busy="true"><h3>Opening the collection…</h3><p>Reading Plum launches from the registry.</p></div>
+  if (launches.length === 0) {
+    return <div className="pad-empty" role="status"><h3>Nothing launched through Plum yet.</h3><p>Explore only lists coins created here. The first one could be yours.</p></div>
+  }
+  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Try a different name, ticker, address or filter.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
 
   return (
     <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
-      {visible.map((card) => (
-        <li key={card.id} className="pad-card" data-graduated={card.graduated}>
-          <div className="pad-card-art" style={{ '--hue': card.hue } as React.CSSProperties} aria-hidden="true">
-            {card.image ? <img src={card.image} alt="" /> : <span>{card.ticker.slice(0, 2)}</span>}
-            <b className="pad-badge">{card.graduated ? 'Graduated' : card.address === 'this visit' ? 'Your demo' : `Curve · ${card.progress}%`}</b>
-          </div>
-          <div className="pad-card-body">
-            <div className="pad-card-title"><strong title={card.name}>{card.name}</strong><span>${card.ticker}</span></div>
-            {card.description && <p className="pad-sr-only">{card.description}</p>}
-            <div className="pad-card-row"><span className="pad-mc">{card.mc}<small>MC</small></span><span className="pad-change" data-neg={card.change.startsWith('−')}>{card.change}</span></div>
-            <span className="pad-sr-only">{card.graduated ? 'Sample graduated coin' : card.address === 'this visit' ? 'Demo coin, not deployed' : 'Sample coin on the curve'}</span>
-            {!card.graduated && card.address !== 'this visit' && (
-              <div className="pad-progress" role="progressbar" aria-valuenow={card.progress} aria-valuemin={0} aria-valuemax={100} aria-label={`${card.name} sample curve progress`}>
-                <span style={{ width: `${card.progress}%` }} />
+      {visible.map((launch, index) => {
+        const badge = launchBadge(launch)
+        const market = launch.market?.payload ?? null
+        const marketNote = launch.market ? { ok: '', stale: 'stale', error: 'unavailable', unavailable: 'no market data', unsupported: 'not indexed yet' }[launch.market.status] : 'no market data'
+        return (
+          <li key={launch.token} className="pad-card" data-graduated={Boolean(launch.protocol?.graduated)} data-confirming={launch.confirmationState === 'included'}>
+            <div className="pad-card-art" style={{ '--hue': (index * 67 + launch.blockNumber) % 360 } as React.CSSProperties} aria-hidden="true">
+              {launch.logo ? <img src={launch.logo} alt="" loading="lazy" /> : <span>{launch.symbol.slice(0, 2)}</span>}
+              <b className="pad-badge">{badge}</b>
+            </div>
+            <div className="pad-card-body">
+              <div className="pad-card-title"><strong title={launch.name}>{launch.name}</strong><span>${launch.symbol}</span></div>
+              {launch.description && <p className="pad-sr-only">{launch.description}</p>}
+              <div className="pad-card-row">
+                <span className="pad-mc">{formatUsd(market?.marketCapUsd)}<small>MC</small></span>
+                <span className="pad-change" data-neg={(market?.priceChange24hPct ?? 0) < 0}>{marketNote ? <small className="pad-market-note">{marketNote}</small> : formatChange(market?.priceChange24hPct)}</span>
               </div>
-            )}
-            <div className="pad-card-meta"><span>{card.address}</span><span>{card.paired}</span><span>{card.age}</span></div>
-          </div>
-        </li>
-      ))}
+              <span className="pad-sr-only">{badge}{launch.protocolError ? `, ${launch.protocolError}` : ''}</span>
+              <div className="pad-card-meta">
+                {launch.explorer ? <a className="pad-card-link" href={launch.explorer.token} target="_blank" rel="noreferrer" title={launch.token}>{shortAddress(launch.token)}</a> : <span title={launch.token}>{shortAddress(launch.token)}</span>}
+                <span>{launch.pairToken === '0x0000000000000000000000000000000000000000' ? 'ETH' : shortAddress(launch.pairToken)}</span>
+                <span>{relativeAge(launch.blockTime)}</span>
+              </div>
+            </div>
+          </li>
+        )
+      })}
     </ul></>
   )
 }

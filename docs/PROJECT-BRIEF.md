@@ -4,11 +4,13 @@ Updated September 7, 2026.
 
 ## Current direction
 
-The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond page and section titles, Georgia body copy, Instrument Serif editorial details, VT323 terminal labels, warm ivory, dark green atmosphere, and the compact Macintosh. Shader's About section is a reference for treatment, not a template to copy. Logo exploration, API integration, and deployment remain deferred.
+The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond for titles, body, and tracked-capital labels, ChicagoFLF for on-screen controls, warm ivory, dark green atmosphere, and the compact Macintosh. Tokens, palette, motion budget, and the list of removed decoration are in [DESIGN.md](../DESIGN.md). Shader's About section is a reference for treatment, not a template to copy. The logo is settled (see below); API integration and deployment remain deferred.
 
 Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 
-Scrolling from the opening now zooms through the Macintosh glass into Explore, reversing on upward scroll. Direct page links remain available. Deliberate scrolling always drives the zoom; reduced motion still pauses TV autoplay. See [Opening to Explore](SCROLL-TRANSITION.md) for behavior and desktop/mobile evidence.
+About was rewritten on September 7 into a plain-words brief: Plum is a second window on Pons launches, on top of Pons and not instead of it, anonymous, with the Pons complaints research folded into three rules and a short list of what is being built. Its hero keeps a quiet subset of Shader's post-processing in 2D canvas (diffusion, warm bloom, fine grain, vignette) while the copy stays HTML; scanlines, channel split, and lens warp were tried and removed. [Shader About study](SHADER-ABOUT-STUDY.md) records the chain, the values, and what was kept. The user is supplying a better hero image.
+
+The opening is a single non-scrolling scene. An Enter link in the intro navigates to Explore; the scroll-driven zoom was removed on September 7 ([Opening to Explore](SCROLL-TRANSITION.md)).
 
 Use an accurate compact Macintosh. The user prefers the original image presentation with a working TV. Keep that direction unless the user changes it. Shader informs atmosphere, lighting, material treatment, composition, and luminous typography; retain our Macintosh and identity.
 
@@ -16,27 +18,31 @@ Latest opening-scene direction: a slightly darker, less defined landscape, with 
 
 Read [VISUAL-TARGET.md](VISUAL-TARGET.md) for current screenshots and acceptance criteria. The requested Apple Garamond update and matching comparisons are in [Typography](TYPOGRAPHY.md).
 
+## Handoff, September 7 evening
+
+Two passes landed on `main` after the user reviewed them in Chrome. The cut pass removed arrows, numbering, placeholder stat cards, decorative captions, and all slogans except the headline pair and the About close. The type pass replaced Georgia, Instrument Serif, and VT323 with Apple Garamond (titles, body, labels) and ChicagoFLF (controls); the user chose tracked Garamond capitals for labels from a six-option comparison. The user's logo, a plum in Apple rainbow bands, is now the mark on every page: `frontend/public/images/plum-mark.png` (256 px, cut from the user's `assets/reference/plum-mark-source.png`; the earlier `plum_retro_exact_02.svg` is a raster in an SVG wrapper, not a vector). The lockup is one wordmark everywhere, after Shader's: mark at cap height beside bold italic Garamond "Plum", 44px on the opening with a phosphor halo, 40px on Explore and About multiplied onto the paper, 32px on mobile. The Explore banner is eight stacked bands in the logo's hues, multiplied onto the paper. The loader is a Shader-style boot screen: the bone-coloured mark (`images/loading-mark.png`, cut from `assets/reference/loading-mark-source.png`) beside a large bold italic "Plum", then "Plum, Website / Version 1.0", the bar, and a copyright line, all on the indigo CRT. The user's three-person photo (`assets/reference/loading-banner-source.png`) was tried in the loader and dropped; it is unused and could serve the About hero.
+
+The TV sound work landed on September 7 evening after review in Chrome: the footer buttons are gone, the glass is the switch, a corner speaker glyph marks the state, and a Chicago cursor label names the action. Two earlier attempts, a subtitle-style caption and a System 1 dialog box, were rejected for covering the footage. The same commit set the site title to "Plum", added Open Graph and Twitter tags, and adopted the user's favicon (`frontend/public/favicon.ico`).
+
+Later on September 7 the Explore hero's Macintosh was replaced by a CRT close-up (`frontend/public/images/crt-close.jpg`, cut from the user's `explore-monitor.png`) whose glass shows the newest coin's logo or initials as emitted light, with NO SIGNAL whenever there is no coin to show. Built on the `claude/explore-monitor-crt-replace-c80916` worktree branch and checked at 1440 × 900 and 390 × 844 with mocked registry data; committed on that branch after the user's review in this session. The figure now also shows on mobile because it is live data; cut it there if it pushes the collection too far down.
+
+Open decisions, in order: the headline pattern (proposal: keep the two-line italic pair on the opening only, plain single-line headings elsewhere; see the About and Explore lines proposed in session); darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
+
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
-- Explore and About use scoped styles, the existing fonts/artwork, and static grain. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
-- Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels, brief static transitions, Play/Pause, and opt-in sound.
+- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the newest coin. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
+- Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, muted autoplay, and opt-in sound. The glass is the only control: a click unmutes, mutes, or (under reduced motion) plays with sound. The picture carries one mark, a small outlined speaker in the top-right corner drawn into the canvas (crossed while muted, waves for two seconds when the sound comes on, a play triangle while paused), and a Chicago cursor label follows the pointer over the glass. The footer buttons were removed on September 7.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
-- The loader completes when the artwork loads. Image failure exposes reload; exhausted video failures show NO SIGNAL.
+- The loader completes when the artwork loads, but stays up at least 1.8 s on the first visit of a tab session (skipped for reduced motion and on later visits via a sessionStorage flag). Image failure exposes reload; exhausted video failures show NO SIGNAL.
 - The purchased Macintosh model, Blender sources, and earlier Three.js implementation remain preserved. The active view does not load that renderer or offer its camera controls.
 
 ## Unresolved feedback
 
-The user finds the added light/reflections barely noticeable and the shadows fake. The computer still needs convincing surface contact and better integration with the dreamy environment. Technical validation and past completion messages are not aesthetic approval.
+The user finds the added light and reflections barely noticeable and the shadows fake. The computer still needs convincing surface contact and better integration with the dreamy environment. Every pass since is recorded with screenshots and the user's verdict in [VISUAL-TARGET.md](VISUAL-TARGET.md); none is approved. Current technique: alpha-masked directional shade across the casing, darker foreground and fog, brighter exposure curve, small highlight diffusion inside the glass clip, keyboard spill masked by the artwork's luminance.
 
-The September 7 contact revision removed the detached keyboard-side shadow strip and placed overlapping, filled footprints beneath the objects. The following atmosphere pass added grading and localized CRT reflections, but the user rejected its impact: "It looks the exact same." The existing preview was verified to have that build; it was not a stale-build issue in the inspected tab.
-
-The latest iteration changes technique: an alpha-masked directional shade crosses the casing into a dark right side while preserving the lit front. The foreground floor and fog fall into deeper darkness. The TV and its localized light remain above this shading. Desktop/mobile comparisons are in the visual target; the iteration awaits user assessment.
-
-The subsequent CRT pass was rejected by the user: the edges and reflections looked low quality. Its painted edge strokes, broad casing wash, fake glass glint, and enlarged bloom copy are now removed. The latest revision retains the brighter exposure curve, adds small highlight diffusion directly to the full-resolution TV inside its glass clip, and masks keyboard spill with the source artwork's luminance so dark gaps/legends stay dark. This is still a 2D approximation awaiting assessment. The directional room treatment remains unchanged.
-
-Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. Use the existing Pause TV control for comparisons. The proposed timestamp-lock preview was declined as overcomplicated; no code was added. A Blender pre-render was suggested but has not been selected.
+Prioritize one visible discrepancy, make a small change, inspect it against Shader, and show the difference. A timestamp-lock preview was declined as overcomplicated. A Blender pre-render was suggested but not selected.
 
 ## References and preservation
 
