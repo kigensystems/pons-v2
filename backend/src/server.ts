@@ -25,7 +25,9 @@ export function createServices(config: Config, options: { chain?: ChainReader; d
 }
 
 export function createHandler(router: Router) {
-  const global = new RateLimiter(240, 60_000)
+  // Explore reads five routes on load and three every half minute, plus a 3 s poll while a launch settles;
+  // this cap is for abuse, generous enough that a shared address (an office, a bad proxy) still browses.
+  const global = new RateLimiter(1200, 60_000)
   setInterval(() => global.sweep(), 60_000).unref()
   return async (req: IncomingMessage, res: ServerResponse) => {
     const started = Date.now()

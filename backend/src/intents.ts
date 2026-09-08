@@ -108,9 +108,15 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
     }
   }
 
+  // The gas limit sent to the wallet is the estimate plus a fifth: the launch deploys contracts, and
+  // an estimate taken one block can fall short in the next. The quote and the balance check use the
+  // same buffered figure, so what the wallet locks is what the desk showed.
+  const GAS_BUFFER_PCT = 20n
+
   async function simulate(address: Address, tx: { to: Address; data: Hex; value: bigint }): Promise<SimulationRecord> {
     const [result, balance] = await Promise.all([chain.simulate({ account: address, ...tx }), chain.balance(address).catch(() => null)])
     if (!result.ok) return { ok: false, code: result.code, reason: result.reason, balanceWei: balance === null ? null : balance.toString(), simulatedAt: now() }
+    result.gas = result.gas + (result.gas * GAS_BUFFER_PCT) / 100n
     const required = tx.value + result.gas * result.maxFeePerGas
     const shortfall = balance === null ? 0n : required > balance ? required - balance : 0n
     if (shortfall > 0n) return { ok: false, code: 'insufficient_funds', reason: 'Wallet balance cannot cover the creation fee plus gas', balanceWei: balance!.toString(), simulatedAt: now() }

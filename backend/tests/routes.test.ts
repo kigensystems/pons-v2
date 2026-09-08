@@ -31,7 +31,7 @@ async function api(path: string, init: RequestInit & { json?: unknown; raw?: Buf
 }
 
 test('health and launch-config are public; writes need same-origin and a session', async () => {
-  assert.deepEqual((await api('/api/health')).body, { ok: true, chainId: 4663, factory: config.factory })
+  assert.deepEqual((await api('/api/health')).body, { ok: true, chainId: 4663, factory: config.factory, client: '127.0.0.1' })
   const settings = await api('/api/launch-config')
   assert.equal(settings.status, 200)
   assert.equal(settings.body.launchFeeWei, '500000000000000')

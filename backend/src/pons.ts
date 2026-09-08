@@ -28,6 +28,7 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
   let feed: PonsCoins | null = null
   let spot: Spotlight | null = null
   let inflight: Promise<PonsCoins> | null = null
+  let spotInflight: Promise<Spotlight> | null = null
 
   function present(coin: PulseCoin): PonsCoin {
     const key = coin.token.toLowerCase()
@@ -52,21 +53,28 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
     return inflight
   }
 
+  // Newest graduation first; a candidate the factory does not report as graduated is skipped.
+  async function confirm(list: PonsCoins): Promise<Spotlight> {
+    const keep = (error: string): Spotlight => ({ status: spot?.payload ? 'stale' : list.status === 'unavailable' ? 'unavailable' : 'error', payload: spot?.payload ?? null, observedAt: spot?.observedAt ?? null, retrievedAt: list.retrievedAt, error })
+    if (list.status === 'error' || list.status === 'unavailable') return keep(list.error ?? 'Feed unavailable')
+    for (const candidate of list.items.slice(0, CANDIDATES)) {
+      let state
+      try { state = await chain.launchedToken(candidate.token) } catch { return keep('Protocol state is temporarily unavailable') }
+      if (!state.exists || state.phase < 2) continue
+      return { status: list.status, payload: { ...candidate, deployer: state.deployer, phaseName: state.phaseName }, observedAt: candidate.graduatedAt, retrievedAt: list.retrievedAt, error: list.error }
+    }
+    return { status: list.status, payload: null, observedAt: null, retrievedAt: list.retrievedAt, error: list.error }
+  }
+
   return {
     coins,
-    // Newest graduation first; a candidate the factory does not report as graduated is skipped.
+    // Confirmed once per snapshot; every viewer arriving during that read shares it.
     async spotlight(): Promise<Spotlight> {
       const list = await coins()
       if (spot && spot.retrievedAt === list.retrievedAt) return spot
-      const keep = (error: string): Spotlight => ({ status: spot?.payload ? 'stale' : list.status === 'unavailable' ? 'unavailable' : 'error', payload: spot?.payload ?? null, observedAt: spot?.observedAt ?? null, retrievedAt: list.retrievedAt, error })
-      if (list.status === 'error' || list.status === 'unavailable') return spot = keep(list.error ?? 'Feed unavailable')
-      for (const candidate of list.items.slice(0, CANDIDATES)) {
-        let state
-        try { state = await chain.launchedToken(candidate.token) } catch { return spot = keep('Protocol state is temporarily unavailable') }
-        if (!state.exists || state.phase < 2) continue
-        return spot = { status: list.status, payload: { ...candidate, deployer: state.deployer, phaseName: state.phaseName }, observedAt: candidate.graduatedAt, retrievedAt: list.retrievedAt, error: list.error }
-      }
-      return spot = { status: list.status, payload: null, observedAt: null, retrievedAt: list.retrievedAt, error: list.error }
+      if (spotInflight) return spotInflight
+      spotInflight = confirm(list).then(next => spot = next).finally(() => { spotInflight = null })
+      return spotInflight
     },
   }
 }

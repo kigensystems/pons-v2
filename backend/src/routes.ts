@@ -22,7 +22,7 @@ export type Services = {
 
 export function buildRouter(s: Services): Router {
   const router = new Router()
-  const limits = { auth: new RateLimiter(20, 60_000), write: new RateLimiter(30, 60_000), upload: new RateLimiter(10, 60_000) }
+  const limits = { auth: new RateLimiter(60, 60_000), write: new RateLimiter(30, 60_000), upload: new RateLimiter(10, 60_000) }
   setInterval(() => Object.values(limits).forEach(l => l.sweep()), 60_000).unref()
 
   function sameOrigin(ctx: Ctx) {
@@ -31,7 +31,8 @@ export function buildRouter(s: Services): Router {
   }
   const header = (ctx: Ctx, name: string) => { const v = ctx.req.headers[name]; return (Array.isArray(v) ? v[0] : v) ?? '' }
 
-  router.add('GET', '/api/health', () => ({ ok: true, chainId: s.config.chainId, factory: s.config.factory }))
+  // client is the address rate limits count against; through the Netlify proxy it must be the caller's own.
+  router.add('GET', '/api/health', ctx => ({ ok: true, chainId: s.config.chainId, factory: s.config.factory, client: ctx.ip }))
 
   router.add('POST', '/api/auth/challenge', async ctx => {
     sameOrigin(ctx); limits.auth.check(ctx.ip)

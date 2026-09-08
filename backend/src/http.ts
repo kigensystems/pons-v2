@@ -96,12 +96,17 @@ export class RateLimiter {
   sweep() { const now = Date.now(); for (const [key, entry] of this.hits) if (entry.reset <= now) this.hits.delete(key) }
 }
 
+// The key rate limits are counted against. Behind the Netlify proxy (PLUM_TRUST_PROXY=1) the browser's
+// address arrives in x-nf-client-connection-ip, the header Netlify commits to; X-Forwarded-For is the
+// fallback for other proxies. Without a proxy header every viewer would share the proxy's address and
+// one limit, so /api/health echoes this key for the post-deploy check.
 export function clientIp(req: IncomingMessage): string {
-  // Behind a reverse proxy set PLUM_TRUST_PROXY=1 and forward X-Forwarded-For; otherwise use the socket.
   if (process.env.PLUM_TRUST_PROXY === '1') {
-    const forwarded = req.headers['x-forwarded-for']
-    const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim()
-    if (first) return first
+    for (const name of ['x-nf-client-connection-ip', 'true-client-ip', 'x-forwarded-for']) {
+      const raw = req.headers[name]
+      const first = (Array.isArray(raw) ? raw[0] : raw)?.split(',')[0]?.trim()
+      if (first) return first
+    }
   }
   return req.socket.remoteAddress ?? 'unknown'
 }
