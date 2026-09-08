@@ -29,7 +29,7 @@ Third pass, September 8, approved in Chrome:
 - Pair assets on the desk. pons's docs say a pair-token launch is the same single `launchToken` call with the fee as `msg.value` and no balance or approval of the pair asset needed by the creator; only the economics pin differs. The factory publishes no list, so `chain/client.ts` folds every `PairTokenApprovalUpdated` since deployment (58 events, one Alchemy request), names each survivor by ERC-20 `symbol`/`name` and prices it by `pairTokenEconomics`, cached ten minutes. `intents.create` accepts `pairToken`, refuses one the factory does not approve, pins `previewLaunchEconomics(config, pair)` at the settings block, and records the pair's threshold and phantom quote in the terms. `GET /api/launch-config` lists ETH then the 56 approved assets (USDG, cbBTC, TAO, 53 Robinhood stock tokens on September 8). The desk's "Paired with" is `PairPicker.tsx`: a button with the asset's mark and ticker opening a searchable list of the same (ETH, Crypto and dollars, Robinhood stock tokens), keyboard-operable; the terms panel shows "Priced in" with the mark and "Graduates at" in the pair asset. Marks are pons's own SVGs copied into `frontend/public/pairs/` (provenance in `ASSETS.md`) after Robinhood's CDN and Mobula both served one placeholder for every stock token. Backend and frontend suites at 31 each, typecheck, lint and build clean. Not verified: signing a pair-token launch with a real wallet.
 - Section 4 leftovers dropped by the user as not worth the time (Macintosh PNG re-encode, social preview image with `og:url` and canonical, per-page font preloads and WOFF2). Measured that session in case it is revisited: WebP at quality 90 with lossless alpha takes the PNG from 1.77 MB to 129 KB; WOFF2 takes the five fonts from 237 KB to 107 KB.
 
-Fourth pass, September 8, shown in Chrome, awaiting the user's go-ahead:
+Fourth pass, approved in Chrome and pushed as `3d3fc02` on September 8:
 
 - Pair deploy confirmed on the domain: `GET https://pluminfra.xyz/api/launch-config` lists 57 `pairTokens`, the desk's picker opens with every mark loaded (59 `/pairs/*.svg` images, none broken), no console errors.
 - The creator rate on every card. `GET /api/pons/coins` carries `creatorTaxBps`: from the registry row for a Plum coin, otherwise one `getLaunchedToken` read per coin kept in memory for the process (the rate is fixed at launch), `null` while a read fails. The card shows "Creator fee 2%" with the figure in ink, or "No creator fee"; nothing when the rate is unknown. Live rates on September 8 ran from 0 to 10%.
@@ -41,7 +41,7 @@ Fourth pass, September 8, shown in Chrome, awaiting the user's go-ahead:
 ### Next session
 
 1. `git pull --ff-only origin main`, `git status`; the tree should be clean apart from scratch images.
-2. If the fourth pass was approved and pushed, confirm on the domain that `GET https://pluminfra.xyz/api/pons/coins` items carry `creatorTaxBps` and the cards show the fee line.
+2. Confirm the deploy of `3d3fc02` on the domain: `GET https://pluminfra.xyz/api/pons/coins` items carry `creatorTaxBps` and the cards show the fee line.
 3. If a wallet is available: one pair-token launch (fee 0.0005 ETH plus gas) to prove the encoding and the receipt path with a non-zero `pairToken`.
 4. Section 5 polish as the user directs; then section 1 with the user.
 
