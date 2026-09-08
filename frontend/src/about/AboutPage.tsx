@@ -55,10 +55,10 @@ export default function AboutPage() {
       <section className="about-section" aria-labelledby="about-desk-title">
         <h2 id="about-desk-title">On the desk.</h2>
         <ul className="about-list about-list--4 about-desk">
-          <li><strong>Now</strong><span>Explore.</span><span>Launch through Plum, with the fees above.</span></li>
-          <li><strong>Next</strong><span>Fee truth: claimable, pending, claimed.</span><span>Gas before you sign.</span><span>Why a trade failed, in the chain’s words.</span></li>
-          <li><strong>Then</strong><span>Who holds it: top wallets and clusters.</span><span>Launch and buy in one breath.</span><span>A truth chip for terminals.</span></li>
-          <li><strong>Later</strong><span>Float squeeze radar for stock pairs.</span><span>Dividend mode terminals can read.</span><span>A fair lane, if you want one.</span></li>
+          <li><strong>Now</strong><span>Explore: every coin that has left its curve on Pons, newest first or by market cap, with a chart and an explorer link on each card.</span><span>Launch a Pons v2 coin through Plum and pay the lower fees above.</span></li>
+          <li><strong>Next</strong><span>Your share of fees shown as claimable, pending or claimed, next to the transaction that paid it.</span><span>The gas cost before you sign, in the asset you are paying with.</span><span>When a trade fails, the chain’s reason instead of a spinner.</span></li>
+          <li><strong>Then</strong><span>Who holds each coin: the top wallets, and which of them move together.</span><span>Launch a coin and buy your first of it in one transaction.</span><span>A small badge other trading terminals can show, carrying Plum’s checked figures for a coin.</span></li>
+          <li><strong>Later</strong><span>A warning on stock-paired coins when little of the stock is left to trade.</span><span>A coin setting that pays holders on a schedule, readable by terminals.</span><span>An optional launch mode that keeps bots out of the first seconds.</span></li>
         </ul>
       </section>
 
