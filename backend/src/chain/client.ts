@@ -29,7 +29,7 @@ export type ChainReader = {
 }
 export type FactoryLog = { topic: Hex; blockNumber: bigint }
 
-const RPC_CONCURRENCY = 8
+const RPC_CONCURRENCY = 16
 
 // Runs at most `limit` operations at a time; the rest wait their turn in order. The wait happens
 // before the operation starts, so the transport's own timeout covers only the request itself.
@@ -46,7 +46,7 @@ export function gate(limit: number): <T>(run: () => Promise<T>) => Promise<T> {
 
 export function createChainReader(config: Config): ChainReader {
   const chain = config.chainId === robinhood.id ? robinhood : robinhoodTestnet
-  // Provider throughput is the limit under a burst (Alchemy answers 429 above its plan's CU/s cap).
+  // Provider throughput is the limit under a burst (Alchemy answers 429 above its plan's cap; pay-as-you-go allows 10,000 CU/s).
   // Reads leave through a gate of RPC_CONCURRENCY at a time so a hundred simultaneous creators queue
   // instead of all colliding, and a 429 backs off 500 ms, 1 s, 2 s, 4 s before it is given up.
   const client: PublicClient = createPublicClient({ chain, transport: http(config.rpcUrl, { timeout: 10_000, retryCount: 4, retryDelay: 500 }) })
