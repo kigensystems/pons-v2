@@ -5,10 +5,11 @@ import { createMonitorPlayback } from '../src/monitorPlayback.ts'
 test('plays into a supplied DOM canvas using only 2D and ignores late callbacks after disposal', async t => {
   let drawings = 0
   let invalidations = 0
+  const pictures: unknown[][] = []
   const context = {
     fillStyle: '', textAlign: '', font: '', imageSmoothingEnabled: true,
     fillRect() { drawings++ }, fillText() { drawings++ },
-    drawImage() { drawings++ }, putImageData() { drawings++ },
+    drawImage(...args: unknown[]) { drawings++; pictures.push(args) }, putImageData() { drawings++ },
     measureText: () => ({ width: 100 }), beginPath() {}, roundRect() {}, fill() {}, stroke() {}, strokeRect() {}, save() {}, restore() {}, translate() {}, moveTo() {}, lineTo() {}, arc() {}, closePath() {}, lineWidth: 1, strokeStyle: '', globalAlpha: 1, textBaseline: '', shadowColor: '', shadowBlur: 0, lineJoin: '', lineCap: '',
     createImageData: (width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
     createRadialGradient: () => ({ addColorStop() {} }),
@@ -74,10 +75,12 @@ test('plays into a supplied DOM canvas using only 2D and ignores late callbacks 
   const mediaError = videos[0].onerror!
   const mediaEnded = videos[0].onended!
   posterLoaded()
+  const posterFraming = pictures.find(args => args[0] === posters[0])!.slice(1)
   assert.equal(invalidations, 1)
   monitor.setActive(true)
   assert.equal(invalidations, 2, 'Activation redraws the poster so its caption reflects the new state.')
   assert.equal(monitor.update(1 / 30), true, 'A decoded video frame is drawn into the supplied canvas.')
+  assert.deepEqual(pictures.find(args => args[0] === videos[0])!.slice(1), posterFraming, 'The first clip must keep the poster framing when playback starts.')
   assert.equal(monitor.update(1 / 30), false, 'An unchanged media frame is not redrawn.')
   assert.equal(invalidations, 2, 'Frame updates do not recursively invalidate the animation loop.')
   monitor.dispose()

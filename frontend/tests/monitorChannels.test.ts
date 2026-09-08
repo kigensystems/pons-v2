@@ -108,6 +108,27 @@ function setup(t: TestContext) {
 
 const flush = async () => { for (let i = 0; i < 5; i++) await Promise.resolve() }
 
+test('only the first clip trims its bottom strip, with full canvas coverage and no stretching', async t => {
+  const { monitor, videos } = setup(t)
+  const pictures: unknown[][] = []
+  t.mock.method((monitor.texture.image as FakeCanvas).context, 'drawImage', (...args: unknown[]) => pictures.push(args))
+  monitor.setActive(true)
+  await flush()
+  for (const [index, video] of videos.entries()) {
+    monitor.update(1 / 30)
+    const [sx, sy, sw, sh, dx, dy, dw, dh] = pictures.find(args => args[0] === video)!.slice(1) as number[]
+    assert.equal(sx, 0)
+    assert.equal(sy, 0)
+    assert.equal(sw, video.videoWidth)
+    assert.equal(sh, index === 0 ? 426 : video.videoHeight, 'Later clips retain their complete source frame.')
+    assert.ok(Math.abs(dw / sw - dh / sh) < 1e-10, 'Horizontal and vertical scaling must match.')
+    assert.ok(dx <= 0 && dy <= 0 && dx + dw >= 640 && dy + dh >= 480, 'The picture must fill the canvas without blank edges.')
+    video.finish()
+    monitor.update(STATIC_SECONDS + 0.001)
+    await flush()
+  }
+})
+
 test('cycles all four supplied clips in order and wraps, with a bounded static interval', async t => {
   const { monitor, videos, diagnostics } = setup(t)
   assert.equal(STATIC_SECONDS, 0.24)

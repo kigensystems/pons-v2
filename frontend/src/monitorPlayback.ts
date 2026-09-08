@@ -116,10 +116,13 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
   const drawPicture = (image: CanvasImageSource, width: number, height: number) => {
     // Fill the CRT edge to edge; center-crop widescreen footage without
     // stretching faces. The poster uses the same framing as the live video.
-    const cover = Math.max(640 / width, 480 / height)
+    // Channel 04 exposes hands beneath its blue banner. Six source pixels of bottom overscan
+    // put that strip below the curved glass, with the same framing on its poster.
+    const pictureHeight = channel === 0 ? height * (426 / 432) : height
+    const cover = Math.max(640 / width, 480 / pictureHeight)
     ctx.fillStyle = '#020504'
     ctx.fillRect(0, 0, 640, 480)
-    ctx.drawImage(image, (640 - width * cover) / 2, (480 - height * cover) / 2, width * cover, height * cover)
+    ctx.drawImage(image, 0, 0, width, pictureHeight, (640 - width * cover) / 2, (480 - pictureHeight * cover) / 2, width * cover, pictureHeight * cover)
     drawOsd()
     finishFrame()
   }

@@ -165,6 +165,8 @@ export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitc
       </g>
       {/* Original bezel detail remains exposed; highlight diffusion stays inside the glass. */}
       <g clipPath={`url(#${clipId})`} aria-hidden="true">
+        {/* The artwork's own reflection gives the moving picture the same glass curvature as its bezel. */}
+        <image href="/images/macintosh-render.png" width="1536" height="1024" opacity=".12" style={{ mixBlendMode: 'screen' }} />
         <rect x="560" y="135" width="375" height="315" fill={`url(#${clipId}-glass-shade)`} />
       </g>
       {/* The glass is the only control: it plays, unmutes, and mutes. The focus ring follows its curve. */}
