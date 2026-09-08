@@ -1,6 +1,6 @@
 # Deploying Plum
 
-Prepared September 8, 2026; provider facts re-checked against the hosts' documentation on September 9. Netlify serves the frontend and proxies `/api` to the launch API, which runs as one Docker container with a persistent disk on Render. Nothing has been deployed yet; this is the checklist.
+Prepared September 8, 2026; provider facts re-checked against the hosts' documentation on September 9, and deployed that evening. Netlify project `plumdesk` (team Kigen) serves the frontend at `https://pluminfra.xyz` (also `plumdesk.netlify.app`) and proxies `/api` to the launch API, one Docker container with a persistent disk on Render at `https://plum-api-fg3l.onrender.com`. Both build from `main` on every push. This is the checklist that was followed, kept for the next environment.
 
 ## Shape
 
@@ -14,6 +14,8 @@ Prepared September 8, 2026; provider facts re-checked against the hosts' documen
 2. **Netlify.** Add site from Git → this repository; `netlify.toml` sets base, command, publish and the redirects. Environment: `VITE_REOWN_PROJECT_ID`, and `PLUM_PROXY_SECRET` with exactly the value given to Render and its scope including **Runtime** (the signature is computed at request time, not at build time). Deploy.
 3. **Reown.** At dashboard.reown.com add the Netlify origin to the project's allowed domains. An origin not on the list is refused outright (AppKit error APKT002), not warned about.
 4. **Check** on the live site: `/api/health` answers through the proxy and its `client` field is your own public IP, not a Netlify or Render address (if it is, every visitor shares one rate limit; see Boundaries); `https://plum-api-fg3l.onrender.com/api/launch-config` fetched directly answers 403 `unsigned`, which proves the proxy secret is set on both sides; the Explore CRT shows the latest graduation; Connect wallet → sign in → the header shows the address (this proves the proxied `Origin` header and cookie survive Netlify); open Create a coin and read the live terms. Stop before signing a transaction unless a real launch is intended.
+**Done on September 9:** step 4 passed through `plumdesk.netlify.app` with the API's origin set to the domain: `/api/health` through the proxy reported the caller's own address; a direct call to the Render hostname answered 403 `unsigned`; a scripted wallet ran challenge → verify → session → launch-config → intent through the proxy, with the `Set-Cookie` (HttpOnly, Secure) surviving Netlify and a request from the `netlify.app` origin refused as `bad_origin`; Explore rendered with the live spotlight and every API call 200. Not yet done: a real wallet sign-in on the domain, which waits on the nameserver change reaching public resolvers, and the Reown allowlist entry for `pluminfra.xyz`.
+
 5. **Domain.** If a custom domain is added later, pick one canonical host (apex or `www`), let Netlify redirect the other to it, and set `PLUM_ORIGIN` to the canonical one. The sign-in message and the write-origin check are bound to that exact host.
 
 ## Boundaries

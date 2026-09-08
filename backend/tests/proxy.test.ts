@@ -35,6 +35,13 @@ after(() => { server.close(); services.db.close() })
 
 test('with a proxy secret, health stays open and everything else needs the signature', async () => {
   assert.equal((await fetch(`${base}/api/health`)).status, 200)
+  // An unsigned caller's client-address header is not believed, even on the open health route.
+  process.env.PLUM_TRUST_PROXY = '1'
+  const spoofed = await fetch(`${base}/api/health`, { headers: { 'x-nf-client-connection-ip': '1.2.3.4' } })
+  assert.equal(((await spoofed.json()) as { client: string }).client, '127.0.0.1')
+  const viaProxy = await fetch(`${base}/api/health`, { headers: { 'x-nf-client-connection-ip': '1.2.3.4', 'x-nf-sign': sign(fresh()) } })
+  assert.equal(((await viaProxy.json()) as { client: string }).client, '1.2.3.4')
+  delete process.env.PLUM_TRUST_PROXY
   const unsigned = await fetch(`${base}/api/launch-config`)
   assert.equal(unsigned.status, 403)
   assert.equal(((await unsigned.json()) as { error: { code: string } }).error.code, 'unsigned')

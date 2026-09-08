@@ -100,9 +100,10 @@ export class RateLimiter {
 // The key rate limits are counted against. Behind the Netlify proxy (PLUM_TRUST_PROXY=1) the browser's
 // address arrives in x-nf-client-connection-ip, the header Netlify commits to; X-Forwarded-For is the
 // fallback for other proxies. Without a proxy header every viewer would share the proxy's address and
-// one limit, so /api/health echoes this key for the post-deploy check.
-export function clientIp(req: IncomingMessage): string {
-  if (process.env.PLUM_TRUST_PROXY === '1') {
+// one limit, so /api/health echoes this key for the post-deploy check. A request that did not carry the
+// proxy signature (only /api/health gets that far) is keyed on its socket address, since its headers are its own.
+export function clientIp(req: IncomingMessage, trustHeaders = true): string {
+  if (trustHeaders && process.env.PLUM_TRUST_PROXY === '1') {
     for (const name of ['x-nf-client-connection-ip', 'true-client-ip', 'x-forwarded-for']) {
       const raw = req.headers[name]
       const first = (Array.isArray(raw) ? raw[0] : raw)?.split(',')[0]?.trim()

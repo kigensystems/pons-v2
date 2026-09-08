@@ -34,15 +34,14 @@ export function createHandler(router: Router, options: { proxySecret?: string | 
     const started = Date.now()
     const url = new URL(req.url ?? '/', 'http://localhost')
     const method = req.method ?? 'GET'
-    const ip = clientIp(req)
+    // With a proxy secret, only Netlify's signed requests get past the gate below; the health check is
+    // left open for the host's own probe and for the post-deploy check, keyed on its socket address.
+    const signed = !options.proxySecret || verifyProxySignature(req.headers['x-nf-sign'], options.proxySecret)
+    const ip = clientIp(req, signed)
     res.setHeader('X-Content-Type-Options', 'nosniff')
     res.setHeader('Referrer-Policy', 'no-referrer')
     try {
-      // With a proxy secret, only Netlify's signed requests get past this point; the health check is
-      // left open for the host's own probe and for the post-deploy check.
-      if (options.proxySecret && url.pathname !== '/api/health' && !verifyProxySignature(req.headers['x-nf-sign'], options.proxySecret)) {
-        throw new HttpError(403, 'Requests must come through the site', 'unsigned')
-      }
+      if (!signed && url.pathname !== '/api/health') throw new HttpError(403, 'Requests must come through the site', 'unsigned')
       global.check(ip)
       const match = router.match(method, url.pathname)
       if (match === null) throw new HttpError(404, 'No such route', 'not_found')
