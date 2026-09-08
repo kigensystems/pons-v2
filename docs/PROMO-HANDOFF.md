@@ -2,7 +2,7 @@
 
 This is the current creative direction from the conversation. It supersedes the Macintosh-led film concept in [PROMO-PROMPT-GUIDE.md](PROMO-PROMPT-GUIDE.md) and the original hardware studies in [PROMO-VIDEOS.md](PROMO-VIDEOS.md). Those documents remain historical records. No final film, duration, format, or winning model has been selected.
 
-The [reference image pack](../outputs/promo-reference-pack-2026-09-07/START-HERE.md) contains current Plum and Shader screenshots, selected period photographs, the exact Plum mark, and sources. Attach images 01–07; 08 is an optional mood reference. No test videos or frames from those tests are included in that pack.
+The user subsequently rejected the web-image selections in the [earlier reference pack](../outputs/promo-reference-pack-2026-09-07/START-HERE.md), including the pool and Stranger Things woods: they did not match Plum and Shader closely enough. **Teenagers would fit better.** Match the faded color, soft focus, haze and old-commercial image quality, as well as the subject matter. A [new four-image teenage shortlist](../outputs/promo-teen-reference-shortlist/SHORTLIST.md) is available for discussion; these candidates are not yet visually approved. The existing Plum/Shader screenshots and exact supplied logo remain identity references. No test videos or frames from those tests are included.
 
 ## Copy-and-paste creative prompt
 
@@ -18,7 +18,7 @@ The Macintosh is incidental set dressing. It can sit in the corner of an office 
 
 Mysterious, retro, nostalgic, hazy, dreamy, slightly unsettling, then familiar. The feeling of a commercial you half-remember seeing late at night. Something ordinary feels a little strange; by the end, that strangeness becomes comforting. The world seems to have been quietly running all this time.
 
-Let some fragments lean into 1980s–90s serial-killer horror suspense and Stranger Things-like ominousness: near-black woods, cold blue haze, distant flashlight beams, obscured sightlines and the feeling of being watched. The user rejected the pool reference and asked for this darker direction; image 04 in the reference pack now anchors it. Keep the eventual return to familiarity. Nostalgia should come from the places, light, objects, sounds, and editing. It should feel lived-in, slightly imperfect, and emotionally recognizable.
+Let some fragments lean into 1980s–90s serial-killer horror suspense and Stranger Things-like ominousness, while matching Plum's softer, faded visual treatment. The literal Stranger Things woods frame was rejected and must not anchor the look. Prefer teenage life in familiar spaces: warm lamps beside dark windows, school corridors, private phone conversations and imperfect home-video moments. Keep the eventual return to familiarity. Nostalgia should come from the places, light, objects, sounds, and editing. It should feel lived-in, slightly imperfect, and emotionally recognizable.
 
 ### References and identity
 
