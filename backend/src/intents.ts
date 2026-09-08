@@ -259,7 +259,7 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
       if (body.logoUploadId !== undefined && body.logoUploadId !== null && body.logoUploadId !== '') {
         if (typeof body.logoUploadId !== 'string') throw new HttpError(400, 'logoUploadId must be a string', 'invalid_logo')
         const upload = uploads.lookup(body.logoUploadId)
-        if (!upload || getAddress(upload.address) !== getAddress(address)) throw new HttpError(400, 'logoUploadId is not one of your uploads', 'invalid_logo')
+        if (!upload || !uploads.ownedBy(upload.id, getAddress(address))) throw new HttpError(400, 'logoUploadId is not one of your uploads', 'invalid_logo')
         logo = uploads.urlFor(upload.id)
       }
       const feeRecipient = body.creatorFeeRecipient === undefined ? address : body.creatorFeeRecipient

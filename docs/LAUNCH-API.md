@@ -14,7 +14,7 @@ Updated September 8, 2026. What was implemented from the [integration report](PL
 | `backend/src/chain/encode.ts` | Pure calldata construction and the terms hash |
 | `backend/src/chain/verify.ts` | Pure receipt verification against a stored intent |
 | `backend/src/auth.ts` | EIP-4361 challenge/verify, hashed session cookie |
-| `backend/src/uploads.ts` | Magic-byte image validation, content-addressed local store behind an adapter |
+| `backend/src/uploads.ts` | Magic-byte image validation, content-addressed local store behind an adapter; every wallet that uploads an image owns it (`upload_owners`), so the same image from two wallets works for both |
 | `backend/src/intents.ts` | Idempotent intents, submission tracking, reconciliation and confirmation worker |
 | `backend/src/launches.ts` | Registry queries with protocol state and market snapshots |
 | `backend/src/pons.ts` | The Pons side of Explore: every coin Mobula lists for the factory, and the spotlight (newest graduation, confirmed against the factory); Plum's own coins flagged |

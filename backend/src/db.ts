@@ -25,6 +25,12 @@ CREATE TABLE IF NOT EXISTS uploads (
   sha256 TEXT NOT NULL,
   created_at INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS upload_owners (
+  id TEXT NOT NULL REFERENCES uploads(id),
+  address TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (id, address)
+);
 CREATE TABLE IF NOT EXISTS launch_intents (
   id TEXT PRIMARY KEY,
   idempotency_key TEXT NOT NULL,
@@ -113,6 +119,8 @@ export function openDatabase(path: string): Db {
   const db = new DatabaseSync(path)
   db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;')
   db.exec(SCHEMA)
+  // Images are content-addressed, so one image can be uploaded by several wallets; each uploader owns it.
+  db.exec('INSERT OR IGNORE INTO upload_owners (id, address, created_at) SELECT id, address, created_at FROM uploads')
   return db
 }
 

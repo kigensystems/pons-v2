@@ -38,7 +38,9 @@ export function localImageStore(dir: string): ImageStore {
 
 export function createUploads(db: Db, store: ImageStore, publicUrl: string) {
   const insert = db.prepare('INSERT OR IGNORE INTO uploads (id, address, content_type, bytes, sha256, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+  const insertOwner = db.prepare('INSERT OR IGNORE INTO upload_owners (id, address, created_at) VALUES (?, ?, ?)')
   const select = db.prepare('SELECT id, address, content_type, bytes FROM uploads WHERE id = ?')
+  const selectOwner = db.prepare('SELECT 1 FROM upload_owners WHERE id = ? AND lower(address) = lower(?)')
   const urlFor = (id: string) => `${publicUrl}/api/uploads/${id}`
 
   return {
@@ -51,13 +53,19 @@ export function createUploads(db: Db, store: ImageStore, publicUrl: string) {
       const digest = createHash('sha256').update(bytes).digest('hex')
       const id = `${digest}.${detected.extension}`
       await store.put(id, bytes)
-      insert.run(id, address, detected.mime, bytes.length, digest, now())
+      const at = now()
+      insert.run(id, address, detected.mime, bytes.length, digest, at)
+      insertOwner.run(id, address, at)
       return { id, url: urlFor(id), contentType: detected.mime, bytes: bytes.length }
     },
     lookup(id: string): { id: string; address: string; contentType: string; bytes: number } | null {
       if (!/^[a-f0-9]{64}\.(png|jpg|gif|webp)$/.test(id)) return null
       const row = select.get(id) as { id: string; address: string; content_type: string; bytes: number } | undefined
       return row ? { id: row.id, address: row.address, contentType: row.content_type, bytes: row.bytes } : null
+    },
+    // True when this wallet uploaded these bytes itself; the same image from another wallet is not its upload.
+    ownedBy(id: string, address: Address): boolean {
+      return Boolean(selectOwner.get(id, address))
     },
     async read(id: string): Promise<{ bytes: Buffer; contentType: string } | null> {
       const meta = this.lookup(id)
