@@ -12,7 +12,7 @@ Wordmark: the rainbow plum mark at cap height beside bold italic Garamond "Plum"
 
 ## Palette
 
-Opening (`index.css`): room `#10120f`, fog radial `#262d27 → #151c18 → #0b100d`, casing `#ead9ad` / `#ece2bb`, phosphor text `#f2e7d6`, glow token `--phosphor-glow` (blue-left, orange-right fringe, warm halo).
+Opening (`index.css`): room `#10120f`, fog radial `#262d27 → #151c18 → #0b100d`, casing `#ead9ad` / `#ece2bb`, phosphor fill `--phosphor-fill #f7efe0`, glow token `--phosphor-glow` (blue-left, orange-right fringe, then a `.2em` and `.8em` warm halo). One treatment in em units: the h1, wordmark and Enter cue carry the same halo scaled to their size.
 
 About (`about.css`): ground `#17221b`, deep `#060d09`, moss haze `#69705a` / `#263b2b`, copy `#eae6d4`, accent moss `#bbc4a6` / `#c2c9a0`, muted `#677457`.
 
@@ -24,15 +24,15 @@ New colors derive from these. No pure white, no pure black, no purple gradients,
 
 Two families, three roles. Tokens live in `index.css`.
 
-- `--font-title` and `--font-body`: Apple Garamond. Titles 400 weight, tight tracking (`-.035em`), `clamp(42px, 4vw, 76px)`. Body 16–18px / 1.6; Garamond's small x-height needs one to two px more than Georgia did.
+- `--font-title` and `--font-body`: Apple Garamond. Titles 400 weight, tight tracking (`-.035em`), `clamp(42px, 4vw, 76px)`. One roman voice: the opening's two-line italic pair is the only italic heading; Explore and About headings are roman, one line where they fit. Body 16–18px / 1.6; Garamond's small x-height needs one to two px more than Georgia did.
 - Labels (kickers, section labels, notes, tickers, card meta): Apple Garamond 12px, uppercase, `.14em` tracking. Print-style small caps, the way Apple set labels in the 1990s.
-- `--font-ui`: ChicagoFLF, the Mac's 1984–1997 screen face. Only on things that are literally controls or screen output: the Enter key, the TV's cursor label, Back to top, card badges, the loader, transaction status code. Mixed case, no tracking, 13–14px.
+- `--font-ui`: ChicagoFLF, the Mac's 1984–1997 screen face. Only on things that are literally screen output: the TV's cursor label, Back to top, card badges, the loader, transaction status code. Mixed case, no tracking, 13–14px. The user dislikes it for anything they read (Enter tried and rejected September 7); when small Garamond is the problem, size it up rather than switch.
 - Never Inter, Roboto, Space Grotesk, or system sans in visible UI. Instrument Serif and VT323 were retired September 7, 2026.
 
 ## Layout
 
 - Viewports checked: 1440 × 900 and 390 × 844; 320px must not overflow.
-- Opening: single non-scrolling scene; the Enter key label leads to Explore. The TV plays muted on its own; the glass is its only control. A small outlined speaker in the CRT's top-right corner (the Sound control panel's icon, crossed while muted, ringed with waves for a moment when the sound comes on, a play triangle while paused) is the only mark on the picture, and a Chicago cursor label names the action while the pointer is over the glass. No page-level TV buttons.
+- Opening: single non-scrolling scene with four things in frame: wordmark, headline pair, the Enter key, and the Macintosh. Enter is the only way out; there is no nav, kicker, description, or footer label. About is reached from Explore. The screen is the brightest object in the room: the CRT exposure clips its top fifth to white before halation. The TV plays muted on its own; the glass is its only control. The TV's own on-screen display in the CRT's top-right corner (a character-generator speaker, softened and added to the picture as pale phosphor light with misconverged fringes over a soft dimming of the footage, crossed while muted, with its waves for a moment when the sound comes on, a play triangle while paused) is the only mark on the picture, and a Chicago cursor label names the action while the pointer is over the glass. No page-level TV buttons.
 - Explore: six-column card grid on desktop, two on mobile, paper surfaces, hairline `--line` rules, radius 3px or none.
 - Explore's one emitted-light surface is the hero CRT close-up. Its glass shows the newest coin (logo, or initials in phosphor `#f2e7d6` with the opening's glow), never decoration; the bezel photograph multiplies onto the paper like everything else.
 - About: full-bleed hero surface, then prose columns with a 1200px measure.
@@ -45,7 +45,7 @@ Two moments per page at most. Allowed: the boot screen's 1.8 s hold on a session
 
 Plain words, user nouns, sentence case. Buttons name the action. Token data and fees are illustrative and say so. No "unlock", "elevate", or launch-industry hype.
 
-Removed on September 7, 2026 and not to return: arrows on links and buttons (↓ and ↑ stay where they point at something), section and page numbering, issue numbers, placeholder stat cards, decorative captions and footers, and every slogan except the headline pair "A familiar feeling. A new window." and the About close "See it clearly."
+Removed on September 7, 2026 and not to return: arrows on links and buttons (↓ and ↑ stay where they point at something), section and page numbering, issue numbers, placeholder stat cards, decorative captions and footers (including the opening's "A companion to Pons" kicker and "The opening" label), and every slogan except the headline pair "A familiar feeling. A new window." and the About close "See it clearly."
 
 ## Quality floor
 

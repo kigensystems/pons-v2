@@ -10,7 +10,7 @@ The user subsequently selected **Plum** as the name, asked for refinement of bot
 
 ## Pages and code
 
-- `/`: the existing opening, with Plum naming and links to Explore/About. Only the header, loader name, metadata, and a small navigation stylesheet changed. TV playback, composited lighting, scene artwork, and the retained Three.js implementation are untouched.
+- `/`: the existing opening, with Plum naming and no nav (both masthead links were removed in the September 7 night polish; Enter leads to Explore, and About is reached from Explore). Only the header, loader name, metadata, and a small navigation stylesheet changed. TV playback, composited lighting, scene artwork, and the retained Three.js implementation are untouched.
 - `/explore`: the collection, search, four filter chips, a one-line collection status, and native creation dialog. `/launch` remains an exact-path alias; trailing slashes work. No router dependency was added.
 - `/about`: a dark green opening with the existing Macintosh, followed by the story, principles, prototype note, and an Explore link.
 - `frontend/src/launch/LaunchPage.tsx` exports `ExplorePage`. The existing directory is retained for continuity with Claude's feature. `PaperChrome.tsx` provides shared navigation/footer; `TokenGrid.tsx` holds the sample collection; `LaunchForm.tsx` owns the creation dialog; `launchModel.ts` contains the illustrative quote calculation.

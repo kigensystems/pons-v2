@@ -60,7 +60,7 @@ function ExploreDesk() {
         <section className="pad-hero" aria-labelledby="pad-hero-title">
           <div className="pad-hero-copy">
             <p className="pad-kicker"><span className="pad-dot" /> The discovery desk</p>
-            <h1 id="pad-hero-title">A new window<br /><em>on what’s next.</em></h1>
+            <h1 id="pad-hero-title">A new window on what’s next.</h1>
             <p className="pad-hero-sub">Explore the coins launched through Plum, or start one of your own.</p>
             <div className="pad-hero-actions">
               <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Create a coin</button>

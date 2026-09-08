@@ -5,7 +5,6 @@
 .about-intro .pad-kicker { color: #bbc4a6; font-size: 14px; margin-bottom: 25px; }
 .about-intro .pad-dot { background: #c2c9a0; box-shadow: 0 0 8px #d5e6b05c; }
 .about-intro h1 { font: 400 clamp(44px, 4.1vw, 62px)/1.14 var(--font-title); color: #efe9d7; letter-spacing: -.035em; text-shadow: 0 -.7px #a7c9f58c, 0 .8px #f2a3788c, 0 0 5px #f4dfb552, 0 0 22px #e6c99d38; }
-.about-intro h1 em { color: #d3dbc0; }
 .about-intro-sub { font-size: 18px; line-height: 1.6; margin: 26px 0 25px; color: #c6c9b7; text-shadow: 0 0 6px #d9d2b41f; }
 .about-story-link { display: inline-flex; gap: 45px; text-decoration: none; border-bottom: 1px solid #c2cbb85e; padding: 8px 0 10px; font-size: 15px; }
 .about-computer { position: relative; margin: 0 -25px 0 -40px; }
@@ -22,7 +21,6 @@
 .about-section-label .pad-kicker { font-size: 13px; }
 .about-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; }
 .about-columns h2 { font-size: clamp(40px, 4vw, 58px); }
-.about-columns h2 em { color: #677457; }
 .about-lede { max-width: 400px; margin: 22px 0 0; font: 24px/1.35 var(--serif); color: var(--ink-2); }
 .about-story-body { padding-top: 3px; }
 .about-story-body p { font-size: 17px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px; }
@@ -31,7 +29,6 @@
 .about-divider i { width: 7px; height: 7px; border: 1px solid #948087; transform: rotate(45deg); }
 .about-principles { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; padding-top: 65px; }
 .about-principles h2 { font-size: 49px; }
-.about-principles h2 em { color: #677457; }
 .about-principles-heading > p:last-child { font: italic 16px/1.6 var(--body); color: var(--ink-2); margin-top: 24px; }
 .about-principle-list article { display: flex; gap: 26px; padding: 22px 0; border-top: 1px solid var(--line); }
 .about-principle-list article:first-child { padding-top: 0; border-top: 0; }
@@ -39,7 +36,6 @@
 .about-principle-list p { font-size: 16px; line-height: 1.65; margin: 11px 0 0; color: var(--ink-2); }
 .about-desk { padding-top: 20px; padding-bottom: 60px; }
 .about-desk h2 { font-size: 49px; }
-.about-desk h2 em { color: #677457; }
 .about-desk-list { list-style: none; margin: 34px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
 .about-desk-list li { padding-top: 16px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.6; color: var(--ink-2); }
 .about-desk-list strong { display: block; margin-bottom: 4px; font: 22px/1.2 var(--font-title); color: var(--ink); letter-spacing: -.02em; }
@@ -49,7 +45,6 @@
 .about-signoff { padding: 85px 24px 95px; text-align: center; }
 .about-signoff .pad-kicker { justify-content: center; margin-bottom: 20px; }
 .about-signoff h2 { font-size: clamp(53px, 6vw, 82px); }
-.about-signoff h2 em { color: #677457; }
 .about-signoff .pad-btn { margin-top: 26px; min-width: 170px; }
 @media (max-width: 1100px) {
   .about-tube { padding: 65px 36px 95px; gap: 20px; min-height: 550px; }
