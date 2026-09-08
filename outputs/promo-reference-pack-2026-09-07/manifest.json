@@ -1,0 +1,58 @@
+[
+  {
+    "file": "01-plum-opening.jpg",
+    "width": 1427,
+    "height": 717,
+    "bytes": 62137,
+    "sha256": "d75b0b8bdefa44ece74691dc03125c4cfdab5b9a2bf25c2829d9a0264c4f55bf"
+  },
+  {
+    "file": "02-plum-explore.jpg",
+    "width": 1412,
+    "height": 709,
+    "bytes": 69236,
+    "sha256": "b1bc3dc41e2262494982202215557bb21277acb795597155b77aaafb52be5ede"
+  },
+  {
+    "file": "03-shader-about.jpg",
+    "width": 1440,
+    "height": 900,
+    "bytes": 122660,
+    "sha256": "c13ff5f278e2566307c69b4ccea26bf4d4cc25ba5312d6ef3f4a61eb070d4baf"
+  },
+  {
+    "file": "04-empty-spa-lynne-cohen-1999.jpg",
+    "width": 550,
+    "height": 434,
+    "bytes": 70284,
+    "sha256": "253271b9b7c496f7ffabb2373ec6bb2f39f966d5e7f6da34d00e266287e2ae23"
+  },
+  {
+    "file": "05-domestic-kitchen-larry-sultan-1988.jpg",
+    "width": 1200,
+    "height": 979,
+    "bytes": 277211,
+    "sha256": "3db6d9daf54b5170f3eccbbbe30acd42c0b71badb4f62d8ce7d71fa1dcab8870"
+  },
+  {
+    "file": "06-human-connection-larry-sultan-1986.jpg",
+    "width": 1200,
+    "height": 960,
+    "bytes": 221575,
+    "sha256": "c1a4d04c8c2489a39a7ebf0f666a345e1185de1eee370872eddfdf62902e84ec"
+  },
+  {
+    "file": "07-plum-mark.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 99446,
+    "sha256": "461bd37939a08cf7d9e1a761ce2ad765e1f139b778f7b6e5a5b184bdf737aae1"
+  },
+  {
+    "file": "08-optional-uncanny-curtain-larry-sultan-1991.jpg",
+    "width": 1200,
+    "height": 992,
+    "bytes": 216249,
+    "sha256": "2d73a49017330e0905f1558a815da1e982fcc6b32d1482b0cc16c6a9541055a9"
+  }
+]

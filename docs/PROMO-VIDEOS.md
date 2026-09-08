@@ -2,7 +2,7 @@
 
 Updated September 7, 2026. Creative direction and first test batch; no finished promo or visual approval yet.
 
-Latest discussion draft: [film direction, current model comparison, and prompt guide](PROMO-PROMPT-GUIDE.md). The original batch record below remains historical; the guide records the current site inspection and logo usage.
+Current creative direction and copy-and-paste brief: [PROMO-HANDOFF.md](PROMO-HANDOFF.md), including the three completed OpenArt montage tests. The user rejected Macintosh-led storytelling. The direction and original batch record below are historical; the [earlier prompt guide](PROMO-PROMPT-GUIDE.md) retains dated model research.
 
 ## Direction
 
