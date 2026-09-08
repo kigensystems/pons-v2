@@ -48,7 +48,7 @@ The active image-based opening and preserved 3D scene share the same renderer-in
 - File: `images/loading-mark.png`, 320 × 320, RGBA, 149,353 bytes.
 - Source: the user's bone-coloured render of the mark with cyan and pink fringe, `assets/reference/loading-mark-source.png` (1254 × 1254), centre-cropped to 1000 px and downscaled with sips on September 7, 2026. Used only on the boot screen. Authored for this project by the user.
 
-## CRT close-up (Explore)
+## CRT close-up (formerly Explore's hero; unused since September 8, when Explore's hero became the opening's Macintosh artwork with a live glass)
 
 - File: `images/crt-close.jpg`, 983 × 780, sRGB JPEG (quality 84), 151,703 bytes.
 - Source: the user's `explore-monitor.png` (1448 × 1086 RGB render of a compact Macintosh front on a checkerboard), supplied at the repository root on September 7, 2026 and kept there untracked. Cropped with sips to the screen and bezel (offset 232, 62 from the top left) and re-encoded as JPEG; no other pixel edits.

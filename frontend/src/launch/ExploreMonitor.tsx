@@ -1,45 +1,119 @@
-import { useEffect, useState } from 'react'
-import type { Spotlight } from './api'
-import { formatChange, formatUsd, relativeAge } from './launchModel'
+import { useId } from 'react'
+import type { LaunchConfigResponse } from './api'
+import { formatEth } from './launchModel'
+import { BEZEL_PATH, BEZEL_PICTURE_TRANSFORM, CRT_EXPOSURE } from '../screenGeometry'
 
-type Props = { spotlight: Spotlight | null; error: string | null; onLocate: (token: string) => void }
+type Props = { config: LaunchConfigResponse | null; error: string | null }
 
-// The Explore hero's CRT: a close crop of the Macintosh screen showing the coin that most recently
-// left its curve on Pons. The bezel is a photograph; only the glass emits light. With a picture the
-// whole picture sits in the upper glass and a phosphor readout runs beneath it; without one the
-// readout is the picture. A null spotlight is still loading; one without a payload has nothing to show.
-export default function ExploreMonitor({ spotlight, error, onLocate }: Props) {
-  const coin = spotlight?.payload ?? null
-  // A picture that fails to load gets one more try after a pause (the logo host rate-limits bursts)
-  // before the readout takes over.
-  const [failed, setFailed] = useState<Record<string, number>>({})
-  const [attempt, setAttempt] = useState(0)
-  const lost = Boolean(error) || spotlight?.status === 'error'
-  const signal = coin ? 'coin' : lost ? 'lost' : spotlight === null ? 'warming' : 'idle'
-  const failures = coin?.logo ? failed[coin.logo] ?? 0 : 0
-  const logo = coin?.logo && failures < 2 ? coin.logo : null
-  useEffect(() => {
-    if (failures !== 1) return
-    const timer = setTimeout(() => setAttempt(value => value + 1), 3000)
-    return () => clearTimeout(timer)
-  }, [failures])
+// The stack Plum states against Pons v2, the same figures About prints. The creation fee and the block are read from the factory.
+const CUTS = [
+  { label: 'Creator fee', note: 'capped · cannot rise', value: '3%' },
+  { label: 'Transfer fee', value: '−50%' },
+  { label: 'Protocol fee', value: '−35%' },
+]
+const blockLabel = (block: string) => block.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
+// The Macintosh's glass on Explore, tuned to the fees channel: what a launch costs through Plum, printed once, here,
+// as phosphor. Drawn the way the opening draws its TV: in the artwork's own coordinates, clipped to the curved glass,
+// lifted and haloed by the same exposure, with the casing shaded into the room and the light spilling onto the bezel
+// and the keys. A null config is still warming up; an error is no signal.
+export default function ExploreMonitor({ config, error }: Props) {
+  const id = useId()
+  const signal = config ? 'fees' : error ? 'lost' : 'warming'
   return (
-    <figure className="pad-crt" data-signal={signal} data-picture={Boolean(logo)}>
-      <img className="pad-crt-bezel" src="/images/crt-close.jpg" alt="" width="983" height="780" decoding="async" />
-      <div className="pad-crt-glass" aria-hidden="true">
-        {coin && logo && <img className="pad-crt-picture" key={`${logo}-${attempt}`} src={logo} alt="" referrerPolicy="no-referrer" onError={() => setFailed(previous => ({ ...previous, [logo]: (previous[logo] ?? 0) + 1 }))} />}
-        {coin && <div className="pad-crt-readout" key={`${coin.token}-readout`}>
-          {!logo && <b className="pad-crt-name">{coin.name}</b>}
-          <span className="pad-crt-line"><b>${coin.symbol}</b><span>MC {formatUsd(coin.marketCapUsd)}</span></span>
-          {!logo && <span className="pad-crt-line pad-crt-line--small"><span>{formatChange(coin.priceChange24hPct)} 24h</span><span>{relativeAge(coin.graduatedAt ?? 0)}</span></span>}
-        </div>}
-        {!coin && <span className="pad-crt-nosignal">No signal</span>}
-      </div>
-      <figcaption className="pad-crt-caption">
-        Recently migrated
-        <span className="pad-sr-only">{coin ? `: ${coin.name}, $${coin.symbol}, market cap ${formatUsd(coin.marketCapUsd)}, migrated ${relativeAge(coin.graduatedAt ?? 0)} ago` : lost ? ': the feed is unreachable' : ': nothing yet'}</span>
-        {coin && <> · <a className="pad-crt-locate" href={`#coin-${coin.token}`} onClick={event => { event.preventDefault(); onLocate(coin.token) }}>${coin.symbol} in the collection</a></>}
-      </figcaption>
-    </figure>
+    <svg className="pad-tv" viewBox="0 0 1536 1024" data-signal={signal}>
+      <defs>
+        <mask id={`${id}-artwork`} maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024" style={{ maskType: 'alpha' }}>
+          <image href="/images/macintosh-render.png" width="1536" height="1024" />
+        </mask>
+        <linearGradient id={`${id}-room-shadow`} gradientUnits="userSpaceOnUse" x1="490" y1="170" x2="1190" y2="560">
+          <stop offset="0" stopColor="#080e0c" stopOpacity="0" />
+          <stop offset=".35" stopColor="#080e0c" stopOpacity=".12" />
+          <stop offset=".7" stopColor="#080e0c" stopOpacity=".5" />
+          <stop offset="1" stopColor="#080e0c" stopOpacity=".68" />
+        </linearGradient>
+        <clipPath id={`${id}-glass`}><path d={BEZEL_PATH} /></clipPath>
+        <clipPath id={`${id}-keyboard`}><path d="M 350 630 L 949 738 L 911 901 L 112 803 Z" /></clipPath>
+        <filter id={`${id}-exposure`} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+          <feComponentTransfer result="exposed">
+            <feFuncR type="table" tableValues={CRT_EXPOSURE} />
+            <feFuncG type="table" tableValues={CRT_EXPOSURE} />
+            <feFuncB type="table" tableValues={CRT_EXPOSURE} />
+          </feComponentTransfer>
+          <feComponentTransfer in="exposed" result="highlights">
+            <feFuncR type="linear" slope="2" intercept="-1" />
+            <feFuncG type="linear" slope="2" intercept="-1" />
+            <feFuncB type="linear" slope="2" intercept="-1" />
+          </feComponentTransfer>
+          <feGaussianBlur in="highlights" stdDeviation="1.6" />
+          <feComponentTransfer result="halation"><feFuncA type="linear" slope=".32" /></feComponentTransfer>
+          <feBlend in="exposed" in2="halation" mode="screen" />
+        </filter>
+        {/* The screen's light on the bezel recess: the glass shape itself, blurred, added over the casing. */}
+        <filter id={`${id}-spill`} x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="14" /></filter>
+        <filter id={`${id}-key-planes`} colorInterpolationFilters="sRGB">
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+            <feFuncG type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+            <feFuncB type="table" tableValues="0 0 0 0 .05 .2 .55 .85 1 1 1" />
+          </feComponentTransfer>
+        </filter>
+        <mask id={`${id}-key-receiver`} maskUnits="userSpaceOnUse" x="112" y="630" width="840" height="271" style={{ maskType: 'luminance' }}>
+          <image href="/images/macintosh-render.png" width="1536" height="1024" filter={`url(#${id}-key-planes)`} />
+        </mask>
+        <radialGradient id={`${id}-reflection`}>
+          <stop offset="0" stopColor="#e9dcc0" stopOpacity="1" />
+          <stop offset=".45" stopColor="#e9dcc0" stopOpacity=".65" />
+          <stop offset="1" stopColor="#e9dcc0" stopOpacity="0" />
+        </radialGradient>
+        {/* The tube at rest: dark phosphor, lighter where the beam lands, with the glass curving away at the edges. */}
+        <radialGradient id={`${id}-tube`} cx=".48" cy=".46" r=".62">
+          <stop offset="0" stopColor="#2b3329" />
+          <stop offset=".55" stopColor="#171d17" />
+          <stop offset="1" stopColor="#0a0e0b" />
+        </radialGradient>
+        <radialGradient id={`${id}-glass-shade`} r=".7">
+          <stop offset=".45" stopColor="#080c10" stopOpacity="0" />
+          <stop offset=".8" stopColor="#080c10" stopOpacity=".12" />
+          <stop offset="1" stopColor="#080c10" stopOpacity=".55" />
+        </radialGradient>
+        <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2=".6" y2="1">
+          <stop offset="0" stopColor="#f7efe0" stopOpacity=".09" />
+          <stop offset=".35" stopColor="#f7efe0" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* Shade the artwork's silhouette into the room; the lit screen is added above it. */}
+      <rect width="1536" height="1024" fill={`url(#${id}-room-shadow)`} mask={`url(#${id}-artwork)`} aria-hidden="true" />
+      <g className="pad-tv-light" aria-hidden="true">
+        <path d={BEZEL_PATH} fill="#f6e9cc" filter={`url(#${id}-spill)`} />
+        <path d={BEZEL_PATH} fill="none" stroke="#f6e9cc" strokeWidth="10" filter={`url(#${id}-spill)`} />
+        <g clipPath={`url(#${id}-keyboard)`} mask={`url(#${id}-key-receiver)`}>
+          <ellipse cx="632" cy="708" rx="230" ry="70" transform="rotate(10 632 708)" fill={`url(#${id}-reflection)`} />
+        </g>
+      </g>
+      <g clipPath={`url(#${id}-glass)`}>
+        <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-tube)`} />
+        <g filter={`url(#${id}-exposure)`}>
+          <foreignObject width="640" height="480" transform={BEZEL_PICTURE_TRANSFORM}>
+            <div className="pad-channel" role="group" aria-label="Launch fees through Plum">
+              {config
+                ? <>
+                  <div className="pad-channel-head"><b>Less to launch</b><span>vs Pons</span></div>
+                  <dl className="pad-channel-rows">
+                    {CUTS.map(cut => <div key={cut.label}><dt>{cut.label}{cut.note && <small>{cut.note}</small>}</dt><dd>{cut.value}</dd></div>)}
+                    <div><dt>Creation fee<small>read from the factory</small></dt><dd>{formatEth(config.launchFeeWei, 4)} ETH</dd></div>
+                  </dl>
+                  <div className="pad-channel-foot"><span>Block {blockLabel(config.blockNumber)}</span><span>{config.launchEnabled ? 'Live' : 'Paused'}</span></div>
+                </>
+                : <span className="pad-channel-nosignal">{signal === 'lost' ? 'No signal' : 'Warming up'}</span>}
+            </div>
+          </foreignObject>
+        </g>
+        {/* The glass over the phosphor: its curve darkens the edges and catches the room once, top left. */}
+        <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-glass-shade)`} aria-hidden="true" />
+        <rect x="550" y="125" width="410" height="345" fill={`url(#${id}-sheen)`} aria-hidden="true" />
+      </g>
+    </svg>
   )
 }

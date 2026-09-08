@@ -2,34 +2,25 @@ import { useState } from 'react'
 import { arrangeCoins, formatChange, formatUsd, relativeAge, shortAddress, type Coin, type Sort } from './launchModel'
 import './launchLive.css'
 
-export type Source = 'pons' | 'plum'
+type Props = { coins: Coin[]; sort: Sort; mine: boolean; loading: boolean; error: string | null; viewer: string | null; onReset: () => void; onRetry: () => void }
 
-type Props = { coins: Coin[]; source: Source; sort: Sort; mine: boolean; loading: boolean; error: string | null; search: string; viewer: string | null; onReset: () => void; onRetry: () => void }
-
-export default function TokenGrid({ coins, source, sort, mine, loading, error, search, viewer, onReset, onRetry }: Props) {
+export default function TokenGrid({ coins, sort, mine, loading, error, viewer, onReset, onRetry }: Props) {
   const [broken, setBroken] = useState<Set<string>>(() => new Set())
   const shown = arrangeCoins(coins, sort)
-  const visible = shown.filter(coin => {
-    if (mine && (!viewer || coin.creator?.toLowerCase() !== viewer.toLowerCase())) return false
-    return `${coin.name} ${coin.symbol} ${coin.token}`.toLowerCase().includes(search.trim().toLowerCase())
-  })
+  const visible = mine ? shown.filter(coin => viewer && coin.creator?.toLowerCase() === viewer.toLowerCase()) : shown
 
   if (error && coins.length === 0) {
     return <div className="pad-empty" role="status"><h3>The collection is out of reach.</h3><p>{error}</p><button type="button" className="pad-btn" onClick={onRetry}>Try again</button></div>
   }
-  if (loading && coins.length === 0) return <div className="pad-empty" role="status" aria-busy="true"><h3>Opening the collection…</h3><p>{source === 'pons' ? 'Reading what has migrated on Pons.' : 'Reading Plum launches from the registry.'}</p></div>
-  if (shown.length === 0) {
-    return source === 'pons'
-      ? <div className="pad-empty" role="status"><h3>Nothing has migrated yet.</h3><p>Coins appear here once they leave the curve. The feed refreshes every half minute.</p></div>
-      : <div className="pad-empty" role="status"><h3>No Plum coin has migrated yet.</h3><p>Plum coins are the ones created here; they appear once they leave the curve. The first one could be yours.</p></div>
-  }
-  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>Nothing in this corner. Yet.</h3><p>Nothing among the {shown.length} coins loaded matches. Try a different name, ticker or address.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
+  if (loading && coins.length === 0) return <div className="pad-empty" role="status" aria-busy="true"><h3>Opening the collection…</h3><p>Reading what has migrated on Pons.</p></div>
+  if (shown.length === 0) return <div className="pad-empty" role="status"><h3>Nothing has migrated yet.</h3><p>Coins appear here once they leave the curve. The feed refreshes every half minute.</p></div>
+  if (visible.length === 0) return <div className="pad-empty" role="status"><h3>None of these are yours. Yet.</h3><p>Coins you make through Plum appear here once they leave the curve.</p><button type="button" className="pad-btn" onClick={onReset}>Show all coins</button></div>
 
   return (
     <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
-      {visible.map(coin => (
+      {visible.map((coin, index) => (
         <li key={coin.token} id={`coin-${coin.token}`} className="pad-card" tabIndex={-1}>
-          <div className="pad-card-art" style={{ '--hue': coin.hue } as React.CSSProperties} aria-hidden="true">
+          <div className="pad-card-art" data-tint={['paper', 'moss', 'plum'][index % 3]} aria-hidden="true">
             {coin.logo && !broken.has(coin.logo)
               ? <img src={coin.logo} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(previous => new Set(previous).add(coin.logo!))} />
               : <span>{coin.symbol.slice(0, 2)}</span>}
@@ -45,8 +36,8 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
             <div className="pad-card-meta">
               {coin.explorer ? <a className="pad-card-link" href={coin.explorer} target="_blank" rel="noreferrer" title={coin.token} aria-label={`${shortAddress(coin.token)} on Blockscout`}>{shortAddress(coin.token)}</a> : <span title={coin.token}>{shortAddress(coin.token)}</span>}
               {coin.chart && <a className="pad-card-link" href={coin.chart} target="_blank" rel="noreferrer" aria-label={`Chart for $${coin.symbol}`}>Chart</a>}
-              {coin.since !== null && <AgeLabel event={source === 'pons' ? 'Migrated' : 'Launched'} age={relativeAge(coin.since)} />}
-              {source === 'pons' && coin.madeWithPlum && <span className="pad-card-plum">Plum</span>}
+              {coin.since !== null && <AgeLabel event="Migrated" age={relativeAge(coin.since)} />}
+              {coin.madeWithPlum && <span className="pad-card-plum">Plum</span>}
             </div>
           </div>
         </li>

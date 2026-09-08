@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { api, type Launch, type PonsCoins, type Spotlight } from './api'
+import { api, type PonsCoins } from './api'
 import { wagmiConfig } from './appkit'
 import ExploreMonitor from './ExploreMonitor'
 import LaunchForm from './LaunchForm'
-import TokenGrid, { type Source } from './TokenGrid'
-import { PaperHeader, PaperFooter } from './PaperChrome'
+import TokenGrid from './TokenGrid'
+import { PaperFooter } from './PaperChrome'
 import { useSession } from './useSession'
-import { arrangeCoins, coinFromLaunch, coinFromPons, type Sort } from './launchModel'
+import { coinFromPons, type Sort } from './launchModel'
 import './launch.css'
 
 const REFRESH_MS = 15_000
@@ -22,28 +21,15 @@ export default function ExplorePage() {
 
 function ExploreDesk() {
   const wallet = useSession()
-  const [launches, setLaunches] = useState<Launch[]>([])
   const [pons, setPons] = useState<PonsCoins | null>(null)
   const [ponsError, setPonsError] = useState<string | null>(null)
-  const [spotlight, setSpotlight] = useState<Spotlight | null>(null)
-  const [spotlightError, setSpotlightError] = useState<string | null>(null)
-  const [source, setSource] = useState<Source>('pons')
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [sort, setSort] = useState<Sort>('newest')
   const [onlyMine, setOnlyMine] = useState(false)
-  const [search, setSearch] = useState('')
-  // The CRT's coin has one action: its card in the collection. The card may be hidden behind the Plum tab, a search or the
-  // Made-by-you filter, so those are cleared and rendered first, then the card is scrolled into view and given focus.
-  const locate = (token: string) => {
-    flushSync(() => { setSource('pons'); setSearch(''); setOnlyMine(false) })
-    const card = document.getElementById(`coin-${token}`)
-    if (card) { card.focus({ preventScroll: true }); card.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }
-  }
   const [creating, setCreating] = useState(false)
   const [notice, setNotice] = useState('')
-  // When the last successful read of each collection landed in this browser; a failed refresh keeps the cards and says so.
-  const [lastGood, setLastGood] = useState<{ pons: number | null; plum: number | null }>({ pons: null, plum: null })
+  // When the last successful read landed in this browser; a failed refresh keeps the cards and says so.
+  const [lastGood, setLastGood] = useState<number | null>(null)
   // The creation desk is a top-layer dialog, so it closes while the wallet picker is open and
   // reopens once the sign-in it asked for lands.
   const reopenDesk = useRef(false)
@@ -51,13 +37,13 @@ function ExploreDesk() {
   useEffect(() => { document.title = 'Explore — Plum' }, [])
   useEffect(() => { if (wallet.session && reopenDesk.current) { reopenDesk.current = false; setCreating(true) } }, [wallet.session])
 
-  // The registry, the Pons feed and the spotlight are read together; any one can fail without darkening the others.
+  // The collection is the Pons feed: every coin that has left its curve, Plum's own among them.
   const load = useCallback(async () => {
-    const [page, feed, latest] = await Promise.allSettled([api.launches({ limit: 60 }), api.ponsCoins(), api.spotlight()])
-    const reason = (failure: unknown, fallback: string) => failure instanceof Error ? failure.message : fallback
-    if (page.status === 'fulfilled') { setLaunches(page.value.items); setError(null); setLastGood(previous => ({ ...previous, plum: Date.now() })) } else setError(reason(page.reason, 'The registry is unavailable.'))
-    if (feed.status === 'fulfilled') { setPons(feed.value); setPonsError(feed.value.status === 'error' || feed.value.status === 'unavailable' ? feed.value.error : null); if (feed.value.status === 'ok') setLastGood(previous => ({ ...previous, pons: Date.now() })) } else setPonsError(reason(feed.reason, 'The Pons feed is unavailable.'))
-    if (latest.status === 'fulfilled') { setSpotlight(latest.value); setSpotlightError(null) } else setSpotlightError(reason(latest.reason, 'The launch service could not be reached.'))
+    try {
+      const feed = await api.ponsCoins()
+      setPons(feed); setPonsError(feed.status === 'error' || feed.status === 'unavailable' ? feed.error : null)
+      if (feed.status === 'ok') setLastGood(Date.now())
+    } catch (failure) { setPonsError(failure instanceof Error ? failure.message : 'The Pons feed is unavailable.') }
     setLoading(false)
   }, [])
 
@@ -67,66 +53,70 @@ function ExploreDesk() {
     return () => clearInterval(timer)
   }, [load])
 
-  const coins = source === 'pons' ? (pons?.items ?? []).map(coinFromPons) : launches.map(coinFromLaunch)
-  const migratedPlum = arrangeCoins(launches.map(coinFromLaunch), 'newest').length
-  const mine = wallet.session ? arrangeCoins(coins, 'newest').filter(coin => coin.creator?.toLowerCase() === wallet.session!.address.toLowerCase()).length : 0
-  const collectionError = source === 'pons' ? ponsError : error
+  const coins = (pons?.items ?? []).map(coinFromPons)
   // Old cards stay on a failed refresh, labelled with when they were last read: the server's read for a stale feed, this browser's for a lost request.
   const ponsStale = Boolean(pons?.items.length) && (pons!.status !== 'ok' || Boolean(ponsError))
-  const staleSince = source === 'pons' ? (ponsError && lastGood.pons ? lastGood.pons : pons?.retrievedAt ?? null) : lastGood.plum
-  const staleNote = `Showing the last good read${staleSince ? ` from ${clockTime(staleSince)}` : ''}`
+  const staleSince = ponsError && lastGood ? lastGood : pons?.retrievedAt ?? null
 
   return (
-    <div className="pad">
-      <PaperHeader page="explore" wallet={{ address: wallet.session?.address ?? wallet.address, signedIn: Boolean(wallet.session), connecting: wallet.connecting, onConnect: () => void wallet.connect(), onDisconnect: () => void wallet.disconnect() }} onCreate={() => setCreating(true)} />
-      <main id="paper-main">
-        <section className="pad-hero" aria-labelledby="pad-hero-title">
-          <div className="pad-hero-copy">
-            <p className="pad-kicker"><span className="pad-dot" /> The discovery desk</p>
-            <h1 id="pad-hero-title">A new window on what’s next.</h1>
-            <p className="pad-hero-sub">Explore the newest migrations on Pons, or start a coin of your own through Plum.</p>
-            <div className="pad-hero-actions">
-              <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Create a coin</button>
-              <a className="pad-link" href="/about">About us</a>
-            </div>
+    <div className="pad pad--window">
+      <a className="pad-skip" href="#paper-main">Skip to content</a>
+      {/* The room after Enter: the opening's own dark room, the Macintosh, and its glass tuned to the fees channel. */}
+      <section className="pad-window" aria-labelledby="pad-hero-title">
+        <div className="room" aria-hidden="true">
+          <div className="window-light" />
+          <div className="window-frame" />
+          <div className="desk" />
+          <div className="room-haze room-haze--back" />
+          <div className="mist mist--back" />
+        </div>
+        <header className="masthead">
+          <a className="working-name" href="/" aria-label="Plum — opening"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</a>
+          <a className="pad-window-about" href="/about">About us</a>
+        </header>
+        <div className="pad-window-clip">
+          <div className="pad-window-scene">
+            <div className="pad-window-bloom" aria-hidden="true" />
+            <img className="pad-window-mac" src="/images/macintosh-render.png" alt="Warm ivory Macintosh with keyboard and mouse" width="1536" height="1024" fetchPriority="high" decoding="async" />
+            <ExploreMonitor config={wallet.config} error={wallet.configError} />
           </div>
-          <ExploreMonitor spotlight={spotlight} error={spotlightError} onLocate={locate} />
-          {!loading && <p className="pad-hero-status" role="status">{[pons?.items.length ? `${pons.items.length} recent migrations on Pons` : null, error ? null : `${migratedPlum} migrated through Plum`, wallet.session && mine ? `${mine} made by you` : null].filter(Boolean).join(' · ') || 'The collection is out of reach.'}</p>}
-        </section>
-
+        </div>
+        <div className="foreground-haze" aria-hidden="true" />
+        <div className="mist mist--front" aria-hidden="true" />
+        <div className="grain" aria-hidden="true" />
+        <div className="vignette" aria-hidden="true" />
+        <div className="pad-window-copy">
+          <h1 id="pad-hero-title">A second window<br />on Pons.</h1>
+          <p className="pad-window-sub">Infrastructure built on Pons v2. Deeper liquidity for better fills, creator rewards capped, protocol fees cut hard. Same Pons. Better terms.</p>
+          <button type="button" className="pad-keycap" onClick={() => setCreating(true)}>Create a coin</button>
+        </div>
+        {/* The one way down: an arrow at the foot of the window, pointing at the collection. */}
+        <a className="pad-window-scroll" href="#paper-main" aria-label="Down to the collection">↓</a>
+      </section>
+      <main id="paper-main">
         <div className="pad-stripe-rule" aria-hidden="true" />
 
         <section className="pad-explore" aria-labelledby="pad-explore-title">
-          <div className="pad-explore-head">
-            <h2 id="pad-explore-title">The collection<span className="pad-period">.</span></h2>
-            <label className="pad-search"><span className="pad-sr-only">Search coins by name, ticker or address</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="1.5" /><path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.5" /></svg><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Find something interesting" /></label>
-          </div>
+          <h2 id="pad-explore-title">The collection<span className="pad-period">.</span></h2>
           {wallet.error && <p className="pad-notice" data-tone="bad" role="alert">{wallet.error} <button type="button" onClick={() => void wallet.connect()}>Connect</button></p>}
-          {wallet.configError && !wallet.config && !error && <p className="pad-notice" data-tone="bad" role="alert">Launch settings are unavailable: {wallet.configError}</p>}
-          <div className="pad-sources" role="group" aria-label="Collection">
-            {(['pons', 'plum'] as Source[]).map(value => (
-              <button key={value} type="button" className="pad-source" aria-pressed={source === value} onClick={() => setSource(value)}>{value === 'pons' ? 'Pons coins' : 'Plum coins'}</button>
+          {wallet.configError && !wallet.config && <p className="pad-notice" data-tone="bad" role="alert">Launch settings are unavailable: {wallet.configError}</p>}
+          <div className="pad-filters" role="group" aria-label="Sort and filter coins">
+            {(['newest', 'marketcap'] as Sort[]).map(value => (
+              <button key={value} type="button" className="pad-chip" aria-pressed={sort === value} onClick={() => setSort(value)}>{value === 'newest' ? 'Newest' : 'Market cap'}</button>
             ))}
+            {wallet.session && <button type="button" className="pad-chip" aria-pressed={onlyMine} onClick={() => setOnlyMine(value => !value)}>Made by you</button>}
           </div>
-          <div className="pad-collection-tools">
-            <div className="pad-filters" role="group" aria-label="Sort and filter coins">
-              {(['newest', 'marketcap'] as Sort[]).map(value => (
-                <button key={value} type="button" className="pad-chip" aria-pressed={sort === value} onClick={() => setSort(value)}>{value === 'newest' ? 'Newest' : 'Market cap'}</button>
-              ))}
-              {wallet.session && <button type="button" className="pad-chip" aria-pressed={onlyMine} onClick={() => setOnlyMine(value => !value)}>Made by you</button>}
-            </div>
-            <p className="pad-sample-note" role="status"><span className="pad-dot" /> {source === 'pons' ? (ponsStale ? staleNote : `${pons?.items.length ? `The ${pons.items.length} most recent migrations` : 'Recent migrations'} on Pons · Robinhood Chain`) : (error && launches.length ? staleNote : 'Made through Plum · Robinhood Chain')}</p>
-          </div>
+          {ponsStale && <p className="pad-notice" role="status">Showing the last good read{staleSince ? ` from ${clockTime(staleSince)}` : ''}.</p>}
           <p className="pad-sr-only" role="status">{notice}</p>
           {notice && <p className="pad-notice">{notice} <button type="button" onClick={() => setNotice('')}>Dismiss</button></p>}
-          <TokenGrid coins={coins} source={source} sort={sort} mine={onlyMine} loading={loading} error={collectionError} search={search} viewer={wallet.session?.address ?? null} onReset={() => { setSearch(''); setOnlyMine(false) }} onRetry={() => { setLoading(true); void load() }} />
+          <TokenGrid coins={coins} sort={sort} mine={onlyMine} loading={loading} error={ponsError} viewer={wallet.session?.address ?? null} onReset={() => setOnlyMine(false)} onRetry={() => { setLoading(true); void load() }} />
         </section>
 
       </main>
       <PaperFooter />
       {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} connected={Boolean(wallet.address)} onConnect={() => { reopenDesk.current = true; setCreating(false); void wallet.connect() }} onClose={() => setCreating(false)} onLaunched={intent => {
-        setNotice(`${intent.tokenParams.name} launched. It appears under Plum coins once it leaves its curve; until then the desk's Blockscout link is the place to watch it.`)
-        setSearch(''); setOnlyMine(false)
+        setNotice(`${intent.tokenParams.name} launched. It appears in the collection once it leaves its curve; until then the desk's Blockscout link is the place to watch it.`)
+        setOnlyMine(false)
         void load()
       }} />}
     </div>

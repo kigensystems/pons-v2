@@ -1,14 +1,10 @@
 import { useEffect, useId, useRef } from 'react'
 import { createMonitorPlayback } from './monitorPlayback'
 import { deriveTvLighting } from './tvLighting'
+import { CRT_EXPOSURE, GLASS_PATH, PICTURE_TRANSFORM } from './screenGeometry'
 
 type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void; onSwitch: () => void; switchLabel: string }
 
-// The inside of the original image's curved glass, in artwork coordinates.
-const GLASS_PATH = 'M 596 138 C 691 137 824 146 912 154 Q 929 156 929 178 L 920 428 Q 919 445 901 446 C 801 446 655 434 588 423 Q 570 420 567 399 C 557 311 562 213 574 161 Q 578 138 596 138 Z'
-// The screen must be the brightest thing in the room. Lift the footage hard and clip its top fifth to
-// white before the halation blooms, so dim talking heads still read as emitted light.
-const CRT_EXPOSURE = '0 .24 .48 .66 .8 .9 .96 .99 1 1 1'
 
 /** Original pixels stay intact; registered shading and CRT light integrate the artwork. */
 export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitch, switchLabel }: Props) {
@@ -162,7 +158,7 @@ export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitc
       </g>
       <g className="image-tv-picture" clipPath={`url(#${clipId})`}>
         <g filter={`url(#${clipId}-exposure)`}>
-          <foreignObject width="640" height="480" transform="matrix(.585 .031 -.025 .638 570 129)">
+          <foreignObject width="640" height="480" transform={PICTURE_TRANSFORM}>
             <canvas ref={canvasRef} className="image-tv-canvas" width="640" height="480" role="img" aria-label="TV cycling four video channels with brief static between them" />
           </foreignObject>
         </g>
