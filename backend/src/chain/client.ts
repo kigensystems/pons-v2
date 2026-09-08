@@ -162,14 +162,24 @@ export function createChainReader(config: Config): ChainReader {
     launchEconomics(launchConfigId, pairToken, blockNumber) { return limited(() => client.readContract({ ...factory, functionName: 'previewLaunchEconomics', args: [launchConfigId, pairToken], blockNumber })) },
     canLaunch(account, blockNumber) { return limited(() => client.readContract({ ...factory, functionName: 'canLaunch', args: [account], blockNumber })) },
     async simulate(tx) {
+      const request = { account: tx.account, to: tx.to, data: tx.data, value: tx.value }
       try {
-        const [gas, fee] = await Promise.all([
-          limited(() => client.estimateGas({ account: tx.account, to: tx.to, data: tx.data, value: tx.value })),
-          fees(),
-        ])
+        const [gas, fee] = await Promise.all([limited(() => client.estimateGas(request)), fees()])
         return { ok: true, gas, maxFeePerGas: fee.maxFeePerGas, maxPriorityFeePerGas: fee.maxPriorityFeePerGas }
       } catch (error) {
-        return { ok: false, ...describeRevert(error) }
+        const described = describeRevert(error)
+        if (described.code !== 'insufficient_funds') return { ok: false, ...described }
+        // The node refuses to estimate for a wallet that cannot pay. Estimate again as if it could, so the
+        // quote can say how much the launch needs; the balance check in intents turns that into the shortfall.
+        try {
+          const [gas, fee] = await Promise.all([
+            limited(() => client.estimateGas({ ...request, stateOverride: [{ address: tx.account, balance: tx.value + 10n ** 18n }] })),
+            fees(),
+          ])
+          return { ok: true, gas, maxFeePerGas: fee.maxFeePerGas, maxPriorityFeePerGas: fee.maxPriorityFeePerGas }
+        } catch {
+          return { ok: false, ...described }
+        }
       }
     },
     balance(account) { return limited(() => client.getBalance({ address: account })) },

@@ -35,6 +35,8 @@ function ExploreDesk() {
   const reopenDesk = useRef(false)
 
   useEffect(() => { document.title = 'Explore — Plum' }, [])
+  // Arriving at /explore#paper-main (About's Explore Collection) lands on the collection; the target renders after load.
+  useEffect(() => { if (window.location.hash === '#paper-main') document.getElementById('paper-main')?.scrollIntoView() }, [])
   useEffect(() => { if (wallet.session && reopenDesk.current) { reopenDesk.current = false; setCreating(true) } }, [wallet.session])
 
   // The collection is the Pons feed: every coin that has left its curve, Plum's own among them.

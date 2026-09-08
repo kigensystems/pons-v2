@@ -243,7 +243,7 @@ export default function LaunchForm({ session, config, connecting, connected, onC
             </>
             : stage === 'review' || stage === 'signing'
               ? <>
-                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || (!sentHash && (expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)))}>{stage === 'signing' ? (sentHash ? 'Recording…' : 'Confirm in your wallet…') : sentHash ? 'Retry recording' : 'Sign in wallet'}</button>
+                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || (!sentHash && (expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)))}>{stage === 'signing' ? (sentHash ? 'Recording…' : 'Confirm in your wallet…') : sentHash ? 'Retry recording' : 'Confirm in wallet'}</button>
                 {!sentHash && <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={() => { setStage('form'); setIntent(null); setProblem('') }}>Edit</button>}
               </>
               : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'}</button>}
