@@ -129,7 +129,8 @@ export const api = {
   verify: (message: string, signature: string) => request<{ session: Session }>('/api/auth/verify', { method: 'POST', json: { message, signature } }).then(r => r.session),
   logout: () => request<{ ok: true }>('/api/auth/logout', { method: 'POST', json: {} }),
   launchConfig: () => request<LaunchConfigResponse>('/api/launch-config'),
-  upload: (file: File) => request<{ id: string; url: string }>('/api/uploads', { method: 'POST', body: file, headers: { 'Content-Type': file.type } }),
+  // A file with no recognised extension has an empty type; the API validates the bytes themselves.
+  upload: (file: File) => request<{ id: string; url: string }>('/api/uploads', { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }),
   createIntent: (idempotencyKey: string, body: Record<string, unknown>) => request<Intent>('/api/launch-intents', { method: 'POST', json: body, headers: { 'Idempotency-Key': idempotencyKey } }),
   intent: (id: string) => request<Intent>(`/api/launch-intents/${encodeURIComponent(id)}`),
   submit: (id: string, transactionHash: string) => request<Intent>(`/api/launch-intents/${encodeURIComponent(id)}/submission`, { method: 'POST', json: { transactionHash } }),

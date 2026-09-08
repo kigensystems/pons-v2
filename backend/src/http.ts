@@ -1,5 +1,6 @@
 // Minimal HTTP plumbing over node:http: routing, JSON bodies with size caps, cookies, rate limits.
 import type { IncomingMessage, ServerResponse } from 'node:http'
+import { createHmac, timingSafeEqual } from 'node:crypto'
 
 export class HttpError extends Error {
   status: number
@@ -109,4 +110,23 @@ export function clientIp(req: IncomingMessage): string {
     }
   }
   return req.socket.remoteAddress ?? 'unknown'
+}
+
+// Netlify signs every proxied request with a JWS (HMAC SHA-256 over the base64url header and payload,
+// iss "netlify", short exp) in x-nf-sign when the redirect names a secret. A request without a valid,
+// unexpired signature did not come through the site's proxy.
+export function verifyProxySignature(header: string | string[] | undefined, secret: string, now = Date.now()): boolean {
+  const token = Array.isArray(header) ? header[0] : header
+  if (!token || token.length > 2048) return false
+  const parts = token.split('.')
+  if (parts.length !== 3) return false
+  const [head, payload, signature] = parts as [string, string, string]
+  const expected = createHmac('sha256', secret).update(`${head}.${payload}`).digest()
+  let given: Buffer
+  try { given = Buffer.from(signature, 'base64url') } catch { return false }
+  if (given.length !== expected.length || !timingSafeEqual(given, expected)) return false
+  try {
+    const claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { iss?: unknown; exp?: unknown }
+    return claims.iss === 'netlify' && typeof claims.exp === 'number' && claims.exp * 1000 > now
+  } catch { return false }
 }

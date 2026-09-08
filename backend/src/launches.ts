@@ -97,11 +97,17 @@ export function createLaunches(db: Db, chain: ChainReader, market: ReturnType<ty
       if (!row) throw new HttpError(404, 'Not a Plum launch', 'not_found')
       const period = query.period ?? '1h'
       if (!['1m', '5m', '15m', '1h', '4h', '1d'].includes(period)) throw new HttpError(400, 'period must be one of 1m, 5m, 15m, 1h, 4h, 1d', 'bad_period')
-      const to = query.to ? Number(query.to) : Math.floor(Date.now() / 1000)
-      const from = query.from ? Number(query.from) : to - 7 * 24 * 3600
-      if (!Number.isInteger(from) || !Number.isInteger(to) || from < row.block_time - 3600 || to <= from || to - from > 90 * 24 * 3600) {
+      // Windows snap to the period so the cache key space per token is small and one caller cannot
+      // make Mobula draw a fresh chart for every second of the day.
+      const step = { '1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14_400, '1d': 86_400 }[period]! * 60
+      const snap = (value: number) => Math.floor(value / step) * step
+      const requestedTo = query.to ? Number(query.to) : Math.floor(Date.now() / 1000)
+      const requestedFrom = query.from ? Number(query.from) : requestedTo - 7 * 24 * 3600
+      if (!Number.isInteger(requestedFrom) || !Number.isInteger(requestedTo) || requestedFrom < row.block_time - 3600 || requestedTo <= requestedFrom || requestedTo - requestedFrom > 90 * 24 * 3600) {
         throw new HttpError(400, 'from/to must be unix seconds within 90 days, after the launch', 'bad_range')
       }
+      const from = snap(requestedFrom)
+      const to = snap(requestedTo) + step
       return market.candles(getAddress(row.token), period, from, to)
     },
   }

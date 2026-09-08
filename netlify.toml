@@ -1,8 +1,25 @@
 [build]
   base = "frontend"
-  command = "npm run build && node scripts/netlify-redirects.mjs"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "24"
   NPM_FLAGS = "--legacy-peer-deps"
+
+# /api is proxied to the launch API on Render so the browser sees one origin: the HttpOnly session
+# cookie and the API's Origin check work unchanged. `signed` names a site environment variable
+# (scope: Runtime) holding a shared secret; Netlify signs every proxied request with it in x-nf-sign,
+# and the API (PLUM_PROXY_SECRET, the same value) refuses anything unsigned, so it cannot be reached
+# around the site. Change `to` if Render assigns a different hostname; see docs/DEPLOY.md.
+[[redirects]]
+  from = "/api/*"
+  to = "https://plum-api.onrender.com/api/:splat"
+  status = 200
+  force = true
+  signed = "PLUM_PROXY_SECRET"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

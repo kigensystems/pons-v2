@@ -27,6 +27,9 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   const [intent, setIntent] = useState<Intent | null>(null)
   const [problem, setProblem] = useState('')
   const [now, setNow] = useState(nowSeconds)
+  // The hash of a transaction the wallet has already sent. If recording it with Plum fails, the
+  // retry records this hash rather than asking the wallet for a second, paid transaction.
+  const [sentHash, setSentHash] = useState<`0x${string}` | null>(null)
   const notified = useRef(false)
 
   useEffect(() => {
@@ -105,14 +108,27 @@ export default function LaunchForm({ session, config, connecting, connected, onC
   async function sign() {
     if (!intent || !session) return
     setStage('signing'); setProblem('')
-    try {
-      const gas = intent.simulation?.ok ? intent.simulation.gas : undefined
-      const hash = await sendPreparedTransaction(session, intent.transaction, gas)
-      setStage('tracking')
-      setIntent(await api.submit(intent.id, hash))
-    } catch (failure) {
-      setStage('review')
-      setProblem(failure instanceof WalletError || failure instanceof Error ? failure.message : 'The transaction was not sent.')
+    let hash = sentHash
+    if (!hash) {
+      try {
+        const gas = intent.simulation?.ok ? intent.simulation.gas : undefined
+        hash = await sendPreparedTransaction(session, intent.transaction, gas)
+        setSentHash(hash)
+      } catch (failure) {
+        setStage('review')
+        setProblem(failure instanceof WalletError || failure instanceof Error ? failure.message : 'The transaction was not sent.')
+        return
+      }
+    }
+    setStage('tracking')
+    // The transaction is on the network whatever happens next; recording it is retried, never re-sent.
+    for (let attempt = 0; ; attempt++) {
+      try { setIntent(await api.submit(intent.id, hash)); return } catch (failure) {
+        if (attempt < 2 && !(failure instanceof ApiError && failure.status >= 400 && failure.status < 500 && failure.status !== 429)) { await new Promise(r => setTimeout(r, 1500 * (attempt + 1))); continue }
+        setStage('review')
+        setProblem(`Your transaction ${shortAddress(hash)} was sent, but Plum could not record it${failure instanceof Error ? `: ${failure.message}` : ''}. Retry to record it; nothing is sent again.`)
+        return
+      }
     }
   }
 
@@ -185,8 +201,8 @@ export default function LaunchForm({ session, config, connecting, connected, onC
             ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'}</button>
             : stage === 'review' || stage === 'signing'
               ? <>
-                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)}>{stage === 'signing' ? 'Confirm in your wallet…' : 'Sign in wallet'}</button>
-                <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={() => { setStage('form'); setIntent(null); setProblem('') }}>Edit</button>
+                <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || (!sentHash && (expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)))}>{stage === 'signing' ? (sentHash ? 'Recording…' : 'Confirm in your wallet…') : sentHash ? 'Retry recording' : 'Sign in wallet'}</button>
+                {!sentHash && <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={() => { setStage('form'); setIntent(null); setProblem('') }}>Edit</button>}
               </>
               : <button type="button" className="pad-btn pad-btn--dark" onClick={onClose}>{intent && isSettled(intent) ? 'Done' : 'Keep browsing'}</button>}
         <span className="pad-fine">

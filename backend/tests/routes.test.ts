@@ -9,7 +9,8 @@ import { creator, fakeChain, mine, testConfig, TOKEN } from './fixtures.ts'
 
 const config = testConfig({ uploadDir: `${process.env.TMPDIR ?? '/tmp'}/plum-test-uploads-${process.pid}`, mobulaApiKey: 'test-key' })
 const chain = fakeChain()
-const services = createServices(config, { chain, dbPath: ':memory:', fetch: (async () => new Response(JSON.stringify({ data: { price: 2 } }), { status: 200 })) as typeof fetch })
+const upstream: string[] = []
+const services = createServices(config, { chain, dbPath: ':memory:', fetch: (async (url: string | URL) => { upstream.push(String(url)); return new Response(JSON.stringify({ data: String(url).includes('ohlcv') ? [] : { price: 2 } }), { status: 200 }) }) as typeof fetch })
 const server = createServer(createHandler(buildRouter(services)))
 await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
 const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`
@@ -99,6 +100,13 @@ test('wallet sign-in, upload, intent, submission and registry listing work end t
   assert.equal((await api(`/api/launches/4663/${creator.address}`)).status, 404)
   assert.equal((await api(`/api/launches/4663/${TOKEN}/candles?period=2h`)).status, 400)
   assert.equal((await api(`/api/launches/4663/${TOKEN}/candles?period=1h&from=1&to=2`)).status, 400)
+  // Candle windows snap to the period, so two nearby requests share one upstream chart.
+  const t = 1_788_000_000
+  assert.equal((await api(`/api/launches/4663/${TOKEN}/candles?period=1h&from=${t + 1}&to=${t + 7200}`)).status, 200)
+  assert.equal((await api(`/api/launches/4663/${TOKEN}/candles?period=1h&from=${t + 999}&to=${t + 7777}`)).status, 200)
+  const charts = upstream.filter(u => u.includes('ohlcv'))
+  assert.equal(charts.length, 1)
+  assert.match(charts[0]!, /from=1787832000000&to=1788048000000/)
 
   assert.equal((await api('/api/auth/logout', { method: 'POST', json: {} })).status, 200)
   assert.equal((await api('/api/auth/session')).body.session, null)

@@ -27,6 +27,7 @@ export type Config = {
   mobulaApiKey: string | null
   mobulaBaseUrl: string
   reconcileIntervalMs: number
+  proxySecret: string | null
 }
 
 export class ConfigError extends Error {}
@@ -95,5 +96,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     mobulaApiKey: read(env, 'MOBULA_API_KEY') ?? null,
     mobulaBaseUrl: read(env, 'MOBULA_BASE_URL') ?? 'https://api.mobula.io',
     reconcileIntervalMs: integer(env, 'PLUM_RECONCILE_INTERVAL_MS', 5000, 500),
+    // Set to the same value as the Netlify signed-proxy token: every request except /api/health must
+    // then carry Netlify's x-nf-sign signature, so the API cannot be reached around the proxy.
+    proxySecret: read(env, 'PLUM_PROXY_SECRET') ?? null,
   }
 }

@@ -50,13 +50,13 @@ Checks: `npm --prefix backend test`, `typecheck`, `lint`; frontend `build`, `lin
 | `POST /api/uploads` (raw image bytes), `GET /api/uploads/:id` | Validated, content-addressed logo storage |
 | `GET /api/launch-config` | Factory settings pinned to one block, cached 10 s, plus `canLaunch` for the session wallet |
 | `POST /api/launch-intents` | Requires `Idempotency-Key`; reads live terms, encodes `launchToken`, simulates from the wallet, stores the intent; 15-minute expiry |
-| `POST /api/launch-intents/:id/submission` | Records a candidate hash and reconciles immediately |
+| `POST /api/launch-intents/:id/submission` | Records a candidate hash and reconciles immediately; at most three unsettled hashes per intent (`too_many_submissions`) |
 | `GET /api/launch-intents/:id` | `prepared`, `submitted`, `included`, `confirmed`, `reverted`, `rejected`, `expired`, `unresolved` |
-| `GET /api/launches`, `/:chainId/:token`, `/:chainId/:token/candles` | Registry only; protocol phase and market data attached with their own status and timestamps |
+| `GET /api/launches`, `/:chainId/:token`, `/:chainId/:token/candles` | Registry only; protocol phase and market data attached with their own status and timestamps. Candle windows snap to sixty periods so one caller cannot make Mobula draw a chart per second; 60 candle requests a minute per address |
 | `GET /api/pons/coins` | Pons-wide: the coins that have left their curve, from the `bonded` view of one Mobula pulse call for the configured factory (Mobula returns 50 per view), spam-flagged rows dropped, newest graduation first, with market cap, 24 h change, a DexScreener `chart` link and `madeWithPlum` for registry members. A logo Mobula stops sending is remembered. One snapshot cached 30 s in memory; failures return the last list as `stale` |
 | `GET /api/pons/spotlight` | From the same snapshot: the newest coin to leave its curve for a pool, confirmed with `getLaunchedToken` (phase ≥ 2) before it is returned |
 
-Writes require an `Origin` header equal to `PLUM_ORIGIN` and a session. Rate limits are per process and in memory: 1200 requests a minute per client address across every route, 60 a minute for the sign-in routes, 30 a minute per wallet for intents and submissions, 10 a minute per wallet for uploads. Behind the Netlify proxy (`PLUM_TRUST_PROXY=1`) the client address is `x-nf-client-connection-ip`, the header Netlify commits to; `X-Forwarded-For` is the fallback.
+Writes require an `Origin` header equal to `PLUM_ORIGIN` and a session. Rate limits are per process and in memory: 1200 requests a minute per client address across every route, 60 a minute for the sign-in routes, 30 a minute per wallet for intents and submissions, 10 a minute per wallet for uploads. Behind the Netlify proxy (`PLUM_TRUST_PROXY=1`) the client address is `x-nf-client-connection-ip`, the header Netlify commits to; `X-Forwarded-For` is the fallback. With `PLUM_PROXY_SECRET` set, every route but `/api/health` also requires Netlify's `x-nf-sign` signature (`verifyProxySignature` in `http.ts`), so those headers cannot be forged by calling the Render hostname directly.
 
 ## Under load
 
@@ -66,6 +66,8 @@ Checked September 8 against the real RPC and a proxy-mode instance, without sign
 - **Creators.** One intent costs three RPC reads (`canLaunch`, `eth_estimateGas`, balance). The provider's compute-units-per-second cap, not credits, is the limit: 100 wallets preparing at the same instant first met Alchemy 429s. Reads now leave through a gate of eight at a time and a 429 backs off 500 ms, 1 s, 2 s, 4 s; the same 100-wallet burst then prepared 100 of 100 in 3.9 s. A read the provider still refuses records `provider_busy` on the intent, and the desk's Edit button prepares a fresh one.
 - **Gas.** The gas limit handed to the wallet is the estimate plus a fifth; the quote and the balance check use the same figure.
 - **Netlify** ends a proxied request after 26 s, so the transport timeout is 10 s.
+- **Abuse, checked September 9.** The worker visits only intents with a submitted hash; prepared intents expire in one SQL statement, so a wallet spamming 30 quotes a minute (the per-wallet cap) cannot push real launches out of the worker's 200-intent pass. A hash the network has not seen is rechecked after 5, 10, 20, 40, then 60 s, and an intent holds at most three unsettled hashes, so invented hashes cannot turn the worker into an RPC amplifier. Candle windows are quantized and metered. The Alchemy key answered 400 reads in two seconds cleanly and refused 20 of 800 at 300 requests per second, the pay-as-you-go cap; the gate of eight keeps the API's own rate well under it.
+- **Sign-in against the real RPC, September 9.** A scripted wallet ran challenge → signature → verify (ERC-6492 verification through Alchemy) → session cookie → `launch-config` with `canLaunch` true → intent (simulation `insufficient_funds` from an empty wallet, as expected) → three invented hashes accepted, a fourth refused, a cross-origin write refused, logout. The whole sequence took 344 ms.
 
 ## Membership rule as implemented
 
@@ -83,10 +85,10 @@ Registry rows move from `included` to `confirmed` after `PLUM_CONFIRMATIONS` blo
 
 ## Not verified
 
-- No launch was signed or mined with a real wallet, so the receipt path (event decoding, the confirmation worker, Mobula enrichment of a Plum token) is proven only by tests.
+- No launch was signed or mined with a real wallet, so the receipt path (event decoding, the confirmation worker, Mobula enrichment of a Plum token) is proven only by tests. The browser wallet path (AppKit → injected wallet → `personal_sign` → `eth_sendTransaction`) has not been driven with a real extension in this checkout's Chrome profile, which has no wallet installed; the picker opens and lists WalletConnect and the injected options. If recording a sent hash with Plum fails, the desk keeps the hash and retries the record, never the transaction.
 - pons custom errors are declared without parameters because their signatures are unpublished; an unknown revert is reported with its selector.
 - The logo URI written onchain points at `PLUM_PUBLIC_URL`. For a real launch that must be a durable public host or an IPFS pin; the local disk adapter is development only.
-- `verifySiweMessage` for contract wallets depends on RPC and was only tested with an EOA offline.
+- `verifySiweMessage` for contract wallets depends on RPC; it was tested through Alchemy with an EOA (September 9), not with a contract wallet.
 - Mobula normalization is based on the documented field names and a fake server; no live Mobula call was made. The root `.env` arrived at the end of the session in the main checkout; see [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md).
 - Initial buys, pair tokens other than ETH and the router path are encoded in the ABI but refused by the API until validated on a fork or a real launch. pons publishes no testnet deployment.
 

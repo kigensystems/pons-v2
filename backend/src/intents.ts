@@ -40,6 +40,11 @@ type SubmissionRow = { tx_hash: string; intent_id: string; state: SubmissionStat
 type LaunchRow = { token: string; curve: string; tx_hash: string; block_number: number; block_hash: string; confirmation_state: string }
 
 const DROP_AFTER_SECONDS = 10 * 60
+// A hash the network has not seen is rechecked at growing intervals, so a stream of invented hashes
+// cannot turn the worker into an RPC amplifier; a real transaction lands within a few seconds anyway.
+const MAX_PENDING_SUBMISSIONS = 3
+const UNSEEN = 'Transaction not seen by the network yet'
+const recheckDelay = (attempts: number) => Math.min(60, 5 * 2 ** Math.max(0, attempts - 1))
 const NAME_MAX = 40
 const DESCRIPTION_MAX = 280
 const SOCIAL_MAX = 200
@@ -81,7 +86,10 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
   const selectSubmission = db.prepare('SELECT * FROM submissions WHERE tx_hash = ?')
   const insertSubmission = db.prepare("INSERT INTO submissions (tx_hash, intent_id, state, detail, attempts, submitted_at, updated_at) VALUES (?, ?, 'pending', NULL, 0, ?, ?)")
   const setSubmission = db.prepare('UPDATE submissions SET state = ?, detail = ?, attempts = attempts + 1, updated_at = ? WHERE tx_hash = ?')
-  const selectActive = db.prepare("SELECT id FROM launch_intents WHERE status IN ('submitted', 'prepared') ORDER BY created_at ASC LIMIT 200")
+  // Prepared intents expire in one statement; the worker only visits intents with a transaction to check.
+  const expirePrepared = db.prepare("UPDATE launch_intents SET status = 'expired', failure = 'No transaction was submitted before the intent expired', updated_at = ? WHERE status = 'prepared' AND expires_at < ?")
+  const selectActive = db.prepare("SELECT id FROM launch_intents WHERE status = 'submitted' ORDER BY created_at ASC LIMIT 200")
+  const countPending = db.prepare("SELECT COUNT(*) AS n FROM submissions WHERE intent_id = ? AND state = 'pending'")
   const selectLaunch = db.prepare('SELECT token, curve, tx_hash, block_number, block_hash, confirmation_state FROM launches WHERE intent_id = ?')
   const selectIncluded = db.prepare("SELECT intent_id, block_number, block_hash FROM launches WHERE confirmation_state = 'included' LIMIT 200")
   const insertLaunch = db.prepare(`INSERT INTO launches (chain_id, token, curve, factory, creator, creator_fee_recipient, intent_id, tx_hash, log_index, block_number, block_hash, block_time,
@@ -143,11 +151,12 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
     const intent = { address: getAddress(row.address), chainId: row.chain_id, target: getAddress(row.target), calldata: row.calldata as Hex, valueWei: BigInt(row.value_wei) }
     for (const submission of submissions) {
       const hash = submission.tx_hash as Hex
+      if (submission.attempts > 0 && submission.detail === UNSEEN && submission.updated_at + recheckDelay(submission.attempts) > now()) continue
       const receipt = await chain.receipt(hash)
       if (!receipt) {
         const tx = await chain.transaction(hash)
         if (!tx && submission.submitted_at + DROP_AFTER_SECONDS < now()) setSubmission.run('dropped', 'Transaction not found after the waiting period', now(), hash)
-        else setSubmission.run('pending', null, now(), hash)
+        else setSubmission.run('pending', tx ? null : UNSEEN, now(), hash)
         continue
       }
       const [tx, block] = await Promise.all([chain.transaction(hash), chain.blockByNumber(receipt.blockNumber)])
@@ -206,6 +215,7 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
     if (running) return
     running = true
     try {
+      expirePrepared.run(now(), now())
       for (const { id } of selectActive.all() as { id: string }[]) {
         try { await reconcileIntent(id) } catch (error) { console.error('reconcile', id, error instanceof Error ? error.message.slice(0, 200) : error) }
       }
@@ -296,6 +306,7 @@ export function createIntents(db: Db, config: Config, chain: ChainReader, upload
       if (!existing) {
         if (row.status !== 'prepared' && row.status !== 'submitted') throw new HttpError(409, `Intent is ${row.status} and cannot accept a submission`, 'intent_closed')
         if (row.expires_at < now()) { setStatus.run('expired', 'No transaction was submitted before the intent expired', now(), id); throw new HttpError(409, 'Intent expired before submission', 'intent_expired') }
+        if ((countPending.get(id) as { n: number }).n >= MAX_PENDING_SUBMISSIONS) throw new HttpError(409, `An intent tracks at most ${MAX_PENDING_SUBMISSIONS} unsettled transactions`, 'too_many_submissions')
         insertSubmission.run(lower, id, now(), now())
         setStatus.run('submitted', null, now(), id)
       }

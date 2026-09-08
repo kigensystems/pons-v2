@@ -22,7 +22,7 @@ export type Services = {
 
 export function buildRouter(s: Services): Router {
   const router = new Router()
-  const limits = { auth: new RateLimiter(60, 60_000), write: new RateLimiter(30, 60_000), upload: new RateLimiter(10, 60_000) }
+  const limits = { auth: new RateLimiter(60, 60_000), write: new RateLimiter(30, 60_000), upload: new RateLimiter(10, 60_000), market: new RateLimiter(60, 60_000) }
   setInterval(() => Object.values(limits).forEach(l => l.sweep()), 60_000).unref()
 
   function sameOrigin(ctx: Ctx) {
@@ -55,8 +55,9 @@ export function buildRouter(s: Services): Router {
     sameOrigin(ctx)
     const session = s.auth.require(ctx)
     limits.upload.check(session.address)
+    // The bytes are validated by magic number; the declared type only has to not be JSON or a form.
     const type = header(ctx, 'content-type')
-    if (!type.startsWith('image/')) throw new HttpError(415, 'Send the image bytes with an image/* content type', 'unsupported_media')
+    if (type && !type.startsWith('image/') && !type.startsWith('application/octet-stream')) throw new HttpError(415, 'Send the image bytes with an image/* content type', 'unsupported_media')
     const bytes = await readBody(ctx.req, MAX_IMAGE_BYTES)
     return s.uploads.store(session.address, bytes)
   })
@@ -99,9 +100,10 @@ export function buildRouter(s: Services): Router {
   router.add('GET', '/api/pons/coins', () => s.pons.coins())
   router.add('GET', '/api/pons/spotlight', () => s.pons.spotlight())
   router.add('GET', '/api/launches/:chainId/:token', ctx => s.launches.get(Number(ctx.params.chainId), ctx.params.token!))
-  router.add('GET', '/api/launches/:chainId/:token/candles', ctx => s.launches.candles(Number(ctx.params.chainId), ctx.params.token!, {
+  // Each distinct candle window is a Mobula call; the window is quantized in launches.ts and the caller is metered.
+  router.add('GET', '/api/launches/:chainId/:token/candles', ctx => { limits.market.check(ctx.ip); return s.launches.candles(Number(ctx.params.chainId), ctx.params.token!, {
     period: ctx.url.searchParams.get('period') ?? undefined, from: ctx.url.searchParams.get('from') ?? undefined, to: ctx.url.searchParams.get('to') ?? undefined,
-  }))
+  }) })
 
   return router
 }

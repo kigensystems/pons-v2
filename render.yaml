@@ -25,6 +25,9 @@ services:
         sync: false
       - key: SESSION_SECRET
         generateValue: true
+      # Same value as the Netlify site's PLUM_PROXY_SECRET; the API refuses requests Netlify did not sign.
+      - key: PLUM_PROXY_SECRET
+        sync: false
       - key: PLUM_HOST
         value: 0.0.0.0
       - key: PLUM_API_PORT

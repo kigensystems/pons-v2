@@ -2,7 +2,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { ConfigError, loadConfig, type Config } from './config.ts'
 import { openDatabase } from './db.ts'
-import { HttpError, RateLimiter, clientIp, parseCookies, sendJson, type Router } from './http.ts'
+import { HttpError, RateLimiter, clientIp, parseCookies, sendJson, verifyProxySignature, type Router } from './http.ts'
 import { createChainReader, type ChainReader } from './chain/client.ts'
 import { createAuth } from './auth.ts'
 import { createUploads, localImageStore } from './uploads.ts'
@@ -24,7 +24,7 @@ export function createServices(config: Config, options: { chain?: ChainReader; d
   return { config, chain, auth, uploads, intents, launches, pons, db, market }
 }
 
-export function createHandler(router: Router) {
+export function createHandler(router: Router, options: { proxySecret?: string | null } = {}) {
   // Explore reads five routes on load and three every half minute, plus a 3 s poll while a launch settles;
   // this cap is for abuse, generous enough that a shared address (an office, a bad proxy) still browses.
   const global = new RateLimiter(1200, 60_000)
@@ -37,6 +37,11 @@ export function createHandler(router: Router) {
     res.setHeader('X-Content-Type-Options', 'nosniff')
     res.setHeader('Referrer-Policy', 'no-referrer')
     try {
+      // With a proxy secret, only Netlify's signed requests get past this point; the health check is
+      // left open for the host's own probe and for the post-deploy check.
+      if (options.proxySecret && url.pathname !== '/api/health' && !verifyProxySignature(req.headers['x-nf-sign'], options.proxySecret)) {
+        throw new HttpError(403, 'Requests must come through the site', 'unsigned')
+      }
       global.check(ip)
       const match = router.match(method, url.pathname)
       if (match === null) throw new HttpError(404, 'No such route', 'not_found')
@@ -65,9 +70,9 @@ if (import.meta.main) {
   }
   const services = createServices(config)
   const stop = services.intents.startWorker(config.reconcileIntervalMs)
-  const server = createServer(createHandler(buildRouter(services)))
+  const server = createServer(createHandler(buildRouter(services), { proxySecret: config.proxySecret }))
   server.listen(config.port, config.host, () => {
-    console.log(`Plum API listening on http://${config.host}:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}`)
+    console.log(`Plum API listening on http://${config.host}:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}; proxy signature ${config.proxySecret ? 'required' : 'not required'}`)
   })
   const shutdown = () => { stop(); server.close(); services.db.close(); process.exit(0) }
   process.on('SIGINT', shutdown)
