@@ -5,7 +5,7 @@ import PairPicker, { PairMark } from './PairPicker'
 import { sendPreparedTransaction, WalletError } from './wallet'
 import './launchLive.css'
 
-type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; connected: boolean; onConnect: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
+type Props = { session: Session | null; config: LaunchConfigResponse | null; connecting: boolean; connected: boolean; onConnect: () => void; onSwitch: () => void; onClose: () => void; onLaunched: (intent: Intent) => void }
 type Stage = 'form' | 'preparing' | 'review' | 'signing' | 'tracking'
 
 const POLL_MS = 2000
@@ -33,7 +33,7 @@ function clearDraft() { try { sessionStorage.removeItem(DRAFT_KEY) } catch { /* 
 const ZERO = '0x0000000000000000000000000000000000000000'
 const nowSeconds = () => Math.floor(Date.now() / 1000)
 
-export default function LaunchForm({ session, config, connecting, connected, onConnect, onClose, onLaunched }: Props) {
+export default function LaunchForm({ session, config, connecting, connected, onConnect, onSwitch, onClose, onLaunched }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const nameInput = useRef<HTMLInputElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -237,7 +237,10 @@ export default function LaunchForm({ session, config, connecting, connected, onC
         {!session
           ? <button type="button" className="pad-btn pad-btn--dark" onClick={onConnect} disabled={connecting}>{connecting ? 'Check your wallet…' : connected ? 'Sign in' : 'Connect wallet'}</button>
           : stage === 'form' || stage === 'preparing'
-            ? <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'}</button>
+            ? <>
+              <button type="submit" className="pad-btn pad-btn--dark" disabled={!ready || busy}>{stage === 'preparing' ? 'Preparing…' : 'Review the launch'}</button>
+              <button type="button" className="pad-btn pad-btn--quiet" disabled={busy} onClick={onSwitch} title={session.address}>Switch wallet · {shortAddress(session.address)}</button>
+            </>
             : stage === 'review' || stage === 'signing'
               ? <>
                 <button type="submit" className="pad-btn pad-btn--dark" disabled={busy || (!sentHash && (expiresIn === 0 || Boolean(intent?.simulation && !intent.simulation.ok)))}>{stage === 'signing' ? (sentHash ? 'Recording…' : 'Confirm in your wallet…') : sentHash ? 'Retry recording' : 'Sign in wallet'}</button>

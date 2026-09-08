@@ -92,6 +92,14 @@
 .pad-window-about::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #f7efe0; opacity: .55; transition: opacity .15s; }
 .pad-window-about:hover { color: #fffaf0; }
 .pad-window-about:hover::after { opacity: 1; }
+/* The wallet at the masthead's right, set like About us: the address in the light, the action beneath a hairline. */
+.pad-window-wallet { display: flex; align-items: center; gap: 22px; margin-left: auto; }
+.pad-window-wallet-address { font: 400 18px/1 var(--font-body); letter-spacing: .01em; color: var(--phosphor); text-shadow: var(--phosphor-glow); font-variant-numeric: tabular-nums; }
+.pad-window-link { position: relative; top: 2px; padding: 4px 0; border: 0; background: none; font: 400 22px/1 var(--font-body); letter-spacing: -.01em; color: var(--phosphor-fill); text-shadow: var(--phosphor-glow); cursor: pointer; }
+.pad-window-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #f7efe0; opacity: .55; transition: opacity .15s; }
+.pad-window-link:hover:not(:disabled) { color: #fffaf0; }
+.pad-window-link:hover:not(:disabled)::after { opacity: 1; }
+.pad-window-link:disabled { opacity: .6; cursor: default; }
 .pad-window-scroll { position: absolute; z-index: 4; left: 50%; bottom: 26px; translate: -50% 0; padding: 6px 14px; font: 400 30px/1 var(--font-title); color: var(--phosphor-fill); text-shadow: var(--phosphor-glow); text-decoration: none; }
 .pad-window-scroll:hover { color: #fffaf0; }
 .pad-stripe-rule { height: 39px; mix-blend-mode: multiply; background: linear-gradient(180deg, #3b6fe0 0px 4px, transparent 4px 5px, #45c2de 5px 9px, transparent 9px 10px, #a94fd0 10px 14px, transparent 14px 15px, #e8475a 15px 19px, transparent 19px 20px, #f28a3a 20px 24px, transparent 24px 25px, #f4d43a 25px 29px, transparent 29px 30px, #55c06a 30px 34px, transparent 34px 35px, #3f8fe0 35px 39px); }
@@ -198,8 +206,11 @@
   .pad-window-clip { display: block; position: relative; z-index: 1; overflow: clip; height: min(118vw, 480px); margin-top: 26px; }
   .pad-window-scene { left: -75%; top: -4%; width: 260%; }
   .pad-window .foreground-haze, .pad-window .mist--front { display: none; }
-  .pad-window .masthead { gap: 20px; }
+  .pad-window .masthead { flex-wrap: wrap; gap: 14px 20px; }
   .pad-window-about { font-size: 18px; top: 1px; }
+  .pad-window-wallet { gap: 14px; }
+  .pad-window-wallet-address { font-size: 14px; }
+  .pad-window-link { font-size: 18px; top: 1px; }
   .pad-window-scroll { position: relative; order: 3; left: auto; bottom: auto; translate: none; align-self: center; margin: 4px 0 14px; }
   .pad-explore { padding: 28px 20px 34px; }
   .pad-explore h2 { font-size: 32px; }

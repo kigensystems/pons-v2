@@ -8,7 +8,7 @@ import LaunchForm from './LaunchForm'
 import TokenGrid from './TokenGrid'
 import { PaperFooter } from './PaperChrome'
 import { useSession } from './useSession'
-import { coinFromPons, type Sort } from './launchModel'
+import { coinFromPons, shortAddress, type Sort } from './launchModel'
 import './launch.css'
 
 const REFRESH_MS = 15_000
@@ -73,6 +73,19 @@ function ExploreDesk() {
         <header className="masthead">
           <a className="working-name" href="/" aria-label="Plum — opening"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</a>
           <a className="pad-window-about" href="/about">About us</a>
+          {/* The wallet, always visible: who is connected, whether Plum holds a session for them, and the way out. */}
+          <div className="pad-window-wallet">
+            {wallet.session
+              ? <>
+                <span className="pad-window-wallet-address" title={wallet.session.address}>{shortAddress(wallet.session.address)}</span>
+                <button type="button" className="pad-window-link" onClick={() => void wallet.disconnect()}>Sign out</button>
+              </>
+              : <>
+                {wallet.address && <span className="pad-window-wallet-address" title={wallet.address}>{shortAddress(wallet.address)}</span>}
+                {wallet.address && <button type="button" className="pad-window-link" onClick={() => void wallet.disconnect()} disabled={wallet.connecting}>Disconnect</button>}
+                <button type="button" className="pad-window-link" onClick={() => void wallet.connect()} disabled={wallet.connecting} aria-busy={wallet.connecting}>{wallet.connecting ? 'Check your wallet…' : wallet.address ? 'Sign in' : 'Connect wallet'}</button>
+              </>}
+          </div>
         </header>
         <div className="pad-window-clip">
           <div className="pad-window-scene">
@@ -114,7 +127,7 @@ function ExploreDesk() {
 
       </main>
       <PaperFooter />
-      {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} connected={Boolean(wallet.address)} onConnect={() => { reopenDesk.current = true; setCreating(false); void wallet.connect() }} onClose={() => setCreating(false)} onLaunched={intent => {
+      {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} connected={Boolean(wallet.address)} onConnect={() => { reopenDesk.current = true; setCreating(false); void wallet.connect() }} onSwitch={() => { setCreating(false); void wallet.disconnect() }} onClose={() => setCreating(false)} onLaunched={intent => {
         setNotice(`${intent.tokenParams.name} launched. It appears in the collection once it leaves its curve; until then the desk's Blockscout link is the place to watch it.`)
         setOnlyMine(false)
         void load()
