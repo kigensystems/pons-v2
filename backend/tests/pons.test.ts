@@ -28,6 +28,7 @@ test('coins are the graduated ones newest first, other factories and spam droppe
   let clock = 1000
   const db = openDatabase(':memory:')
   const chain = fakeChain()
+  chain.tokens.set(A, { ...graduated('0x08267cc0881190f3ad29f226bd0e09f45282f80e'), creatorTaxBps: 250 })
   const { fetchImpl, calls } = feed([
     { status: 200, body: {
       new: { data: [coin(C, 'NEW', '2026-09-08T00:03:45.000Z', { logo: null, marketCap: 0 }), coin('0x0000000000000000000000000000000000000001', 'OTHER', '2026-09-08T00:05:00.000Z', { preBondingFactory: '0x0c37a24f5d23a486fa692d1500881d698b1f77a4' })] },
@@ -49,6 +50,8 @@ test('coins are the graduated ones newest first, other factories and spam droppe
   assert.equal(lead.graduatedAt, Date.parse('2026-09-07T23:57:29.007Z') / 1000 | 0)
   assert.equal(lead.launchedAt, Date.parse('2026-09-07T22:07:38.000Z') / 1000)
   assert.equal(lead.madeWithPlum, false)
+  assert.equal(lead.creatorTaxBps, 250, 'the creator rate comes from the factory')
+  assert.equal(first.items[1]!.creatorTaxBps, null, 'a coin the factory does not know shows no rate')
   assert.equal(lead.priceChange24hPct, -3.5)
   assert.equal(lead.holders, 7)
   assert.match(lead.explorer ?? '', /blockscout\.com\/token\/0x6ee1/i)
@@ -61,11 +64,12 @@ test('coins are the graduated ones newest first, other factories and spam droppe
 
   db.exec('PRAGMA foreign_keys = OFF')
   db.exec(`INSERT INTO launches (chain_id, token, curve, factory, creator, creator_fee_recipient, intent_id, tx_hash, log_index, block_number, block_hash, block_time, launch_config_id, pair_token, name, symbol, logo, description, creator_tax_bps, buyback_enabled, confirmation_state, created_at, updated_at)
-    VALUES (4663, '${A}', '0x2', '${FACTORY.toLowerCase()}', '0x3', '0x3', 'i1', '0x4', 0, 1, '0x5', 1, 0, '0x0', 'lead', 'LEAD', '', '', 0, 0, 'confirmed', 1, 1)`)
+    VALUES (4663, '${A}', '0x2', '${FACTORY.toLowerCase()}', '0x3', '0x3', 'i1', '0x4', 0, 1, '0x5', 1, 0, '0x0', 'lead', 'LEAD', '', '', 300, 0, 'confirmed', 1, 1)`)
   clock = 1040
   const second = await pons.coins()
   assert.equal(second.items.length, 1)
   assert.equal(second.items[0]!.madeWithPlum, true)
+  assert.equal(second.items[0]!.creatorTaxBps, 300, 'a registry row supplies the rate')
   assert.equal(second.items[0]!.logo, 'https://cdn.example/LEAD.webp', 'a logo Mobula stops sending is remembered')
   assert.equal(calls.length, 2)
 })

@@ -29,13 +29,21 @@ Third pass, September 8, approved in Chrome:
 - Pair assets on the desk. pons's docs say a pair-token launch is the same single `launchToken` call with the fee as `msg.value` and no balance or approval of the pair asset needed by the creator; only the economics pin differs. The factory publishes no list, so `chain/client.ts` folds every `PairTokenApprovalUpdated` since deployment (58 events, one Alchemy request), names each survivor by ERC-20 `symbol`/`name` and prices it by `pairTokenEconomics`, cached ten minutes. `intents.create` accepts `pairToken`, refuses one the factory does not approve, pins `previewLaunchEconomics(config, pair)` at the settings block, and records the pair's threshold and phantom quote in the terms. `GET /api/launch-config` lists ETH then the 56 approved assets (USDG, cbBTC, TAO, 53 Robinhood stock tokens on September 8). The desk's "Paired with" is `PairPicker.tsx`: a button with the asset's mark and ticker opening a searchable list of the same (ETH, Crypto and dollars, Robinhood stock tokens), keyboard-operable; the terms panel shows "Priced in" with the mark and "Graduates at" in the pair asset. Marks are pons's own SVGs copied into `frontend/public/pairs/` (provenance in `ASSETS.md`) after Robinhood's CDN and Mobula both served one placeholder for every stock token. Backend and frontend suites at 31 each, typecheck, lint and build clean. Not verified: signing a pair-token launch with a real wallet.
 - Section 4 leftovers dropped by the user as not worth the time (Macintosh PNG re-encode, social preview image with `og:url` and canonical, per-page font preloads and WOFF2). Measured that session in case it is revisited: WebP at quality 90 with lossless alpha takes the PNG from 1.77 MB to 129 KB; WOFF2 takes the five fonts from 237 KB to 107 KB.
 
+Fourth pass, September 8, shown in Chrome, awaiting the user's go-ahead:
+
+- Pair deploy confirmed on the domain: `GET https://pluminfra.xyz/api/launch-config` lists 57 `pairTokens`, the desk's picker opens with every mark loaded (59 `/pairs/*.svg` images, none broken), no console errors.
+- The creator rate on every card. `GET /api/pons/coins` carries `creatorTaxBps`: from the registry row for a Plum coin, otherwise one `getLaunchedToken` read per coin kept in memory for the process (the rate is fixed at launch), `null` while a read fails. The card shows "Creator fee 2%" with the figure in ink, or "No creator fee"; nothing when the rate is unknown. Live rates on September 8 ran from 0 to 10%.
+- The card's market row wraps instead of clipping: at 390 a four-digit 24 h change used to run past the card edge ("+5180.9% 2"); the change now drops to its own line under the market cap.
+- Hero copy: "Explore the newest migrations on Pons, or start a coin of your own through Plum."
+- `--ink-3` darkened one step, `#676a5b` to `#5a5d50`: 5.5:1 on the page paper, 5.9:1 on the card paper, 5.0:1 on the darker paper (was 4.5, 4.9 and 4.1). Tickers, MC labels, card meta rows and field placeholders all use it.
+- Backend and frontend suites at 31 each, typecheck, lint and build clean.
+
 ### Next session
 
 1. `git pull --ff-only origin main`, `git status`; the tree should be clean apart from scratch images.
-2. Confirm the pair deploy on the domain: `GET https://pluminfra.xyz/api/launch-config` should list 57 `pairTokens`, and the desk's picker should show marks (the `/pairs/*` files are static under `frontend/public`). Render needs no new environment.
+2. If the fourth pass was approved and pushed, confirm on the domain that `GET https://pluminfra.xyz/api/pons/coins` items carry `creatorTaxBps` and the cards show the fee line.
 3. If a wallet is available: one pair-token launch (fee 0.0005 ETH plus gas) to prove the encoding and the receipt path with a non-zero `pairToken`.
-4. Section 3 leftovers without a decision: hero copy says "what is launching on Pons" but the list is graduates only; the creator rate is on no card; 12 px tickers through the grain (`--ink-3`).
-5. Section 5 polish as the user directs; then section 1 with the user.
+4. Section 5 polish as the user directs; then section 1 with the user.
 
 ## 1. Decisions before any work
 
@@ -60,9 +68,9 @@ Third pass, September 8, approved in Chrome:
 | Failed refresh keeps old Pons cards with no stale label; "Showing the last good read" keys on the server's `status`, not a client transport failure | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, deployed**; not yet reproduced live |
 | Success notice says "It is now in the collection" but the collection lists migrated coins only | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, deployed** (notice visible and accurate) |
 | "50 migrated on Pons · 0 migrated through Plum" is the first number on Explore | [LaunchPage.tsx:79](../frontend/src/launch/LaunchPage.tsx) | Reworded, uncommitted: "50 recent migrations on Pons"; the Plum count stays |
-| Hero says "what is launching on Pons"; list is graduates only | Explore hero copy | Verified |
+| Hero says "what is launching on Pons"; list is graduates only | Explore hero copy | **Fixed, uncommitted**: "Explore the newest migrations on Pons" |
 | About offers stock pairs; desk and API are ETH only | [AboutPage.tsx:42](../frontend/src/about/AboutPage.tsx), [routes.ts:78](../backend/src/routes.ts) | **Fixed, uncommitted**: the desk offers every pair the factory approves (56 on September 8: USDG, cbBTC, TAO and Robinhood stock tokens), terms and graduation shown in the pair asset; not yet signed with a wallet |
-| Creator rate not shown on any card despite "The rate sits on the coin where you can read it" | TokenGrid | Verified |
+| Creator rate not shown on any card despite "The rate sits on the coin where you can read it" | TokenGrid | **Fixed, uncommitted**: "Creator fee 2%" or "No creator fee" on every card, from the registry or the factory |
 | Invalid website or fee only sets `aria-invalid`; no message, CTA gated silently | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, deployed** |
 | Eligibility message reads as invite-only; it is the factory's own `canLaunch` | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, deployed** |
 | Cards: percentage has no "24h" label; age has no definition; Pons and Plum ages may use different events | [TokenGrid.tsx](../frontend/src/launch/TokenGrid.tsx) | **Fixed, deployed**: 24h label; age titled per source (Pons since migration, Plum since launch; the registry has no graduation time) |
@@ -70,7 +78,7 @@ Third pass, September 8, approved in Chrome:
 | No detail view; every card exits to Blockscout or DexScreener; CRT's featured coin has no action | Explore | CRT action **fixed, uncommitted** (caption links to the coin's card); no detail view remains a section-1 question |
 | First card about 855 px down on desktop, about 1,135 px on mobile | Explore | Source-supported by Astra; consistent with screenshots |
 | "Chart" links 27 × 17 px and addresses 70 × 17 px; card itself is not a link | TokenGrid | **Fixed, deployed**: 33 px hit area, coin-specific names |
-| 12 px tickers, addresses and ages hard to scan through the grain | `launch.css` | Verified; already an open decision in the brief (darken `--ink-3`) |
+| 12 px tickers, addresses and ages hard to scan through the grain | `launch.css` | **Fixed, uncommitted**: `--ink-3` darkened to `#5a5d50`, at least 5:1 on every paper |
 
 ## 4. Weight and infrastructure (P2, all verified)
 

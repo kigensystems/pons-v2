@@ -41,6 +41,7 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
               <span className="pad-mc">{formatUsd(coin.marketCapUsd)}<small>MC</small></span>
               <span className="pad-change" data-neg={(coin.priceChange24hPct ?? 0) < 0}>{coin.marketNote ? <small className="pad-market-note">{coin.marketNote}</small> : <>{formatChange(coin.priceChange24hPct)}<small>24h</small></>}</span>
             </div>
+            {coin.creatorTaxBps !== null && <p className="pad-card-fee">{coin.creatorTaxBps === 0 ? 'No creator fee' : <>Creator fee <b>{Number((coin.creatorTaxBps / 100).toFixed(2))}%</b></>}</p>}
             <div className="pad-card-meta">
               {coin.explorer ? <a className="pad-card-link" href={coin.explorer} target="_blank" rel="noreferrer" title={coin.token} aria-label={`${shortAddress(coin.token)} on Blockscout`}>{shortAddress(coin.token)}</a> : <span title={coin.token}>{shortAddress(coin.token)}</span>}
               {coin.chart && <a className="pad-card-link" href={coin.chart} target="_blank" rel="noreferrer" aria-label={`Chart for $${coin.symbol}`}>Chart</a>}

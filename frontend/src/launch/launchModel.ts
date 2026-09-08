@@ -83,7 +83,7 @@ export const isSettled = (intent: Intent) => !['prepared', 'submitted'].includes
 export type Coin = {
   token: `0x${string}`; name: string; symbol: string; logo: string | null; description: string
   creator: string | null; since: number | null; explorer: string | null; chart: string | null
-  phase: 'curve' | 'graduating' | 'graduated'; marketCapUsd: number | null; priceChange24hPct: number | null; marketNote: string; madeWithPlum: boolean; hue: number
+  phase: 'curve' | 'graduating' | 'graduated'; marketCapUsd: number | null; priceChange24hPct: number | null; marketNote: string; madeWithPlum: boolean; creatorTaxBps: number | null; hue: number
 }
 
 const CHARTS: Record<number, string> = { 4663: 'https://dexscreener.com/robinhood' }
@@ -96,7 +96,7 @@ export function coinFromLaunch(launch: Launch, index: number): Coin {
     creator: launch.creator, since: launch.blockTime, explorer: launch.explorer?.token ?? null, chart: phase === 'graduated' && CHARTS[launch.chainId] ? `${CHARTS[launch.chainId]}/${launch.token}` : null,
     phase, marketCapUsd: market?.marketCapUsd ?? null, priceChange24hPct: market?.priceChange24hPct ?? null,
     marketNote: launch.market ? { ok: '', stale: 'stale', error: 'unavailable', unavailable: 'no market data', unsupported: 'not indexed yet' }[launch.market.status] : 'no market data',
-    madeWithPlum: true, hue: (index * 67 + launch.blockNumber) % 360,
+    madeWithPlum: true, creatorTaxBps: launch.creatorTaxBps, hue: (index * 67 + launch.blockNumber) % 360,
   }
 }
 
@@ -107,7 +107,7 @@ export function coinFromPons(coin: PonsCoin, index: number): Coin {
     phase: coin.bonded ? 'graduated' : (coin.bondingPct ?? 0) >= 100 ? 'graduating' : 'curve',
     // Mobula reports 0 for a coin nobody has traded yet; the card shows a dash rather than a false zero.
     marketCapUsd: coin.marketCapUsd || null, priceChange24hPct: coin.marketCapUsd ? coin.priceChange24hPct : null, marketNote: coin.marketCapUsd === null ? 'no market data' : '',
-    madeWithPlum: coin.madeWithPlum, hue: (index * 67 + (coin.launchedAt ?? 0)) % 360,
+    madeWithPlum: coin.madeWithPlum, creatorTaxBps: coin.creatorTaxBps, hue: (index * 67 + (coin.launchedAt ?? 0)) % 360,
   }
 }
 

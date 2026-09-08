@@ -95,6 +95,7 @@ export type PonsCoin = {
   priceChange24hPct: number | null
   holders: number | null
   madeWithPlum: boolean
+  creatorTaxBps: number | null
   explorer: string | null
   chart: string | null
 }

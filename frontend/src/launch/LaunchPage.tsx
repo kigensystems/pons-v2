@@ -84,7 +84,7 @@ function ExploreDesk() {
           <div className="pad-hero-copy">
             <p className="pad-kicker"><span className="pad-dot" /> The discovery desk</p>
             <h1 id="pad-hero-title">A new window on what’s next.</h1>
-            <p className="pad-hero-sub">Explore what is launching on Pons, or start a coin of your own through Plum.</p>
+            <p className="pad-hero-sub">Explore the newest migrations on Pons, or start a coin of your own through Plum.</p>
             <div className="pad-hero-actions">
               <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Create a coin</button>
               <a className="pad-link" href="/about">About us</a>

@@ -40,7 +40,7 @@ Settled later on September 9: Alchemy is on pay-as-you-go with a usage cap set i
 
 Next: push that commit when the user says so; fund the launching wallet with about 0.003 ETH on Robinhood Chain and do the first real launch from the desk, which proves receipt verification, the confirmation worker and Mobula enrichment; the MetaMask fresh-profile run (add-network prompt) and a phone wallet through the QR code, both on the domain; ask Rabby's Discord to list the site. Dev servers on this Mac may still be running on 5173 and 8787.
 
-Open decisions, in order: darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
+Open decision: the opening-scene lighting feedback below. (`--ink-3` was darkened one step on September 8.)
 
 ## Handoff, review triage
 

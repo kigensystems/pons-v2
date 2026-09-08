@@ -54,8 +54,9 @@ test('registry rows and Pons feed coins map to one card shape, and Explore keeps
   assert.equal(graduatedPlum.marketCapUsd, 5)
 
   const feed = { chainId: 4663, token: '0x6ee1D6327800516E6098301b00B68aD19F84391c', name: 'LEAD INDEX', symbol: 'LEAD', logo: 'https://cdn/l.webp', deployer: '0xdef', description: '', launchedAt: 900, graduatedAt: 950, bonded: true, bondingPct: 0,
-    priceUsd: 1, marketCapUsd: 53_626, liquidityUsd: 1, volume24hUsd: 1, priceChange24hPct: -3.5, holders: 4, madeWithPlum: false, explorer: 'https://x/token/6', chart: 'https://dexscreener.com/robinhood/0x6ee1' } as PonsCoin
+    priceUsd: 1, marketCapUsd: 53_626, liquidityUsd: 1, volume24hUsd: 1, priceChange24hPct: -3.5, holders: 4, madeWithPlum: false, creatorTaxBps: 250, explorer: 'https://x/token/6', chart: 'https://dexscreener.com/robinhood/0x6ee1' } as PonsCoin
   const pons = coinFromPons(feed, 1)
+  assert.equal(pons.creatorTaxBps, 250)
   assert.equal(pons.phase, 'graduated')
   assert.equal(pons.since, 950, 'age counts from graduation')
   assert.equal(pons.chart, feed.chart)

@@ -8,7 +8,7 @@ import type { createMobula, PulseCoin } from './market/mobula.ts'
 import { EXPLORERS } from './launches.ts'
 
 export type FeedStatus = 'ok' | 'stale' | 'error' | 'unavailable'
-export type PonsCoin = PulseCoin & { chainId: number; madeWithPlum: boolean; explorer: string | null; chart: string | null }
+export type PonsCoin = PulseCoin & { chainId: number; madeWithPlum: boolean; creatorTaxBps: number | null; explorer: string | null; chart: string | null }
 
 // DexScreener indexes Robinhood Chain under this slug; a token page redirects to its pair.
 const CHARTS: Record<number, string> = { 4663: 'https://dexscreener.com/robinhood' }
@@ -20,11 +20,13 @@ const CANDIDATES = 5
 export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof createMobula>, factory: Address, options: { ttlSeconds?: number; now?: () => number } = {}) {
   const ttl = options.ttlSeconds ?? 30
   const clock = options.now ?? now
-  const isPlum = db.prepare('SELECT 1 FROM launches WHERE chain_id = ? AND token = ?')
+  const plumRow = db.prepare('SELECT creator_tax_bps FROM launches WHERE chain_id = ? AND token = ?')
   const explorer = EXPLORERS[chain.chainId]
   const charts = CHARTS[chain.chainId]
   // Mobula occasionally omits a logo it served before; the last one seen stays with the coin.
   const logos = new Map<string, string>()
+  // The creator rate is set at launch and never changes; one factory read per coin, kept for the process.
+  const rates = new Map<string, number>()
   let feed: PonsCoins | null = null
   let spot: Spotlight | null = null
   let inflight: Promise<PonsCoins> | null = null
@@ -40,7 +42,8 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
   function present(coin: PulseCoin): PonsCoin {
     const key = coin.token.toLowerCase()
     if (coin.logo) logos.set(key, coin.logo)
-    return { ...coin, logo: coin.logo ?? logos.get(key) ?? null, chainId: chain.chainId, madeWithPlum: isPlum.get(chain.chainId, key) !== undefined,
+    const plum = plumRow.get(chain.chainId, key) as { creator_tax_bps: number } | undefined
+    return { ...coin, logo: coin.logo ?? logos.get(key) ?? null, chainId: chain.chainId, madeWithPlum: plum !== undefined, creatorTaxBps: plum?.creator_tax_bps ?? rates.get(key) ?? null,
       explorer: explorer ? `${explorer}/token/${coin.token}` : null, chart: charts ? `${charts}/${coin.token}` : null }
   }
 
@@ -49,7 +52,12 @@ export function createPons(db: Db, chain: ChainReader, market: ReturnType<typeof
     if (!market.enabled) return { status: 'unavailable', items: [], retrievedAt: clock(), error: 'Market data is not configured' }
     const result = await market.pulse(factory)
     if (!result.ok) return { status: feed?.items.length ? 'stale' : 'error', items: feed?.items ?? [], retrievedAt: clock(), error: result.error }
-    const items = result.items.filter(coin => coin.bonded).map(present).sort((a, b) => b.graduatedAt! - a.graduatedAt!)
+    const bonded = result.items.filter(coin => coin.bonded)
+    // A failed read leaves the rate off that card until the next refresh.
+    await Promise.all(bonded.filter(coin => !rates.has(coin.token.toLowerCase())).map(async coin => {
+      try { const state = await chain.launchedToken(coin.token); if (state.exists) rates.set(coin.token.toLowerCase(), state.creatorTaxBps) } catch {}
+    }))
+    const items = bonded.map(present).sort((a, b) => b.graduatedAt! - a.graduatedAt!)
     return { status: 'ok', items, retrievedAt: clock(), error: null }
   }
 
