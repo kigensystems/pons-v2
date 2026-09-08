@@ -14,7 +14,7 @@ Wordmark: the rainbow plum mark at cap height beside bold italic Garamond "Plum"
 
 Opening (`index.css`): room `#10120f`, fog radial `#262d27 → #151c18 → #0b100d`, casing `#ead9ad` / `#ece2bb`, phosphor fill `--phosphor-fill #f7efe0`, glow token `--phosphor-glow` (blue-left, orange-right fringe, then a `.2em` and `.8em` warm halo). One treatment in em units: the h1, wordmark and Enter cue carry the same halo scaled to their size.
 
-About (`about.css`): ground `#17221b`, deep `#060d09`, moss haze `#69705a` / `#263b2b`, copy `#eae6d4`, accent moss `#bbc4a6` / `#c2c9a0`, muted `#677457`.
+About (`about.css`): the Explore paper tokens. Its only colour of its own is muted moss `#677457` on the close's italic word. The dark green ground, moss haze and phosphor h1 left with the letter rewrite on September 7 night.
 
 Explore (`launch.css`): `--paper #eee8d9`, `--paper-2 #f6f0e3`, `--paper-3 #e5decd`, `--ink #2e342a`, `--ink-2 #575d50`, `--line #39433435`, `--up #416343`, `--down #945442`, `--plum #73596f`.
 
@@ -24,7 +24,7 @@ New colors derive from these. No pure white, no pure black, no purple gradients,
 
 Two families, three roles. Tokens live in `index.css`.
 
-- `--font-title` and `--font-body`: Apple Garamond. Titles 400 weight, tight tracking (`-.035em`), `clamp(42px, 4vw, 76px)`. One roman voice: the opening's two-line italic pair is the only italic heading; Explore and About headings are roman, one line where they fit. Body 16–18px / 1.6; Garamond's small x-height needs one to two px more than Georgia did.
+- `--font-title` and `--font-body`: Apple Garamond. Titles 400 weight, tight tracking (`-.035em`), `clamp(42px, 4vw, 76px)`. One roman voice: the opening's two-line italic pair is the only italic heading; Explore and About headings are roman, one line where they fit; the About close "See it clearly." carries the one italic word on paper, at the user's direction. Body 16–18px / 1.6, and 20–22px for About's standfirst, lede and paragraphs, with list bodies at 18; Garamond's small x-height needs one to two px more than Georgia did.
 - Labels (kickers, section labels, notes, tickers, card meta): Apple Garamond 12px, uppercase, `.14em` tracking. Print-style small caps, the way Apple set labels in the 1990s.
 - `--font-ui`: ChicagoFLF, the Mac's 1984–1997 screen face. Only on the opening scene's TV cursor label and the loader. Mixed case, no tracking, 13–14px. The user dislikes it for anything they read (Enter in Chicago tried and rejected September 7; Explore's readout, badges, Back to top and status code moved to Garamond September 8). When small Garamond is the problem, set it bold, at least 12px, with tracking, and give phosphor text a soft halo rather than the chromatic fringe.
 - Never Inter, Roboto, Space Grotesk, or system sans in visible UI. Instrument Serif and VT323 were retired September 7, 2026.
@@ -35,11 +35,11 @@ Two families, three roles. Tokens live in `index.css`.
 - Opening: single non-scrolling scene with four things in frame: wordmark, headline pair, the Enter key, and the Macintosh. Enter is the only way out; there is no nav, kicker, description, or footer label. About is reached from Explore. The screen is the brightest object in the room: the CRT exposure clips its top fifth to white before halation. The TV plays muted on its own; the glass is its only control. The TV's own on-screen display in the CRT's top-right corner (a character-generator speaker, softened and added to the picture as pale phosphor light with misconverged fringes over a soft dimming of the footage, crossed while muted, with its waves for a moment when the sound comes on, a play triangle while paused) is the only mark on the picture, and a Chicago cursor label names the action while the pointer is over the glass. No page-level TV buttons.
 - Explore: six-column card grid on desktop, two on mobile, paper surfaces, hairline `--line` rules, radius 3px or none. Only coins that have left their curve are listed, in two collections (Pons coins, Plum coins), sorted by newest or market cap.
 - Explore's one emitted-light surface is the hero CRT close-up. Its glass shows the coin that most recently left its curve on Pons: the whole picture in the upper glass, never cropped, with a bold Garamond phosphor readout (`#f2e7d6`) of ticker and market cap in the band beneath, or the readout alone when there is no picture; never decoration; the bezel photograph multiplies onto the paper like everything else.
-- About: full-bleed hero surface, then prose columns with a 1200px measure.
+- About: the three-person photograph full bleed under the header, multiplied onto the paper, then short sections in the 1200px measure built to scan: the title at headline scale (`clamp(54px, 7.4vw, 108px)`) and standfirst, the Explore stripe rule once, the three fees as headings over large figures (the Pons value struck in `--down` where there is one), two short paragraphs, the rules in three columns, the desk in four (Now / Next / Then / Later), the close, a one-line signature, small print. No kickers, no dividers, no callout boxes, no dark ground, no second Macintosh.
 
 ## Motion budget
 
-Two moments per page at most. Allowed: the boot screen's 1.8 s hold on a session's first visit, the TV picture and its glow, static transitions between channels, the About hero's diffusion/bloom/grain/vignette. Refused: scroll-driven zooms (removed September 7), section fade-and-slide, card hover lifts, scanlines, channel split, lens warp, particles. `prefers-reduced-motion` pauses the TV and removes transitions. TV work is capped at 30fps and stops in hidden tabs.
+Two moments per page at most. Allowed: the boot screen's 1.8 s hold on a session's first visit, the TV picture and its glow, static transitions between channels, the About photograph's breathing bloom, grain and vignette. Refused: scroll-driven zooms (removed September 7), section fade-and-slide, card hover lifts, scanlines, channel split, lens warp, particles. `prefers-reduced-motion` pauses the TV and removes transitions. TV work is capped at 30fps and stops in hidden tabs.
 
 ## Copy
 
