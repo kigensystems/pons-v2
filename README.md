@@ -1,6 +1,6 @@
 # Plum — an independent Pons companion
 
-A separate product complementing Pons, currently called Plum. The opening features a classic compact Macintosh; Explore and About extend the same visual identity. Explore is backed by the launch API in `backend/`: wallet sign-in through Reown AppKit, a creation desk that prepares real pons launches on Robinhood Chain, and a registry of Plum launches. No launch has been made through it yet.
+A separate product complementing Pons, currently called Plum. The opening features a classic compact Macintosh; Explore and About extend the same visual identity. Explore is backed by the launch API in `backend/`: wallet sign-in through Reown AppKit, a creation desk that prepares real pons launches on Robinhood Chain, two collections of migrated coins (Pons-wide, and the registry of Plum launches), and a CRT that shows the coin that most recently left its curve on Pons. No launch has been made through it yet.
 
 Read [the project brief](docs/PROJECT-BRIEF.md) for the selected direction and [AGENTS.md](AGENTS.md) for working instructions.
 
@@ -38,4 +38,4 @@ The build includes TypeScript checks. Lint uses Oxlint. Node's test runner check
 
 ## Hosting and future data
 
-`netlify.toml` configures Netlify to build `frontend/` and publish its `dist/` output with Node.js 24. No deployment has been performed. The launch API is documented in [LAUNCH-API.md](docs/LAUNCH-API.md); its current state and deferred checks are in [LAUNCH-API-HANDOFF.md](docs/LAUNCH-API-HANDOFF.md). The earlier [integration report](docs/PLUM-INTEGRATION.md) holds the provider evidence, Plum-only Explore membership and cost notes. Credentials belong only in the ignored root `.env`; [.env.example](.env.example) is a blank template.
+`netlify.toml` builds `frontend/` on Netlify and proxies `/api` to the launch API; `render.yaml` and `backend/Dockerfile` run the API on Render with a persistent disk. Steps are in [DEPLOY.md](docs/DEPLOY.md); no deployment has been performed. The launch API is documented in [LAUNCH-API.md](docs/LAUNCH-API.md); its current state and deferred checks are in [LAUNCH-API-HANDOFF.md](docs/LAUNCH-API-HANDOFF.md). The earlier [integration report](docs/PLUM-INTEGRATION.md) holds the provider evidence, Plum-only Explore membership and cost notes. Credentials belong only in the ignored root `.env`; [.env.example](.env.example) is a blank template.

@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { api, type Launch } from './api'
+import { api, type Launch, type PonsCoins, type Spotlight } from './api'
 import { wagmiConfig } from './appkit'
 import ExploreMonitor from './ExploreMonitor'
 import LaunchForm from './LaunchForm'
-import TokenGrid, { type Filter } from './TokenGrid'
+import TokenGrid, { type Source } from './TokenGrid'
 import { PaperHeader, PaperFooter } from './PaperChrome'
 import { useSession } from './useSession'
+import { arrangeCoins, coinFromLaunch, coinFromPons, type Sort } from './launchModel'
 import './launch.css'
 
 const REFRESH_MS = 30_000
@@ -20,10 +21,15 @@ export default function ExplorePage() {
 function ExploreDesk() {
   const wallet = useSession()
   const [launches, setLaunches] = useState<Launch[]>([])
-  const [stats, setStats] = useState({ total: 0, confirmed: 0 })
+  const [pons, setPons] = useState<PonsCoins | null>(null)
+  const [ponsError, setPonsError] = useState<string | null>(null)
+  const [spotlight, setSpotlight] = useState<Spotlight | null>(null)
+  const [spotlightError, setSpotlightError] = useState<string | null>(null)
+  const [source, setSource] = useState<Source>('pons')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<Filter>('all')
+  const [sort, setSort] = useState<Sort>('newest')
+  const [onlyMine, setOnlyMine] = useState(false)
   const [search, setSearch] = useState('')
   const [creating, setCreating] = useState(false)
   const [notice, setNotice] = useState('')
@@ -34,13 +40,14 @@ function ExploreDesk() {
   useEffect(() => { document.title = 'Explore — Plum' }, [])
   useEffect(() => { if (wallet.session && reopenDesk.current) { reopenDesk.current = false; setCreating(true) } }, [wallet.session])
 
+  // The registry, the Pons feed and the spotlight are read together; any one can fail without darkening the others.
   const load = useCallback(async () => {
-    try {
-      const page = await api.launches({ limit: 60 })
-      setLaunches(page.items); setStats(page.stats); setError(null)
-    } catch (failure) {
-      setError(failure instanceof Error ? failure.message : 'The registry is unavailable.')
-    } finally { setLoading(false) }
+    const [page, feed, latest] = await Promise.allSettled([api.launches({ limit: 60 }), api.ponsCoins(), api.spotlight()])
+    const reason = (failure: unknown, fallback: string) => failure instanceof Error ? failure.message : fallback
+    if (page.status === 'fulfilled') { setLaunches(page.value.items); setError(null) } else setError(reason(page.reason, 'The registry is unavailable.'))
+    if (feed.status === 'fulfilled') { setPons(feed.value); setPonsError(feed.value.status === 'error' || feed.value.status === 'unavailable' ? feed.value.error : null) } else setPonsError(reason(feed.reason, 'The Pons feed is unavailable.'))
+    if (latest.status === 'fulfilled') { setSpotlight(latest.value); setSpotlightError(null) } else setSpotlightError(reason(latest.reason, 'The launch service could not be reached.'))
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -49,9 +56,10 @@ function ExploreDesk() {
     return () => clearInterval(timer)
   }, [load])
 
-  const mine = wallet.session ? launches.filter(launch => launch.creator.toLowerCase() === wallet.session!.address.toLowerCase()).length : 0
-  const onCurve = launches.filter(launch => launch.protocol?.onCurve).length
-  const graduated = launches.filter(launch => launch.protocol?.graduated).length
+  const coins = source === 'pons' ? (pons?.items ?? []).map(coinFromPons) : launches.map(coinFromLaunch)
+  const migratedPlum = arrangeCoins(launches.map(coinFromLaunch), 'newest').length
+  const mine = wallet.session ? arrangeCoins(coins, 'newest').filter(coin => coin.creator?.toLowerCase() === wallet.session!.address.toLowerCase()).length : 0
+  const collectionError = source === 'pons' ? ponsError : error
 
   return (
     <div className="pad">
@@ -61,14 +69,14 @@ function ExploreDesk() {
           <div className="pad-hero-copy">
             <p className="pad-kicker"><span className="pad-dot" /> The discovery desk</p>
             <h1 id="pad-hero-title">A new window<br /><em>on what’s next.</em></h1>
-            <p className="pad-hero-sub">Explore the coins launched through Plum, or start one of your own.</p>
+            <p className="pad-hero-sub">Explore what is launching on Pons, or start a coin of your own through Plum.</p>
             <div className="pad-hero-actions">
               <button type="button" className="pad-btn pad-btn--dark" onClick={() => setCreating(true)}>Create a coin</button>
               <a className="pad-link" href="/about">About us</a>
             </div>
           </div>
-          <ExploreMonitor launch={launches[0] ?? null} loading={loading} error={error} />
-          {!loading && !error && <p className="pad-hero-status" role="status">{stats.total === 0 ? 'No coins in the collection yet.' : [`${stats.total} in the collection`, `${stats.confirmed} confirmed`, `${graduated} graduated`, `${onCurve} on the curve`, wallet.session ? `${mine} made by you` : null].filter(Boolean).join(' · ')}</p>}
+          <ExploreMonitor spotlight={spotlight} error={spotlightError} />
+          {!loading && <p className="pad-hero-status" role="status">{[pons?.items.length ? `${pons.items.length} migrated on Pons` : null, error ? null : `${migratedPlum} migrated through Plum`, wallet.session && mine ? `${mine} made by you` : null].filter(Boolean).join(' · ') || 'The collection is out of reach.'}</p>}
         </section>
 
         <div className="pad-stripe-rule" aria-hidden="true" />
@@ -80,25 +88,29 @@ function ExploreDesk() {
           </div>
           {wallet.error && <p className="pad-notice" data-tone="bad" role="alert">{wallet.error} <button type="button" onClick={() => void wallet.connect()}>Connect</button></p>}
           {wallet.configError && !wallet.config && !error && <p className="pad-notice" data-tone="bad" role="alert">Launch settings are unavailable: {wallet.configError}</p>}
+          <div className="pad-sources" role="group" aria-label="Collection">
+            {(['pons', 'plum'] as Source[]).map(value => (
+              <button key={value} type="button" className="pad-source" aria-pressed={source === value} onClick={() => setSource(value)}>{value === 'pons' ? 'Pons coins' : 'Plum coins'}</button>
+            ))}
+          </div>
           <div className="pad-collection-tools">
-            <div className="pad-filters" role="group" aria-label="Filter coins">
-              {(['all', 'graduated', 'curve', 'mine'] as Filter[]).map(value => (
-                <button key={value} type="button" className="pad-chip" aria-pressed={filter === value} onClick={() => setFilter(value)}>
-                  {{ all: 'All coins', graduated: 'Graduated', curve: 'On the curve', mine: 'Made by you' }[value]}
-                </button>
+            <div className="pad-filters" role="group" aria-label="Sort and filter coins">
+              {(['newest', 'marketcap'] as Sort[]).map(value => (
+                <button key={value} type="button" className="pad-chip" aria-pressed={sort === value} onClick={() => setSort(value)}>{value === 'newest' ? 'Newest' : 'Market cap'}</button>
               ))}
+              {wallet.session && <button type="button" className="pad-chip" aria-pressed={onlyMine} onClick={() => setOnlyMine(value => !value)}>Made by you</button>}
             </div>
-            <p className="pad-sample-note"><span className="pad-dot" /> {error && launches.length ? 'Showing the last good read' : 'Plum launches only · Robinhood Chain'}</p>
+            <p className="pad-sample-note"><span className="pad-dot" /> {source === 'pons' ? (pons?.status === 'stale' ? 'Showing the last good read' : 'Migrated on Pons · Robinhood Chain') : (error && launches.length ? 'Showing the last good read' : 'Made through Plum · Robinhood Chain')}</p>
           </div>
           <p className="pad-sr-only" role="status">{notice}</p>
-          <TokenGrid launches={launches} loading={loading} error={error} filter={filter} search={search} viewer={wallet.session?.address ?? null} onReset={() => { setSearch(''); setFilter('all') }} onRetry={() => { setLoading(true); void load() }} />
+          <TokenGrid coins={coins} source={source} sort={sort} mine={onlyMine} loading={loading} error={collectionError} search={search} viewer={wallet.session?.address ?? null} onReset={() => { setSearch(''); setOnlyMine(false) }} onRetry={() => { setLoading(true); void load() }} />
         </section>
 
       </main>
       <PaperFooter />
       {creating && <LaunchForm session={wallet.session} config={wallet.config} connecting={wallet.connecting} connected={Boolean(wallet.address)} onConnect={() => { reopenDesk.current = true; setCreating(false); void wallet.connect() }} onClose={() => setCreating(false)} onLaunched={intent => {
         setNotice(`${intent.tokenParams.name} launched. It is now in the collection.`)
-        setSearch(''); setFilter('all')
+        setSearch(''); setOnlyMine(false); setSource('plum')
         void load()
       }} />}
     </div>

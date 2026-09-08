@@ -1,5 +1,4 @@
 /* Live launch states layered on the Explore paper styles. */
-.pad-card[data-confirming='true'] .pad-badge { color: var(--ink); background: #f1eadbdc; border-color: #39433445; }
 .pad-card-link { text-decoration: none; }
 .pad-card-link:hover { text-decoration: underline; }
 .pad-market-note { font: 11px/1.4 var(--font-body); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
@@ -26,7 +25,7 @@
 .pad-status[data-tone='good'] strong { color: var(--up); }
 .pad-status[data-tone='bad'] strong { color: #954537; }
 .pad-status p { margin: 0; font-size: 13px; color: var(--ink-2); }
-.pad-status code { font: 14px/1.4 var(--mono); overflow-wrap: anywhere; }
+.pad-status code { font: 14px/1.4 var(--font-body); letter-spacing: .04em; overflow-wrap: anywhere; }
 .pad-status a { font-size: 13px; }
 .pad-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--plum); animation: pad-pulse 1.4s ease-in-out infinite; }
 @keyframes pad-pulse { 0%, 100% { opacity: .3 } 50% { opacity: 1 } }

@@ -1,10 +1,10 @@
 # Project brief
 
-Updated September 7, 2026.
+Updated September 8, 2026.
 
 ## Current direction
 
-The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond for titles, body, and tracked-capital labels, ChicagoFLF for on-screen controls, warm ivory, dark green atmosphere, and the compact Macintosh. Tokens, palette, motion budget, and the list of removed decoration are in [DESIGN.md](../DESIGN.md). Shader's About section is a reference for treatment, not a template to copy. The logo is settled (see below); API integration and deployment remain deferred.
+The product is called **Plum**, an independent companion to the Pons launchpad. On September 7 the user expanded scope to an Explore prototype and an About page alongside the opening. Keep the established identity: Apple Garamond for titles, body, and tracked-capital labels, ChicagoFLF for on-screen controls, warm ivory, dark green atmosphere, and the compact Macintosh. Tokens, palette, motion budget, and the list of removed decoration are in [DESIGN.md](../DESIGN.md). Shader's About section is a reference for treatment, not a template to copy. The logo is settled (see below). The launch API is integrated; deployment is prepared but not performed ([Deploying Plum](DEPLOY.md)).
 
 Explore is at `/explore` (with `/launch` retained as an alias); About is at `/about`. All token data and fees are illustrative. Keep the six-column desktop and two-column mobile grid. See [Explore and About](LAUNCH-DESK.md) for implementation, settled decisions, and validation. The generated coin artwork was rejected and is not included; further image generation is paused.
 
@@ -24,14 +24,22 @@ Two passes landed on `main` after the user reviewed them in Chrome. The cut pass
 
 The TV sound work landed on September 7 evening after review in Chrome: the footer buttons are gone, the glass is the switch, a corner speaker glyph marks the state, and a Chicago cursor label names the action. Two earlier attempts, a subtitle-style caption and a System 1 dialog box, were rejected for covering the footage. The same commit set the site title to "Plum", added Open Graph and Twitter tags, and adopted the user's favicon (`frontend/public/favicon.ico`).
 
-Later on September 7 the Explore hero's Macintosh was replaced by a CRT close-up (`frontend/public/images/crt-close.jpg`, cut from the user's `explore-monitor.png`) whose glass shows the newest coin's logo or initials as emitted light, with NO SIGNAL whenever there is no coin to show. Built on the `claude/explore-monitor-crt-replace-c80916` worktree branch and checked at 1440 × 900 and 390 × 844 with mocked registry data; committed on that branch after the user's review in this session. The figure now also shows on mobile because it is live data; cut it there if it pushes the collection too far down.
+Later on September 7 the Explore hero's Macintosh was replaced by a CRT close-up (`frontend/public/images/crt-close.jpg`, cut from the user's `explore-monitor.png`) whose glass shows a coin's logo or initials as emitted light, with NO SIGNAL whenever there is no coin to show. Built on the `claude/explore-monitor-crt-replace-c80916` worktree branch and checked at 1440 × 900 and 390 × 844 with mocked registry data; committed on that branch after the user's review in this session. The figure now also shows on mobile because it is live data; cut it there if it pushes the collection too far down.
+
+## Handoff, September 8
+
+The session turned to making Explore work end to end and preparing deploys. Pons publishes no API and its graduation events carry no token address, so the backend reads Mobula's pulse feed for the pons v2 factory (`backend/src/pons.ts`). Two things come from that one snapshot: the **Pons coins** collection and the CRT **spotlight**, the coin that most recently left its curve, confirmed on the factory before it is shown. After the user's second review the page lists only coins that have migrated (left the curve), in two collections under "The collection", **Pons coins** and **Plum coins** (the registry, still the only place Plum launches live), sorted by newest or market cap, with a "Made by you" toggle when signed in, a Blockscout link and a DexScreener chart link on every card. The CRT shows the whole picture in the upper glass, never cropped, with a bold Garamond phosphor readout of ticker and market cap beneath; without a picture the readout is the screen (name, ticker, market cap, 24 h change, age). Its caption is only "Recently migrated". ChicagoFLF is gone from Explore (readout, badges, Back to top, status code) at the user's request; it stays on the opening scene. Logos that Mobula stops sending are remembered server-side, and a picture that fails to load is retried once before the readout takes over. Verified live on September 8 across several graduations. Deploy configuration landed without deploying: `backend/Dockerfile`, `render.yaml`, the Netlify `_redirects` build script; steps in [Deploying Plum](DEPLOY.md).
+
+The user also shared pons's own launch form: name, ticker, description, image, X profile, Telegram, a paired-asset picker (ETH, NVDA, SPCX, GOOGL, TSLA, GME, AAPL and more tokenized stocks), a developer buy, and under Advanced a holder fee sharing toggle, creator wallet, creator tax and snipe tax exemptions, with a preview card (launch fee 0.0005 ETH, trade fee 1.00 %, launch window 99 % snipe tax over 3 s, graduation 4.2 ETH, liquidity locked). Plum's creation desk covers name, ticker, description, image, website and creator tax with ETH only; parity with that form is the next piece of work and needs the pair-token addresses (the user offered the full list) and validation of the router path for developer buys.
+
+Waiting on the user: review of the CRT and the two collections in Chrome, the pair-token list, and Render and Netlify accounts to run the deploy steps.
 
 Open decisions, in order: the headline pattern (proposal: keep the two-line italic pair on the opening only, plain single-line headings elsewhere; see the About and Explore lines proposed in session); darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
 
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
-- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the newest coin. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
+- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the latest graduation on Pons. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
 - Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, muted autoplay, and opt-in sound. The glass is the only control: a click unmutes, mutes, or (under reduced motion) plays with sound. The picture carries one mark, a small outlined speaker in the top-right corner drawn into the canvas (crossed while muted, waves for two seconds when the sound comes on, a play triangle while paused), and a Chicago cursor label follows the pointer over the glass. The footer buttons were removed on September 7.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
@@ -51,4 +59,4 @@ Prioritize one visible discrepancy, make a small change, inspect it against Shad
 - [Historical brief](SCENE-HISTORY.md) — superseded decisions; consult only when needed.
 - [Other-PC setup](OTHER-PC-SETUP.md)
 
-Preserve original research and desktop assets. Keep purchased sources private; Netlify is the eventual host, with public distribution deferred. Commands and preview instructions are in [AGENTS.md](../AGENTS.md).
+Preserve original research and desktop assets. Keep purchased sources private; Netlify hosts the frontend and Render the API once the steps in [Deploying Plum](DEPLOY.md) run. Commands and preview instructions are in [AGENTS.md](../AGENTS.md).

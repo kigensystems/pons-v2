@@ -26,15 +26,15 @@ Two families, three roles. Tokens live in `index.css`.
 
 - `--font-title` and `--font-body`: Apple Garamond. Titles 400 weight, tight tracking (`-.035em`), `clamp(42px, 4vw, 76px)`. Body 16–18px / 1.6; Garamond's small x-height needs one to two px more than Georgia did.
 - Labels (kickers, section labels, notes, tickers, card meta): Apple Garamond 12px, uppercase, `.14em` tracking. Print-style small caps, the way Apple set labels in the 1990s.
-- `--font-ui`: ChicagoFLF, the Mac's 1984–1997 screen face. Only on things that are literally controls or screen output: the Enter key, the TV's cursor label, Back to top, card badges, the loader, transaction status code. Mixed case, no tracking, 13–14px.
+- `--font-ui`: ChicagoFLF, the Mac's 1984–1997 screen face. Only on the opening scene: the Enter key, the TV's cursor label, the loader. Mixed case, no tracking, 13–14px. Explore and About are Garamond throughout (the user declined Chicago there on September 8); small Garamond is set bold, at least 12px, with tracking, and the CRT readout gets a soft halo rather than the chromatic fringe.
 - Never Inter, Roboto, Space Grotesk, or system sans in visible UI. Instrument Serif and VT323 were retired September 7, 2026.
 
 ## Layout
 
 - Viewports checked: 1440 × 900 and 390 × 844; 320px must not overflow.
 - Opening: single non-scrolling scene; the Enter key label leads to Explore. The TV plays muted on its own; the glass is its only control. A small outlined speaker in the CRT's top-right corner (the Sound control panel's icon, crossed while muted, ringed with waves for a moment when the sound comes on, a play triangle while paused) is the only mark on the picture, and a Chicago cursor label names the action while the pointer is over the glass. No page-level TV buttons.
-- Explore: six-column card grid on desktop, two on mobile, paper surfaces, hairline `--line` rules, radius 3px or none.
-- Explore's one emitted-light surface is the hero CRT close-up. Its glass shows the newest coin (logo, or initials in phosphor `#f2e7d6` with the opening's glow), never decoration; the bezel photograph multiplies onto the paper like everything else.
+- Explore: six-column card grid on desktop, two on mobile, paper surfaces, hairline `--line` rules, radius 3px or none. Only coins that have left their curve are listed, in two collections (Pons coins, Plum coins), sorted by newest or market cap.
+- Explore's one emitted-light surface is the hero CRT close-up. Its glass shows the coin that most recently left its curve on Pons: the whole picture in the upper glass, never cropped, with a bold Garamond phosphor readout (`#f2e7d6`) of ticker and market cap in the band beneath, or the readout alone when there is no picture; never decoration; the bezel photograph multiplies onto the paper like everything else.
 - About: full-bleed hero surface, then prose columns with a 1200px measure.
 
 ## Motion budget

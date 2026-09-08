@@ -8,6 +8,7 @@ import { createAuth } from './auth.ts'
 import { createUploads, localImageStore } from './uploads.ts'
 import { createIntents } from './intents.ts'
 import { createLaunches } from './launches.ts'
+import { createPons } from './pons.ts'
 import { createMobula } from './market/mobula.ts'
 import { buildRouter, type Services } from './routes.ts'
 
@@ -19,7 +20,8 @@ export function createServices(config: Config, options: { chain?: ChainReader; d
   const intents = createIntents(db, config, chain, uploads)
   const market = createMobula(db, { apiKey: config.mobulaApiKey, baseUrl: config.mobulaBaseUrl, chainId: config.chainId, fetch: options.fetch })
   const launches = createLaunches(db, chain, market)
-  return { config, chain, auth, uploads, intents, launches, db, market }
+  const pons = createPons(db, chain, market, config.factory)
+  return { config, chain, auth, uploads, intents, launches, pons, db, market }
 }
 
 export function createHandler(router: Router) {
@@ -62,8 +64,8 @@ if (import.meta.main) {
   const services = createServices(config)
   const stop = services.intents.startWorker(config.reconcileIntervalMs)
   const server = createServer(createHandler(buildRouter(services)))
-  server.listen(config.port, '127.0.0.1', () => {
-    console.log(`Plum API listening on http://127.0.0.1:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}`)
+  server.listen(config.port, config.host, () => {
+    console.log(`Plum API listening on http://${config.host}:${config.port} for chain ${config.chainId}; market data ${services.market.enabled ? 'enabled' : 'disabled (no MOBULA_API_KEY)'}`)
   })
   const shutdown = () => { stop(); server.close(); services.db.close(); process.exit(0) }
   process.on('SIGINT', shutdown)

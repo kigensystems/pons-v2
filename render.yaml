@@ -1,0 +1,37 @@
+# Render Blueprint for the Plum launch API. Netlify serves the frontend and proxies /api here; see docs/DEPLOY.md.
+# Values marked sync: false are entered once in the Render dashboard and never live in the repository.
+services:
+  - type: web
+    name: plum-api
+    runtime: docker
+    region: oregon
+    plan: 0.5c-512mb
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    disk:
+      name: plum-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: ROBINHOOD_RPC_URL
+        sync: false
+      - key: MOBULA_API_KEY
+        sync: false
+      - key: PLUM_ORIGIN
+        sync: false
+      - key: PLUM_PUBLIC_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PLUM_HOST
+        value: 0.0.0.0
+      - key: PLUM_API_PORT
+        value: "8787"
+      - key: PLUM_TRUST_PROXY
+        value: "1"
+      - key: PLUM_DB_PATH
+        value: /data/plum.sqlite
+      - key: PLUM_UPLOAD_DIR
+        value: /data/uploads

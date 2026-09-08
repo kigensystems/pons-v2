@@ -1,6 +1,6 @@
 # Plum launch API
 
-Updated September 7, 2026. What was implemented from the [integration report](PLUM-INTEGRATION.md), how it runs, and what remains unverified. No token was deployed and no transaction was signed while building this.
+Updated September 8, 2026. What was implemented from the [integration report](PLUM-INTEGRATION.md), how it runs, and what remains unverified. No token was deployed and no transaction was signed while building this.
 
 ## Layout
 
@@ -17,10 +17,11 @@ Updated September 7, 2026. What was implemented from the [integration report](PL
 | `backend/src/uploads.ts` | Magic-byte image validation, content-addressed local store behind an adapter |
 | `backend/src/intents.ts` | Idempotent intents, submission tracking, reconciliation and confirmation worker |
 | `backend/src/launches.ts` | Registry queries with protocol state and market snapshots |
-| `backend/src/market/mobula.ts` | Cached, coalesced, retrying Mobula adapter; disabled without a key |
+| `backend/src/pons.ts` | The Pons side of Explore: every coin Mobula lists for the factory, and the spotlight (newest graduation, confirmed against the factory); Plum's own coins flagged |
+| `backend/src/market/mobula.ts` | Cached, coalesced, retrying Mobula adapter; the pons-wide pulse feed; disabled without a key |
 | `backend/src/db.ts` | SQLite schema via `node:sqlite` (WAL, uniqueness constraints) |
 | `frontend/src/launch/api.ts`, `wallet.ts`, `useSession.ts` | Typed API client, injected-wallet access through viem, session hook |
-| `frontend/src/launch/LaunchForm.tsx`, `TokenGrid.tsx`, `LaunchPage.tsx` | Describe → review → sign → track flow; registry-backed Explore |
+| `frontend/src/launch/LaunchForm.tsx`, `TokenGrid.tsx`, `LaunchPage.tsx`, `ExploreMonitor.tsx` | Describe → review → sign → track flow; registry-backed Explore; the CRT showing the latest graduation |
 
 Shared files touched: `frontend/package.json` (adds `viem`), `frontend/vite.config.ts` (one proxy line so `/api` reaches the backend in development), `.env.example`, `.gitignore`.
 
@@ -34,7 +35,7 @@ npm --prefix backend run dev      # reads ../.env, listens on 127.0.0.1:8787
 npm --prefix frontend run dev     # proxies /api to the backend
 ```
 
-Required in `.env`: `ROBINHOOD_RPC_URL` (or `ROBINHOOD_TESTNET_RPC_URL` with `PLUM_CHAIN_ID=46630`), `SESSION_SECRET`, and `VITE_REOWN_PROJECT_ID` for the wallet picker (Vite reads the repository-root `.env`; only `VITE_` names reach the browser). `MOBULA_API_KEY` enables market enrichment; without it cards show "no market data". The other `PLUM_*` variables are documented in `.env.example`.
+Required in `.env`: `ROBINHOOD_RPC_URL` (or `ROBINHOOD_TESTNET_RPC_URL` with `PLUM_CHAIN_ID=46630`), `SESSION_SECRET`, and `VITE_REOWN_PROJECT_ID` for the wallet picker (Vite reads the repository-root `.env`; only `VITE_` names reach the browser). `MOBULA_API_KEY` enables market enrichment, the Pons coins collection and the CRT spotlight; without it Plum cards show "no market data", Pons coins are empty and the CRT reads NO SIGNAL. `PLUM_HOST` (default `127.0.0.1`) and `PLUM_TRUST_PROXY` exist for containers; see [DEPLOY.md](DEPLOY.md). The other `PLUM_*` variables are documented in `.env.example`.
 
 Checks: `npm --prefix backend test`, `typecheck`, `lint`; frontend `build`, `lint`, `test`. The HTTP end-to-end test binds a local port, so it needs the sandbox off in Claude sessions.
 
@@ -52,6 +53,8 @@ Checks: `npm --prefix backend test`, `typecheck`, `lint`; frontend `build`, `lin
 | `POST /api/launch-intents/:id/submission` | Records a candidate hash and reconciles immediately |
 | `GET /api/launch-intents/:id` | `prepared`, `submitted`, `included`, `confirmed`, `reverted`, `rejected`, `expired`, `unresolved` |
 | `GET /api/launches`, `/:chainId/:token`, `/:chainId/:token/candles` | Registry only; protocol phase and market data attached with their own status and timestamps |
+| `GET /api/pons/coins` | Pons-wide: the coins that have left their curve, from the `bonded` view of one Mobula pulse call for the configured factory (Mobula returns 50 per view), spam-flagged rows dropped, newest graduation first, with market cap, 24 h change, a DexScreener `chart` link and `madeWithPlum` for registry members. A logo Mobula stops sending is remembered. One snapshot cached 30 s in memory; failures return the last list as `stale` |
+| `GET /api/pons/spotlight` | From the same snapshot: the newest coin to leave its curve for a pool, confirmed with `getLaunchedToken` (phase ≥ 2) before it is returned |
 
 Writes require an `Origin` header equal to `PLUM_ORIGIN` and a session. Rate limits are per process and in memory.
 
@@ -61,9 +64,10 @@ A launch is recorded only when a submitted hash resolves to a receipt whose send
 
 Registry rows move from `included` to `confirmed` after `PLUM_CONFIRMATIONS` blocks (default 12) if the block hash still matches; a changed hash retracts the row and re-verifies from the pending submission. That depth is a policy setting, not a documented Robinhood finality guarantee.
 
-## Verified in this session
+## Verified
 
-- 23 backend tests and 28 frontend tests pass; backend typecheck and both lints are clean.
+- September 8: `GET /api/pons/spotlight` returned live graduations (LEAD INDEX, Shopify Token, Ponzi Miners, Compute Token, each within minutes of graduating) with Mobula's logo and a factory phase of `PoolCreated`; `GET /api/pons/coins` listed the 50 most recent graduations with logos and DexScreener links (DexScreener indexes Robinhood Chain as `robinhood`); 25 backend tests pass.
+- September 7: 23 backend tests and 28 frontend tests pass; backend typecheck and both lints are clean.
 - The backend read live mainnet settings through the public Robinhood RPC at block 56,862,125: fee 0.0005 ETH, gate open, config 0 enabled, the same economics hash as the September 7 evidence. This exercised the ABI tuple decoding against deployed code.
 - Explore renders the registry's honest empty state and the creation desk's live terms in the browser.
 
@@ -80,4 +84,4 @@ Registry rows move from `included` to `confirmed` after `PLUM_CONFIRMATIONS` blo
 
 1. Deferred checks in [LAUNCH-API-HANDOFF.md](LAUNCH-API-HANDOFF.md): the chain-switch session drop, then a few real mainnet launches (fee 0.0005 ETH each on September 7) to confirm `launchToken` encoding, the fee value, event decoding, the confirmation worker and Mobula enrichment against a real token.
 2. Optional: a mainnet fork (Foundry `anvil --fork-url`) for failure paths such as a closed gate or changed terms.
-3. Decide hosting for the backend and uploads (a small Node host plus persistent disk or object storage; IPFS pinning for logos).
+3. Deploy per [DEPLOY.md](DEPLOY.md) (Netlify plus Render); IPFS pinning for logos remains open.

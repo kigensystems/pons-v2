@@ -7,6 +7,7 @@ import type { createAuth } from './auth.ts'
 import type { createUploads } from './uploads.ts'
 import type { createIntents } from './intents.ts'
 import type { createLaunches } from './launches.ts'
+import type { createPons } from './pons.ts'
 import { MAX_IMAGE_BYTES } from './uploads.ts'
 
 export type Services = {
@@ -16,6 +17,7 @@ export type Services = {
   uploads: ReturnType<typeof createUploads>
   intents: ReturnType<typeof createIntents>
   launches: ReturnType<typeof createLaunches>
+  pons: ReturnType<typeof createPons>
 }
 
 export function buildRouter(s: Services): Router {
@@ -93,6 +95,8 @@ export function buildRouter(s: Services): Router {
   router.add('GET', '/api/launches', ctx => s.launches.list({
     search: ctx.url.searchParams.get('search') ?? undefined, cursor: ctx.url.searchParams.get('cursor') ?? undefined, limit: ctx.url.searchParams.get('limit') ?? undefined,
   }))
+  router.add('GET', '/api/pons/coins', () => s.pons.coins())
+  router.add('GET', '/api/pons/spotlight', () => s.pons.spotlight())
   router.add('GET', '/api/launches/:chainId/:token', ctx => s.launches.get(Number(ctx.params.chainId), ctx.params.token!))
   router.add('GET', '/api/launches/:chainId/:token/candles', ctx => s.launches.candles(Number(ctx.params.chainId), ctx.params.token!, {
     period: ctx.url.searchParams.get('period') ?? undefined, from: ctx.url.searchParams.get('from') ?? undefined, to: ctx.url.searchParams.get('to') ?? undefined,

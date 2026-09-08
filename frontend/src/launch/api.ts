@@ -70,6 +70,35 @@ export type Launch = {
 
 export type LaunchList = { items: Launch[]; nextCursor: string | null; stats: { total: number; confirmed: number } }
 
+// A coin on Pons as the launch API relays it from Mobula: identity, curve progress and a market
+// snapshot. Pons-wide; madeWithPlum says whether it is also in Plum's registry.
+export type PonsCoin = {
+  chainId: number
+  token: `0x${string}`
+  name: string
+  symbol: string
+  logo: string | null
+  deployer: `0x${string}` | null
+  description: string
+  launchedAt: number | null
+  graduatedAt: number | null
+  bonded: boolean
+  bondingPct: number | null
+  priceUsd: number | null
+  marketCapUsd: number | null
+  liquidityUsd: number | null
+  volume24hUsd: number | null
+  priceChange24hPct: number | null
+  holders: number | null
+  madeWithPlum: boolean
+  explorer: string | null
+  chart: string | null
+}
+export type FeedStatus = 'ok' | 'stale' | 'error' | 'unavailable'
+export type PonsCoins = { status: FeedStatus; items: PonsCoin[]; retrievedAt: number; error: string | null }
+// The newest coin to leave its curve for a pool, confirmed against the factory.
+export type Spotlight = { status: FeedStatus; payload: (PonsCoin & { phaseName: string }) | null; observedAt: number | null; retrievedAt: number; error: string | null }
+
 export class ApiError extends Error {
   status: number
   code: string
@@ -104,6 +133,8 @@ export const api = {
   createIntent: (idempotencyKey: string, body: Record<string, unknown>) => request<Intent>('/api/launch-intents', { method: 'POST', json: body, headers: { 'Idempotency-Key': idempotencyKey } }),
   intent: (id: string) => request<Intent>(`/api/launch-intents/${encodeURIComponent(id)}`),
   submit: (id: string, transactionHash: string) => request<Intent>(`/api/launch-intents/${encodeURIComponent(id)}/submission`, { method: 'POST', json: { transactionHash } }),
+  ponsCoins: () => request<PonsCoins>('/api/pons/coins'),
+  spotlight: () => request<Spotlight>('/api/pons/spotlight'),
   launches: (params: { search?: string; cursor?: string; limit?: number } = {}) => {
     const query = new URLSearchParams()
     if (params.search) query.set('search', params.search)

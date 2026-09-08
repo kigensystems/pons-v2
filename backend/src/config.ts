@@ -14,6 +14,7 @@ export type Config = {
   rpcUrl: string
   factory: Address
   router: Address
+  host: string
   port: number
   origin: string
   publicUrl: string
@@ -79,6 +80,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     rpcUrl,
     factory: address(env, 'PLUM_FACTORY_ADDRESS', mainnet ? MAINNET_FACTORY : undefined),
     router: address(env, 'PLUM_ROUTER_ADDRESS', mainnet ? MAINNET_ROUTER : undefined),
+    // Loopback for development; a container sets PLUM_HOST=0.0.0.0 so the platform can reach it.
+    host: read(env, 'PLUM_HOST') ?? '127.0.0.1',
     port: integer(env, 'PLUM_API_PORT', 8787, 1),
     origin,
     publicUrl,

@@ -2,7 +2,7 @@
 // times, in-flight requests coalesced, 429/transient failures retried with bounded backoff.
 // A missing key disables enrichment; the registry stays intact without it.
 import { now, type Db } from './../db.ts'
-import type { Address } from 'viem'
+import { getAddress, isAddress, type Address } from 'viem'
 
 export type MarketStatus = 'ok' | 'stale' | 'error' | 'unavailable' | 'unsupported'
 export type MarketSnapshot<T = unknown> = { status: MarketStatus; source: 'mobula'; payload: T | null; observedAt: number | null; retrievedAt: number | null; error: string | null }
@@ -16,6 +16,13 @@ export type TokenMarket = {
 }
 
 export type Candle = { time: number; open: number; close: number; high: number; low: number; volume: number }
+
+// One pons coin as Mobula's pulse feed reports it: identity, curve progress and a market snapshot.
+export type PulseCoin = {
+  token: Address; name: string; symbol: string; logo: string | null; deployer: Address | null; description: string
+  launchedAt: number | null; graduatedAt: number | null; bonded: boolean; bondingPct: number | null
+  priceUsd: number | null; marketCapUsd: number | null; liquidityUsd: number | null; volume24hUsd: number | null; priceChange24hPct: number | null; holders: number | null
+}
 
 export type MobulaOptions = {
   apiKey: string | null
@@ -89,6 +96,12 @@ export function createMobula(db: Db, options: MobulaOptions) {
   }
 
   const num = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) ? value : null
+  const text = (value: unknown): string => typeof value === 'string' ? value.trim().slice(0, 80) : ''
+  // Mobula timestamps arrive as ISO strings or epoch numbers; both become unix seconds.
+  const seconds = (value: unknown): number | null => {
+    const ms = typeof value === 'string' ? Date.parse(value) : typeof value === 'number' ? (value > 1e12 ? value : value * 1000) : NaN
+    return Number.isFinite(ms) ? Math.floor(ms / 1000) : null
+  }
 
   return {
     enabled: Boolean(options.apiKey),
@@ -108,6 +121,30 @@ export function createMobula(db: Db, options: MobulaOptions) {
           liquidityUsd: num(data.liquidity),
         } }
       })
+    },
+    // Every pons coin Mobula lists for the configured factory: the new, bonding and bonded views of one
+    // pulse call, deduplicated, spam-flagged rows dropped. Discovery only; not cached here.
+    async pulse(factory: Address, limit = 100): Promise<{ ok: true; items: PulseCoin[] } | { ok: false; error: string }> {
+      if (!options.apiKey) return { ok: false, error: 'Market data is not configured' }
+      const result = await request('/api/2/pulse', { chainId: `evm:${options.chainId}`, poolTypes: 'pons-v2', assetMode: 'true', limit: String(limit) })
+      if (!result.ok) return { ok: false, error: result.error }
+      const body = result.body as Record<string, { data?: unknown } | undefined> | null
+      const views = ['bonded', 'bonding', 'new'].map(view => body?.[view]?.data).filter(Array.isArray)
+      if (views.length === 0) return { ok: false, error: 'Unexpected Mobula shape' }
+      const items = new Map<string, PulseCoin>()
+      for (const row of views.flat()) {
+        const r = row as Record<string, unknown>
+        if (typeof r.address !== 'string' || !isAddress(r.address) || r.is_spam === true) continue
+        if (typeof r.preBondingFactory !== 'string' || r.preBondingFactory.toLowerCase() !== factory.toLowerCase()) continue
+        const key = r.address.toLowerCase()
+        if (items.has(key)) continue
+        const graduatedAt = seconds(r.bonded_at)
+        items.set(key, { token: getAddress(r.address), name: text(r.name), symbol: text(r.symbol), logo: typeof r.logo === 'string' && r.logo.startsWith('https://') ? r.logo : null,
+          deployer: typeof r.deployer === 'string' && isAddress(r.deployer) ? getAddress(r.deployer) : null, description: typeof r.description === 'string' ? r.description.trim().slice(0, 280) : '',
+          launchedAt: seconds(r.createdAt), graduatedAt, bonded: r.bonded === true && graduatedAt !== null, bondingPct: num(r.bondingPercentage),
+          priceUsd: num(r.price), marketCapUsd: num(r.marketCap), liquidityUsd: num(r.liquidity), volume24hUsd: num(r.volume_24h), priceChange24hPct: num(r.price_change_24h), holders: num(r.holdersCount) })
+      }
+      return { ok: true, items: [...items.values()] }
     },
     async candles(token: Address, period: string, from: number, to: number): Promise<MarketSnapshot<Candle[]>> {
       if (!PERIODS.has(period)) throw new Error('Unsupported period')

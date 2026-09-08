@@ -1,6 +1,6 @@
 // Display helpers for launch terms and registry cards. Amounts stay integers until they are shown.
 import { formatEther } from 'viem'
-import type { Intent, IntentStatus, Launch, Simulation } from './api'
+import type { Intent, IntentStatus, Launch, PonsCoin, Simulation } from './api'
 
 export function formatEth(wei: string | bigint, maxFraction = 6): string {
   const value = formatEther(BigInt(wei))
@@ -56,9 +56,43 @@ export function describeIntent(status: IntentStatus, failure: string | null): { 
 
 export const isSettled = (intent: Intent) => !['prepared', 'submitted'].includes(intent.status)
 
-export function launchBadge(launch: Launch): string {
-  if (launch.confirmationState === 'included') return 'Confirming'
-  if (launch.protocol?.graduated) return 'Graduated'
-  if (launch.protocol?.phase === 1) return 'Graduating'
-  return 'On the curve'
+// One card shape for both collections: Plum's registry rows and the Pons feed. Explore lists coins
+// that have left their curve, so the phase mostly matters for hiding the rest.
+export type Coin = {
+  token: `0x${string}`; name: string; symbol: string; logo: string | null; description: string
+  creator: string | null; since: number | null; explorer: string | null; chart: string | null
+  phase: 'curve' | 'graduating' | 'graduated'; marketCapUsd: number | null; priceChange24hPct: number | null; marketNote: string; madeWithPlum: boolean; hue: number
+}
+
+const CHARTS: Record<number, string> = { 4663: 'https://dexscreener.com/robinhood' }
+
+export function coinFromLaunch(launch: Launch, index: number): Coin {
+  const market = launch.market?.payload ?? null
+  const phase = launch.protocol?.graduated ? 'graduated' : launch.protocol?.phase === 1 ? 'graduating' : 'curve'
+  return {
+    token: launch.token, name: launch.name, symbol: launch.symbol, logo: launch.logo || null, description: launch.description,
+    creator: launch.creator, since: launch.blockTime, explorer: launch.explorer?.token ?? null, chart: phase === 'graduated' && CHARTS[launch.chainId] ? `${CHARTS[launch.chainId]}/${launch.token}` : null,
+    phase, marketCapUsd: market?.marketCapUsd ?? null, priceChange24hPct: market?.priceChange24hPct ?? null,
+    marketNote: launch.market ? { ok: '', stale: 'stale', error: 'unavailable', unavailable: 'no market data', unsupported: 'not indexed yet' }[launch.market.status] : 'no market data',
+    madeWithPlum: true, hue: (index * 67 + launch.blockNumber) % 360,
+  }
+}
+
+export function coinFromPons(coin: PonsCoin, index: number): Coin {
+  return {
+    token: coin.token, name: coin.name, symbol: coin.symbol, logo: coin.logo, description: coin.description,
+    creator: coin.deployer, since: coin.graduatedAt ?? coin.launchedAt, explorer: coin.explorer, chart: coin.chart,
+    phase: coin.bonded ? 'graduated' : (coin.bondingPct ?? 0) >= 100 ? 'graduating' : 'curve',
+    // Mobula reports 0 for a coin nobody has traded yet; the card shows a dash rather than a false zero.
+    marketCapUsd: coin.marketCapUsd || null, priceChange24hPct: coin.marketCapUsd ? coin.priceChange24hPct : null, marketNote: coin.marketCapUsd === null ? 'no market data' : '',
+    madeWithPlum: coin.madeWithPlum, hue: (index * 67 + (coin.launchedAt ?? 0)) % 360,
+  }
+}
+
+export type Sort = 'newest' | 'marketcap'
+
+// Explore shows only coins that have left their curve; the rest stay on Pons until they do.
+export function arrangeCoins(coins: Coin[], sort: Sort): Coin[] {
+  const shown = coins.filter(coin => coin.phase === 'graduated')
+  return sort === 'marketcap' ? shown.sort((a, b) => (b.marketCapUsd ?? -1) - (a.marketCapUsd ?? -1)) : shown.sort((a, b) => (b.since ?? 0) - (a.since ?? 0))
 }
