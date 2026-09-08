@@ -6,8 +6,9 @@ type Props = { active: boolean; sound: boolean; onSoundBlocked: () => void; onSw
 
 // The inside of the original image's curved glass, in artwork coordinates.
 const GLASS_PATH = 'M 596 138 C 691 137 824 146 912 154 Q 929 156 929 178 L 920 428 Q 919 445 901 446 C 801 446 655 434 588 423 Q 570 420 567 399 C 557 311 562 213 574 161 Q 578 138 596 138 Z'
-// Lift dark footage while retaining separation near white instead of clipping at 1 / exposure.
-const CRT_EXPOSURE = '0 .18 .4 .58 .72 .82 .89 .94 .97 .99 1'
+// The screen must be the brightest thing in the room. Lift the footage hard and clip its top fifth to
+// white before the halation blooms, so dim talking heads still read as emitted light.
+const CRT_EXPOSURE = '0 .24 .48 .66 .8 .9 .96 .99 1 1 1'
 
 /** Original pixels stay intact; registered shading and CRT light integrate the artwork. */
 export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitch, switchLabel }: Props) {
@@ -127,7 +128,7 @@ export default function ImageTelevision({ active, sound, onSoundBlocked, onSwitc
           </feComponentTransfer>
           <feGaussianBlur in="highlights" stdDeviation="1.6" />
           <feComponentTransfer result="halation">
-            <feFuncA type="linear" slope=".22" />
+            <feFuncA type="linear" slope=".32" />
           </feComponentTransfer>
           <feBlend in="exposed" in2="halation" mode="screen" />
         </filter>

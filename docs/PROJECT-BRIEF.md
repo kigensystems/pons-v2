@@ -34,13 +34,17 @@ The user also shared pons's own launch form: name, ticker, description, image, X
 
 Waiting on the user: review of the CRT and the two collections in Chrome, the pair-token list, and Render and Netlify accounts to run the deploy steps.
 
-Open decisions, in order: the headline pattern (proposal: keep the two-line italic pair on the opening only, plain single-line headings elsewhere; see the About and Explore lines proposed in session); darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
+Open decisions, in order: darken `--ink-3` one step for 12px labels; then the opening-scene lighting feedback below.
+
+## Opening polish, September 7 night
+
+Four passes on the `claude/landing-page-polish-598bf7` worktree branch, each shown in Chrome at desktop and 390px (through a scratch iframe page, since the extension's resize does not change the viewport): the phosphor glow turned up to one em-scaled token (`--phosphor-fill #f7efe0`, halo `.2em`/`.8em`, fringe unchanged) shared by the h1, wordmark, nav link and Enter cue; the frame cut from nine elements to six (the "A companion to Pons" kicker, "The opening" label and the duplicate Explore nav link removed, so Enter is the only way in); the CRT exposure raised to clip its top fifth to white with stronger halation, so the screen is the brightest object; and the headline pattern settled as one roman voice, with the italic pair kept on the opening only and Explore and About headings set roman (Explore on one line, About broken at the sentence because one line widowed). Channel content itself was not changed; the poster is still channel 04's talking head, and a brighter clip or poster would do more than any further grading. Two more rounds on the user's notes removed the description line and then the About us link (four things in frame: wordmark, headline pair, Enter, Macintosh), rebuilt Enter as an ivory keycap with a drawn return arrow that presses on hover, and redrew the corner glyph as the set's own on-screen display. The first glyph attempt, saturated green pixel blocks with a black drop shadow, was judged worse; the kept version is pale phosphor light: blurred blocks added to the picture with misconvergence and bloom over a soft dimming of the footage, tucked 17px from the top and 22px from the right. The Enter label went through a six-option comparison and a Chicago trial; the user rejected Chicago outright ("Garamond is way better") and Garamond roman 28px stayed. Chicago remains only on the TV cursor label, NO SIGNAL and the boot screen.
 
 ## What exists
 
 - React + TypeScript + Vite in `frontend/`.
-- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the latest graduation on Pons. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
-- Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, muted autoplay, and opt-in sound. The glass is the only control: a click unmutes, mutes, or (under reduced motion) plays with sound. The picture carries one mark, a small outlined speaker in the top-right corner drawn into the canvas (crossed while muted, waves for two seconds when the sound comes on, a play triangle while paused), and a Chicago cursor label follows the pointer over the glass. The footer buttons were removed on September 7.
+- Explore and About use scoped styles, the shared type tokens in `index.css`, and static grain. About keeps the existing Macintosh artwork; Explore's hero is the CRT close-up showing the coin that most recently left its curve on Pons. The opening's naming and navigation now connect all three pages. Its TV, lighting, and renderer are unchanged by this page work.
+- Original `macintosh-render.png` with a 640 × 480 canvas TV, four video channels in the user's priority order (04, 02, 03, 01, looping; the poster is 04's opening frame), brief static transitions, muted autoplay, and opt-in sound. The glass is the only control: a click unmutes, mutes, or (under reduced motion) plays with sound. The picture carries one mark, the set's on-screen display drawn into the canvas as phosphor-green pixel blocks (a speaker crossed while muted, with waves for two seconds when the sound comes on, a play triangle while paused), and a Chicago cursor label follows the pointer over the glass. The footer buttons were removed on September 7.
 - SVG screen alignment, bloom, color spill, and contact/cast shadows. Filled shadow footprints now sit behind the transparent artwork; foreground haze is behind the assembly to preserve contact edges. These are image composites, not physical lighting.
 - TV updates are capped at 30fps. Reduced motion starts paused; hidden tabs stop playback work. Fog is static.
 - The loader completes when the artwork loads, but stays up at least 1.8 s on the first visit of a tab session (skipped for reduced motion and on later visits via a sessionStorage flag). Image failure exposes reload; exhausted video failures show NO SIGNAL.
@@ -54,6 +58,7 @@ Prioritize one visible discrepancy, make a small change, inspect it against Shad
 
 ## References and preservation
 
+- [Promo video direction and supplied logo](PROMO-VIDEOS.md)
 - [Asset provenance](../frontend/public/ASSETS.md)
 - [Validation evidence](SCENE-VALIDATION.md)
 - [Historical brief](SCENE-HISTORY.md) — superseded decisions; consult only when needed.

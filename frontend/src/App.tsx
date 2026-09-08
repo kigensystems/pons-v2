@@ -53,8 +53,7 @@ function App() {
       </div>
 
       <header className="masthead">
-        <span className="working-name"><span className="working-name-row"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</span><span className="name-note">A companion to Pons</span></span>
-        <nav className="opening-nav" aria-label="Primary"><a href="/explore">Explore</a><a href="/about">About us</a></nav>
+        <span className="working-name"><img className="plum-mark" src="/images/plum-mark.png" alt="" width="256" height="256" decoding="async" />Plum</span>
       </header>
 
       <div className="scene-object scene-object--still">
@@ -86,15 +85,12 @@ function App() {
 
       <section className="intro" aria-labelledby="scene-title">
         <h1 id="scene-title">A familiar feeling.<br /><em>A new window.</em></h1>
-        <p className="intro-description">An independent companion to the Pons launchpad.</p>
-        <a className="enter-cue" href="/explore"><span className="enter-cue-key">↵</span> Enter</a>
+        {/* The only way in. A keycap in the Macintosh's plastic and the word in the headline's voice. */}
+        <a className="enter-cue" href="/explore">
+          <span className="enter-cue-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M19 5v6a3 3 0 0 1-3 3H7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /><path d="M10 10l-4 4 4 4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+          <span className="enter-cue-label">Enter</span>
+        </a>
       </section>
-
-      <footer className="scene-footer">
-        <div className="scene-note">
-          <span className="scene-index">The opening</span>
-        </div>
-      </footer>
     </main>
     </>
   )

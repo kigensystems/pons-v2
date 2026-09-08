@@ -31,39 +31,52 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
   let audio: AudioContext | undefined
   let burst: AudioBufferSourceNode | undefined
   const failed = new Set<number>()
-  // The only mark on the picture: a small 1-bit speaker in the corner, the Sound control panel's
-  // icon, crossed while the sound is off, ringed with its waves for a moment once it comes on.
-  // Sizes are screen pixels; `scale` converts them to canvas units so the glyph stays legible
-  // however small the CRT is drawn.
+  // The only mark on the picture: the TV's own on-screen display, a speaker in the top-right corner,
+  // crossed while the sound is off, with its waves for a moment once it comes on, a play triangle while
+  // paused. It is light from the tube, not paint on the glass: a character-generator glyph on a coarse
+  // grid, softened the way the phosphor softens everything, added to the picture with red and blue
+  // misconvergence and a bloom, over a soft dimming of the footage behind it so it stays legible on a
+  // bright sky. Sizes are screen pixels; `scale` converts them to canvas units so the glyph stays
+  // legible however small the CRT is drawn.
   let scale = 0.4
   let wavesShownAt = -1
   let poster: HTMLImageElement | undefined
+  const SPEAKER = ['....X', '...XX', '..XXX', 'XXXXX', 'XXXXX', 'XXXXX', '..XXX', '...XX', '....X']
+  const CROSS = ['.....', '.....', 'X...X', '.X.X.', '..X..', '.X.X.', 'X...X', '.....', '.....']
+  const WAVES = ['..X..', '...X.', 'X...X', '.X..X', '.X..X', '.X..X', 'X...X', '...X.', '..X..']
+  const PLAY = ['X......', 'XX.....', 'XXX....', 'XXXX...', 'XXXXX..', 'XXXX...', 'XXX....', 'XX.....', 'X......']
+  const drawBlocks = (rows: string[], x: number, y: number, cell: number) => {
+    rows.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) if (row[c] === 'X') ctx.fillRect(x + c * cell, y + r * cell, cell, cell)
+    })
+  }
   const drawSpeaker = (u: number, kind: 'off' | 'on' | 'play', alpha: number) => {
+    const cell = 2 * u
+    const glyph = kind === 'play' ? [[PLAY, 0]] as const : [[SPEAKER, 0], [kind === 'off' ? CROSS : WAVES, 7]] as const
+    const width = (kind === 'play' ? 7 : 12) * cell
+    const height = 9 * cell
+    const paint = (dx: number, dy: number, color: string, mode: GlobalCompositeOperation, opacity: number) => {
+      ctx.globalCompositeOperation = mode
+      ctx.globalAlpha = alpha * opacity
+      ctx.fillStyle = color
+      for (const [rows, col] of glyph) drawBlocks(rows, dx + col * cell, dy, cell)
+    }
     ctx.save()
-    ctx.globalAlpha = alpha
-    ctx.translate(640 - 36 * u, 38 * u)
-    ctx.lineJoin = 'round'
-    ctx.lineCap = 'round'
-    // Icons of the period were white with a black outline, which also reads on bright footage.
-    const outline = (draw: () => void, fill: boolean) => {
-      ctx.strokeStyle = '#0b0f0c'
-      ctx.lineWidth = (fill ? 3.2 : 5) * u
-      draw()
-      ctx.stroke()
-      ctx.strokeStyle = '#eef1e4'
-      ctx.fillStyle = '#eef1e4'
-      ctx.lineWidth = 1.8 * u
-      draw()
-      if (fill) ctx.fill()
-      else ctx.stroke()
-    }
-    if (kind === 'play') {
-      outline(() => { ctx.beginPath(); ctx.moveTo(-7 * u, -9 * u); ctx.lineTo(9 * u, 0); ctx.lineTo(-7 * u, 9 * u); ctx.closePath() }, true)
-    } else {
-      outline(() => { ctx.beginPath(); ctx.moveTo(-12 * u, -4 * u); ctx.lineTo(-7 * u, -4 * u); ctx.lineTo(-1 * u, -10 * u); ctx.lineTo(-1 * u, 10 * u); ctx.lineTo(-7 * u, 4 * u); ctx.lineTo(-12 * u, 4 * u); ctx.closePath() }, true)
-      if (kind === 'off') outline(() => { ctx.beginPath(); ctx.moveTo(4 * u, -4.5 * u); ctx.lineTo(12 * u, 4.5 * u); ctx.moveTo(12 * u, -4.5 * u); ctx.lineTo(4 * u, 4.5 * u) }, false)
-      else outline(() => { ctx.beginPath(); ctx.arc(0, 0, 6 * u, -0.85, 0.85); ctx.moveTo(10.5 * u, -8 * u); ctx.arc(0, 0, 10.5 * u, -0.85, 0.85) }, false)
-    }
+    ctx.translate(640 - width - 22 * u, 17 * u)
+    // The footage dims softly behind the glyph, the way a set backs its display.
+    const backing = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, 24 * u)
+    backing.addColorStop(0, `rgba(3, 9, 6, ${0.5 * alpha})`)
+    backing.addColorStop(1, 'rgba(3, 9, 6, 0)')
+    ctx.fillStyle = backing
+    ctx.fillRect(-24 * u, -24 * u, width + 48 * u, height + 48 * u)
+    ctx.filter = `blur(${0.55 * u}px)`
+    ctx.shadowColor = '#cdebc4'
+    ctx.shadowBlur = 7 * u
+    paint(0, 0, '#cdebc4', 'lighter', 0.5)
+    ctx.shadowBlur = 0
+    paint(-0.7 * u, 0.15 * u, '#ff6a4a', 'lighter', 0.35)
+    paint(0.7 * u, -0.15 * u, '#5a86ff', 'lighter', 0.35)
+    paint(0, 0, '#e4f5dc', 'lighter', 0.85)
     ctx.restore()
   }
   const drawOsd = () => {
