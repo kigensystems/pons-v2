@@ -14,7 +14,7 @@
 # around the site. Change `to` if Render assigns a different hostname; see docs/DEPLOY.md.
 [[redirects]]
   from = "/api/*"
-  to = "https://plum-api.onrender.com/api/:splat"
+  to = "https://plum-api-fg3l.onrender.com/api/:splat"
   status = 200
   force = true
   signed = "PLUM_PROXY_SECRET"
