@@ -28,7 +28,7 @@ export default function TokenGrid({ coins, source, sort, mine, loading, error, s
   return (
     <><p className="pad-sr-only" role="status">{visible.length} {visible.length === 1 ? 'coin' : 'coins'} shown</p><ul className="pad-grid">
       {visible.map(coin => (
-        <li key={coin.token} className="pad-card">
+        <li key={coin.token} id={`coin-${coin.token}`} className="pad-card" tabIndex={-1}>
           <div className="pad-card-art" style={{ '--hue': coin.hue } as React.CSSProperties} aria-hidden="true">
             {coin.logo && !broken.has(coin.logo)
               ? <img src={coin.logo} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(previous => new Set(previous).add(coin.logo!))} />

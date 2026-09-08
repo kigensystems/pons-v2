@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import type { Spotlight } from './api'
 import { formatChange, formatUsd, relativeAge } from './launchModel'
 
-type Props = { spotlight: Spotlight | null; error: string | null }
+type Props = { spotlight: Spotlight | null; error: string | null; onLocate: (token: string) => void }
 
 // The Explore hero's CRT: a close crop of the Macintosh screen showing the coin that most recently
 // left its curve on Pons. The bezel is a photograph; only the glass emits light. With a picture the
 // whole picture sits in the upper glass and a phosphor readout runs beneath it; without one the
 // readout is the picture. A null spotlight is still loading; one without a payload has nothing to show.
-export default function ExploreMonitor({ spotlight, error }: Props) {
+export default function ExploreMonitor({ spotlight, error, onLocate }: Props) {
   const coin = spotlight?.payload ?? null
   // A picture that fails to load gets one more try after a pause (the logo host rate-limits bursts)
   // before the readout takes over.
@@ -38,6 +38,7 @@ export default function ExploreMonitor({ spotlight, error }: Props) {
       <figcaption className="pad-crt-caption">
         Recently migrated
         <span className="pad-sr-only">{coin ? `: ${coin.name}, $${coin.symbol}, market cap ${formatUsd(coin.marketCapUsd)}, migrated ${relativeAge(coin.graduatedAt ?? 0)} ago` : lost ? ': the feed is unreachable' : ': nothing yet'}</span>
+        {coin && <> · <a className="pad-crt-locate" href={`#coin-${coin.token}`} onClick={event => { event.preventDefault(); onLocate(coin.token) }}>${coin.symbol} in the collection</a></>}
       </figcaption>
     </figure>
   )

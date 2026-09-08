@@ -176,6 +176,7 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
       drawMessage()
     } else {
       channel = next
+      warm(channel)
       videos[channel].currentTime = 0
       phase = 'static'
       elapsed = stalled = 0
@@ -185,11 +186,21 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
     report()
     invalidate()
   }
+  // Only the first channel downloads with the page; each later one is fetched once the channel before
+  // it is playing (or, after a failure, the moment it becomes current), so the opening does not pull
+  // all four clips at once and a clip that is never reached is never fetched.
+  const warm = (index: number) => {
+    const video = videos[index]
+    if (video.preload === 'auto') return
+    video.preload = 'auto'
+    video.load()
+  }
+  const upcoming = () => Array.from({ length: videos.length - 1 }, (_, i) => (channel + i + 1) % videos.length).find((i) => !failed.has(i))
   const videos = CHANNEL_URLS.map((url, index) => {
     const video = document.createElement('video')
     video.muted = true
     video.playsInline = true
-    video.preload = 'auto'
+    video.preload = index === 0 ? 'auto' : 'none'
     video.volume = 0.55
     video.onended = () => { if (!disposed && index === channel && phase === 'video') advance() }
     video.onerror = () => {
@@ -197,8 +208,9 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
       failed.add(index)
       if (index === channel) advance()
     }
+    // Setting src starts the fetch for the first channel; an explicit load() would open and abort a
+    // request for each of the others despite preload none.
     video.src = url
-    video.load()
     return video
   })
   drawMessage()
@@ -222,6 +234,8 @@ export function createMonitorPlayback(invalidate: () => void, soundBlocked: () =
         return
       }
       starting = false
+      const next = upcoming()
+      if (next !== undefined) warm(next)
     }).catch((error: unknown) => {
       if (disposed || attempt !== playAttempt) return
       starting = false

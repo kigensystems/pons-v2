@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { api, type Launch, type PonsCoins, type Spotlight } from './api'
@@ -32,6 +33,13 @@ function ExploreDesk() {
   const [sort, setSort] = useState<Sort>('newest')
   const [onlyMine, setOnlyMine] = useState(false)
   const [search, setSearch] = useState('')
+  // The CRT's coin has one action: its card in the collection. The card may be hidden behind the Plum tab, a search or the
+  // Made-by-you filter, so those are cleared and rendered first, then the card is scrolled into view and given focus.
+  const locate = (token: string) => {
+    flushSync(() => { setSource('pons'); setSearch(''); setOnlyMine(false) })
+    const card = document.getElementById(`coin-${token}`)
+    if (card) { card.focus({ preventScroll: true }); card.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }
+  }
   const [creating, setCreating] = useState(false)
   const [notice, setNotice] = useState('')
   // When the last successful read of each collection landed in this browser; a failed refresh keeps the cards and says so.
@@ -82,8 +90,8 @@ function ExploreDesk() {
               <a className="pad-link" href="/about">About us</a>
             </div>
           </div>
-          <ExploreMonitor spotlight={spotlight} error={spotlightError} />
-          {!loading && <p className="pad-hero-status" role="status">{[pons?.items.length ? `${pons.items.length} migrated on Pons` : null, error ? null : `${migratedPlum} migrated through Plum`, wallet.session && mine ? `${mine} made by you` : null].filter(Boolean).join(' · ') || 'The collection is out of reach.'}</p>}
+          <ExploreMonitor spotlight={spotlight} error={spotlightError} onLocate={locate} />
+          {!loading && <p className="pad-hero-status" role="status">{[pons?.items.length ? `${pons.items.length} recent migrations on Pons` : null, error ? null : `${migratedPlum} migrated through Plum`, wallet.session && mine ? `${mine} made by you` : null].filter(Boolean).join(' · ') || 'The collection is out of reach.'}</p>}
         </section>
 
         <div className="pad-stripe-rule" aria-hidden="true" />
@@ -107,7 +115,7 @@ function ExploreDesk() {
               ))}
               {wallet.session && <button type="button" className="pad-chip" aria-pressed={onlyMine} onClick={() => setOnlyMine(value => !value)}>Made by you</button>}
             </div>
-            <p className="pad-sample-note" role="status"><span className="pad-dot" /> {source === 'pons' ? (ponsStale ? staleNote : 'Migrated on Pons · Robinhood Chain') : (error && launches.length ? staleNote : 'Made through Plum · Robinhood Chain')}</p>
+            <p className="pad-sample-note" role="status"><span className="pad-dot" /> {source === 'pons' ? (ponsStale ? staleNote : `${pons?.items.length ? `The ${pons.items.length} most recent migrations` : 'Recent migrations'} on Pons · Robinhood Chain`) : (error && launches.length ? staleNote : 'Made through Plum · Robinhood Chain')}</p>
           </div>
           <p className="pad-sr-only" role="status">{notice}</p>
           {notice && <p className="pad-notice">{notice} <button type="button" onClick={() => setNotice('')}>Dismiss</button></p>}

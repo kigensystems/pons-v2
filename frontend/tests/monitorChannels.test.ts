@@ -4,6 +4,7 @@ import { CHANNEL_URLS, STATIC_SECONDS, createMonitorChannels } from '../src/moni
 
 class FakeVideo {
   src = ''
+  preload = ''
   muted = true
   paused = true
   ended = false
@@ -128,6 +129,27 @@ test('cycles all four supplied clips in order and wraps, with a bounded static i
     assert.equal(videos[(index + 1) % 4].paused, false)
   }
   assert.equal(diagnostics.channel, '1')
+})
+
+test('only the first channel downloads with the page; each later one is fetched once the one before it plays, or when it becomes current after a failure', async t => {
+  const { monitor, videos } = setup(t)
+  assert.deepEqual(videos.map(video => video.preload), ['auto', 'none', 'none', 'none'])
+  assert.deepEqual(videos.map(video => video.loadCalls), [0, 0, 0, 0], 'Setting src is the fetch; load() would open and abort a request despite preload none.')
+  monitor.setActive(true)
+  await flush()
+  assert.deepEqual(videos.map(video => video.preload), ['auto', 'auto', 'none', 'none'])
+  assert.equal(videos[1].loadCalls, 1)
+  monitor.update(1 / 30)
+  videos[0].finish()
+  monitor.update(STATIC_SECONDS + 0.001)
+  await flush()
+  assert.deepEqual(videos.map(video => video.preload), ['auto', 'auto', 'auto', 'none'])
+  assert.equal(videos[1].loadCalls, 1, 'A warmed channel is not reloaded when it becomes current.')
+  monitor.update(1 / 30)
+  videos[2].onerror?.()
+  videos[1].finish()
+  assert.deepEqual(videos.map(video => video.preload), ['auto', 'auto', 'auto', 'auto'], 'The channel after a failed one is fetched as soon as it becomes current.')
+  assert.equal(videos[3].loadCalls, 1)
 })
 
 test('pause freezes channel time and static progress; resume preserves the selected channel', async t => {

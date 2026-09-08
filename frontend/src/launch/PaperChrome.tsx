@@ -3,7 +3,7 @@ import { shortAddress } from './launchModel'
 // address is the connected account; signedIn says whether Plum holds a session for it.
 export type WalletControl = { address: string | null; signedIn: boolean; connecting: boolean; onConnect: () => void; onDisconnect: () => void }
 
-export function PaperHeader({ page, wallet, onCreate }: { page: 'explore' | 'about'; wallet?: WalletControl; onCreate?: () => void }) {
+export function PaperHeader({ page, wallet, onCreate }: { page?: 'explore' | 'about'; wallet?: WalletControl; onCreate?: () => void }) {
   return <>
     <a className="pad-skip" href="#paper-main">Skip to content</a>
     <header className="pad-bar">

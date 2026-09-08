@@ -9,29 +9,26 @@ Written September 2026 after four reviews of the live site at `https://pluminfra
 
 Work the sections in order. Do not start the second-screen redesign until the decisions in section 1 are made.
 
-## 0. State after the first triage session (uncommitted on `main`)
+## 0. State after the triage sessions
 
-The user set section 1 aside and asked for bugs, UX and stability first. These landed in the working tree, build and lint clean, 30 tests passing, checked on the dev server in Chrome; **not committed, awaiting the user's review**:
+The user set section 1 aside and asked for bugs, UX and stability first. The first pass (desk drafts in `sessionStorage`, visible field validation, the factory named in the eligibility message, a stale-read label that also fires on a lost refresh, an accurate visible launch notice, card labels and 33 px link hit areas, lazy-loaded paper pages so the opening ships no wallet code, Netlify cache and security headers, the licensed model deleted from the publish, `robots.txt` and `sitemap.xml`) was shown in Chrome, approved and pushed as `32b949c` on September 7. After the deploy, `/assets/*.js` answered `cache-control: public,max-age=31536000,immutable` and the frame, content-type and referrer headers were live. The model URL no longer served the file but answered 200 with the 1.4 kB SPA shell, because the catch-all redirect answered every path; the second pass below changes that.
 
-- Creation desk keeps its draft (name, ticker, description, website, fee) in `sessionStorage` across close, the sign-in round trip and a reload; cleared once the launch is included. The image file cannot be kept. `frontend/src/launch/LaunchForm.tsx`.
-- Ticker, website and creator-fee fields show a message under the field when invalid, linked by `aria-describedby`; `aria-invalid` only once the field has content.
-- Eligibility message names the factory: "The Pons factory does not allow this wallet to launch right now."
-- Explore keeps old cards on a failed refresh and says "Showing the last good read from HH:MM" (server read time for a stale feed, this browser's last good read for a lost request); the note is a `role="status"`. `frontend/src/launch/LaunchPage.tsx`.
-- Launch notice is visible (a dismissible `pad-notice`) and accurate: the coin appears under Plum coins once it leaves its curve. Explore no longer switches to the empty Plum tab after a launch.
-- Cards: "24h" beside the change; the age carries a title and screen-reader text ("Migrated 4m ago" / "Launched 4m ago" per source); address and Chart links have coin-specific names and a 33 px tall hit area with unchanged lettering; the no-match state says how many coins were searched.
-- Routes split: `frontend/src/pages.ts` lazy-loads Explore and About, so the opening ships no wallet code (index.html preloads only the runtime and the stylesheet; the entry chunk fell from 413 kB to 214 kB).
-- `netlify.toml`: hashed assets immutable for a year, fonts a week, images and videos a day; `X-Frame-Options: DENY`, `frame-ancestors 'none'`, `nosniff`, referrer and permissions policies; the build command deletes `dist/models` so the licensed Macintosh model is not published. `robots.txt` and `sitemap.xml` added under `frontend/public/`.
-- The opening h1's accessible name has its space.
+Second pass, approved in Chrome and pushed on September 7 (build, lint and 31 tests clean):
 
-Not verified live: the stale label (source and build only; needs a blocked or failing refresh), the desk at 390 px, and the sign-in round trip with a wallet.
+- Video channels on demand. `frontend/src/monitorPlayback.ts` sets `preload` to `auto` for the first channel only and `none` for the rest, and no longer calls `load()` at creation (with `preload = 'none'`, an explicit `load()` opens and aborts a request per channel). `warm(index)` sets `auto` and calls `load()` once; it runs for the upcoming channel when the current one starts playing and for the new channel in `advance()`, so a channel that fails early cannot cascade into the stall detector. Checked in the in-app browser: the opening fetched `channel-04.mp4` alone; 02, 03 and 01 were each fetched once the channel before them started, across two channel changes, no console errors. One new test in `tests/monitorChannels.test.ts`.
+- Not-found page. `frontend/src/notFound/NotFoundPage.tsx` and `notFound.css`, lazy-loaded from `pages.ts`; `main.tsx` routes every path other than `/`, `/explore`, `/launch` and `/about` to it. Paper header and footer, the Explore label style for "Not found · 404", a one-line title at the standard title scale, the requested path in the sentence, Open Explore and Back to the opening. Checked at 1440, 375 and 320, no overflow. `netlify.toml` keeps the shell-with-200 redirect only for the three app routes and copies `dist/index.html` to `dist/404.html` at build, so Netlify answers a real 404 for anything else, the model URL included. Confirm after the next deploy: `curl -sI https://pluminfra.xyz/nothing` and `.../models/macintosh-512k.glb` (expect 404; the page still renders), `curl -sI https://pluminfra.xyz/about` (expect 200).
+- The CRT's coin has an action: the caption ends in "$TICKER in the collection", a link to the coin's card (`li` ids `coin-<token>`, `tabIndex -1`). The click switches to Pons coins, clears the search and the Made-by-you filter with `flushSync`, focuses the card and scrolls it to the centre (instant under reduced motion). Checked from the Plum tab in Chrome; the smooth scroll itself could not be watched because Chrome reported the tab hidden and does not animate scrolls there, the instant path moved the page.
+- Coverage wording. The hero status reads "50 recent migrations on Pons" and the collection note "The 50 most recent migrations on Pons · Robinhood Chain" (the market API's bonded view, limit 100, newest first); the no-match state already says how many coins were searched.
+- Desk progress labels: at 390 the three labels sit on one line; at 320 they wrap to two rows without overflow. No change.
+
+Not verified live: the stale label (needs a blocked or failing refresh), the sign-in round trip with a wallet, the not-found page's 404 status on the domain (needs the deploy).
 
 ### Next session
 
-1. `git pull --ff-only origin main`, then `git status`; the changes above are in the tree. Start the two dev servers (`.claude/launch.json`), open `http://127.0.0.1:5173/explore` in Chrome, and show the user: the desk with an invalid website and fee (messages under the fields), a draft surviving Escape and reopen, a card's "24h" and age title, and the landing's network panel with no `wui-` or `w3m-` chunks. Get the go-ahead, then one commit and push. Netlify deploys on push; afterwards confirm with `curl -sI https://pluminfra.xyz/assets/<any>.js | grep -i cache-control` and `curl -sI https://pluminfra.xyz/models/macintosh-512k.glb` (expect 404).
-2. Video channels on demand: `frontend/src/monitorPlayback.ts` creates all four `<video>` elements with `preload = 'auto'` (about 2.2 MB on the opening). Plan: `auto` for channel index 0 only, `none` for the rest; a `warm(index)` helper sets `auto` and calls `load()`; call it for the upcoming channel when the current one starts playing (in `startVideo`'s success branch) and again in `advance()` after `channel = next`, so a channel that fails early cannot cascade into the 8-second stall detector marking the next one failed. Run `npm --prefix frontend test` (playback tests) and watch two full channel changes with the network panel open before showing it.
-3. Not-found page for unknown paths (`main.tsx` currently falls back to the opening). A short paper page on `PaperHeader`/`PaperFooter` with a link to Explore and the opening. New UI: show before committing.
-4. Remaining P1 items in section 3 that are not section-1 decisions: the CRT's featured coin has no action; a coverage line for the bounded feed; desk progress labels at 390 px (CSS already lets them wrap; check the result).
-5. Then section 1 with the user.
+1. `git pull --ff-only origin main`, `git status`. Run the three curl checks above if section 0 does not yet record their result.
+2. Section 4 leftovers: the 1.77 MB Macintosh PNG (re-encode), social preview image with `og:url` and canonical in `frontend/index.html`, per-page font preloads and WOFF2.
+3. Section 5 polish as the user directs.
+4. Then section 1 with the user.
 
 ## 1. Decisions before any work
 
@@ -45,48 +42,48 @@ Not verified live: the stale label (source and build only; needs a blocked or fa
 |---|---|---|
 | Fee claims contradict the product; desk accepted 9% and printed "Total trade fee 10.00%" | About fee section; [LaunchForm.tsx:77](../frontend/src/launch/LaunchForm.tsx), [routes.ts:78](../backend/src/routes.ts) | Verified |
 | `[Name] and [Name] · Plum, [City]` live on About | [AboutPage.tsx:68](../frontend/src/about/AboutPage.tsx) | Verified |
-| Purchased Macintosh model publicly downloadable, 4.6 MB, unused by the live scene | `frontend/public/models/macintosh-512k.glb`, served at `/models/` | **Fixed, uncommitted**: build deletes `dist/models`; confirm 404 after deploy |
+| Purchased Macintosh model publicly downloadable, 4.6 MB, unused by the live scene | `frontend/public/models/macintosh-512k.glb`, served at `/models/` | **Fixed, deployed**: the build deletes `dist/models`; the URL answers the SPA shell. A real 404 follows the not-found deploy |
 | "Prototype edition" in the shared footer beside a form that creates real paid tokens | PaperChrome footer | Verified |
 
 ## 3. Product and trust (P1)
 
 | Item | Where | Status |
 |---|---|---|
-| Draft lost on sign-in: Connect closes the desk before opening the wallet, fields are component state | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, uncommitted** (sessionStorage draft) |
-| Failed refresh keeps old Pons cards with no stale label; "Showing the last good read" keys on the server's `status`, not a client transport failure | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, uncommitted**; not yet reproduced live |
-| Success notice says "It is now in the collection" but the collection lists migrated coins only | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, uncommitted** (notice visible and accurate) |
-| "50 migrated on Pons · 0 migrated through Plum" is the first number on Explore | [LaunchPage.tsx:79](../frontend/src/launch/LaunchPage.tsx) | Verified |
+| Draft lost on sign-in: Connect closes the desk before opening the wallet, fields are component state | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, deployed** (sessionStorage draft) |
+| Failed refresh keeps old Pons cards with no stale label; "Showing the last good read" keys on the server's `status`, not a client transport failure | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, deployed**; not yet reproduced live |
+| Success notice says "It is now in the collection" but the collection lists migrated coins only | [LaunchPage.tsx](../frontend/src/launch/LaunchPage.tsx) | **Fixed, deployed** (notice visible and accurate) |
+| "50 migrated on Pons · 0 migrated through Plum" is the first number on Explore | [LaunchPage.tsx:79](../frontend/src/launch/LaunchPage.tsx) | Reworded, uncommitted: "50 recent migrations on Pons"; the Plum count stays |
 | Hero says "what is launching on Pons"; list is graduates only | Explore hero copy | Verified |
 | About offers stock pairs; desk and API are ETH only | [AboutPage.tsx:42](../frontend/src/about/AboutPage.tsx), [routes.ts:78](../backend/src/routes.ts) | Verified |
 | Creator rate not shown on any card despite "The rate sits on the coin where you can read it" | TokenGrid | Verified |
-| Invalid website or fee only sets `aria-invalid`; no message, CTA gated silently | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, uncommitted** |
-| Eligibility message reads as invite-only; it is the factory's own `canLaunch` | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, uncommitted** |
-| Cards: percentage has no "24h" label; age has no definition; Pons and Plum ages may use different events | [TokenGrid.tsx](../frontend/src/launch/TokenGrid.tsx) | **Fixed, uncommitted**: 24h label; age titled per source (Pons since migration, Plum since launch; the registry has no graduation time) |
-| Feed is a bounded snapshot (about 50 to 60 items) with search over loaded items; no coverage label, so an empty search proves nothing | [LaunchPage.tsx:45](../frontend/src/launch/LaunchPage.tsx), `backend/src/pons.ts` | Verified |
-| No detail view; every card exits to Blockscout or DexScreener; CRT's featured coin has no action | Explore | Verified |
+| Invalid website or fee only sets `aria-invalid`; no message, CTA gated silently | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, deployed** |
+| Eligibility message reads as invite-only; it is the factory's own `canLaunch` | [LaunchForm.tsx](../frontend/src/launch/LaunchForm.tsx) | **Fixed, deployed** |
+| Cards: percentage has no "24h" label; age has no definition; Pons and Plum ages may use different events | [TokenGrid.tsx](../frontend/src/launch/TokenGrid.tsx) | **Fixed, deployed**: 24h label; age titled per source (Pons since migration, Plum since launch; the registry has no graduation time) |
+| Feed is a bounded snapshot (about 50 to 60 items) with search over loaded items; no coverage label, so an empty search proves nothing | [LaunchPage.tsx:45](../frontend/src/launch/LaunchPage.tsx), `backend/src/pons.ts` | **Fixed, uncommitted**: collection note names the count as the most recent migrations; the no-match state says how many were searched |
+| No detail view; every card exits to Blockscout or DexScreener; CRT's featured coin has no action | Explore | CRT action **fixed, uncommitted** (caption links to the coin's card); no detail view remains a section-1 question |
 | First card about 855 px down on desktop, about 1,135 px on mobile | Explore | Source-supported by Astra; consistent with screenshots |
-| "Chart" links 27 × 17 px and addresses 70 × 17 px; card itself is not a link | TokenGrid | **Fixed, uncommitted**: 33 px hit area, coin-specific names |
+| "Chart" links 27 × 17 px and addresses 70 × 17 px; card itself is not a link | TokenGrid | **Fixed, deployed**: 33 px hit area, coin-specific names |
 | 12 px tickers, addresses and ages hard to scan through the grain | `launch.css` | Verified; already an open decision in the brief (darken `--ink-3`) |
 
 ## 4. Weight and infrastructure (P2, all verified)
 
 | Item | Measurement | Fix |
 |---|---|---|
-| Wallet stack ships on the opening | 60 JS files, 2.6 MB decoded, 0.8 MB transferred; Reown modal, Coinbase SDK, swap and onramp controllers; localStorage written before any intent | **Fixed, uncommitted**: `pages.ts` lazy-loads Explore and About |
-| All four videos fetched at once | 2.2 MB | Load channels on demand |
+| Wallet stack ships on the opening | 60 JS files, 2.6 MB decoded, 0.8 MB transferred; Reown modal, Coinbase SDK, swap and onramp controllers; localStorage written before any intent | **Fixed, deployed**: `pages.ts` lazy-loads Explore and About |
+| All four videos fetched at once | 2.2 MB | **Fixed, uncommitted**: first channel only; each next one once the current plays |
 | Macintosh PNG | 1.77 MB | Re-encode |
-| Hashed assets not cached | `cache-control: public, max-age=0, must-revalidate` on `/assets/*`, fonts, images, videos | **Fixed, uncommitted** in `netlify.toml`; confirm after deploy |
-| Every path returns 200 with the SPA, including `/robots.txt` and `/sitemap.xml`; app has no not-found state | curl | `robots.txt` and `sitemap.xml` **added, uncommitted**; not-found page still to do |
+| Hashed assets not cached | `cache-control: public, max-age=0, must-revalidate` on `/assets/*`, fonts, images, videos | **Fixed, deployed**: `/assets/*` immutable for a year |
+| Every path returns 200 with the SPA, including `/robots.txt` and `/sitemap.xml`; app has no not-found state | curl | `robots.txt` and `sitemap.xml` deployed; not-found page and real 404 status **fixed, uncommitted** |
 | No social preview image; no `og:url` or canonical | `frontend/index.html` | Add |
-| No CSP, frame-ancestors or `X-Content-Type-Options` on the frontend (HSTS only); the site frames trivially | curl | **Fixed, uncommitted** in `netlify.toml` |
+| No CSP, frame-ancestors or `X-Content-Type-Options` on the frontend (HSTS only); the site frames trivially | curl | **Fixed, deployed** (`netlify.toml`) |
 | Preload warnings for both fonts and the loading mark; fonts are TTF | Chrome console | Scope preloads per page; WOFF2 |
 
 ## 5. Polish (P3)
 
 - Nav label "The opening" means nothing to a first visitor.
-- The h1's accessible name runs the two lines together. **Fixed, uncommitted.**
+- The h1's accessible name runs the two lines together. **Fixed, deployed.**
 - Explore CTA row repeats the header.
-- Desk progress labels wrap awkwardly on mobile (Astra).
+- Desk progress labels wrap awkwardly on mobile (Astra). Checked: one line at 390, two rows at 320, no overflow.
 - Domain undercuts the door; no X or Telegram in the chrome (Grok). Morning work, not launch work.
 - Case lighting still reads fixed against the screen's light (Astra, and the brief's own unresolved feedback). Visual refinement, not a product priority.
 
@@ -117,7 +114,7 @@ No console errors on any page. Native `dialog` with focus on Name, Escape return
 5. Route splitting and Netlify headers.
 6. Only then the second screen, per the decision in section 1.
 
-Two local commits are unpushed at the user's request: `ad3178e` (desk balance line) and `11464a5` (docs). Push when told.
+Everything through `32b949c` is pushed and deployed.
 
 ## How each was measured
 

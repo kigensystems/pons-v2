@@ -2,10 +2,10 @@ import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { AboutPage, ExplorePage } from './pages'
+import { AboutPage, ExplorePage, NotFoundPage } from './pages'
 
 const path = window.location.pathname.replace(/\/+$/, '') || '/'
-const Page = path === '/explore' || path === '/launch' ? ExplorePage : path === '/about' ? AboutPage : App
+const Page = path === '/' ? App : path === '/explore' || path === '/launch' ? ExplorePage : path === '/about' ? AboutPage : NotFoundPage
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

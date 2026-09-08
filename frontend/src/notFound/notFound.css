@@ -1,0 +1,10 @@
+.not-found-main { max-width: 1248px; min-height: 52vh; margin: auto; padding: 96px 24px 120px; }
+.not-found h1 { max-width: 14ch; font-size: clamp(42px, 4vw, 76px); letter-spacing: -.035em; }
+.not-found-path { max-width: 640px; margin: 26px 0 0; font-size: 22px; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.not-found-path code { font: inherit; color: var(--ink-2); }
+.not-found-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; margin-top: 40px; }
+
+@media (max-width: 760px) {
+  .not-found-main { padding: 56px 20px 88px; }
+  .not-found-path { font-size: 19px; }
+}

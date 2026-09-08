@@ -33,3 +33,7 @@
 @keyframes pad-pulse { 0%, 100% { opacity: .3 } 50% { opacity: 1 } }
 @media (prefers-reduced-motion: reduce) { .pad-pulse { animation: none; } }
 .pad-quote-line dd small { display: block; color: var(--ink-3); font-size: 11px; }
+
+/* The CRT caption's one action: the featured coin's card. Same lettering as the caption, underlined as a link. */
+.pad-crt-locate { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+.pad-crt-locate:hover { color: var(--ink); text-decoration-color: currentColor; }

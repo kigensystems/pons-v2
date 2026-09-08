@@ -1,7 +1,8 @@
 [build]
   base = "frontend"
   # The licensed Macintosh model stays in the repository for the Three.js comparison view but is not published.
-  command = "npm run build && rm -rf dist/models"
+  # 404.html is the same shell: Netlify serves it with a 404 status for any path the redirects below do not name.
+  command = "npm run build && rm -rf dist/models && cp dist/index.html dist/404.html"
   publish = "dist"
 
 [build.environment]
@@ -20,8 +21,19 @@
   force = true
   signed = "PLUM_PROXY_SECRET"
 
+# Only the app's own routes get the shell with a 200; anything else is a real 404 rendered by the app's not-found page.
 [[redirects]]
-  from = "/*"
+  from = "/explore"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/launch"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
   to = "/index.html"
   status = 200
 
