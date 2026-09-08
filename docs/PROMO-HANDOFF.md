@@ -18,7 +18,7 @@ The Macintosh is incidental set dressing. It can sit in the corner of an office 
 
 Mysterious, retro, nostalgic, hazy, dreamy, slightly unsettling, then familiar. The feeling of a commercial you half-remember seeing late at night. Something ordinary feels a little strange; by the end, that strangeness becomes comforting. The world seems to have been quietly running all this time.
 
-Keep the unease gentle and unresolved for a while. No jump scare or horror climax. Nostalgia should come from the places, light, objects, sounds, and editing. It should feel lived-in, slightly imperfect, and emotionally recognizable.
+Let some fragments lean into 1980s–90s serial-killer horror suspense and Stranger Things-like ominousness: near-black woods, cold blue haze, distant flashlight beams, obscured sightlines and the feeling of being watched. The user rejected the pool reference and asked for this darker direction; image 04 in the reference pack now anchors it. Keep the eventual return to familiarity. Nostalgia should come from the places, light, objects, sounds, and editing. It should feel lived-in, slightly imperfect, and emotionally recognizable.
 
 ### References and identity
 
@@ -34,7 +34,7 @@ The commercial can feel **a little messy and unrelated**. Use an associative mon
 
 Possible fragments include:
 
-- An empty swimming pool at dusk, with a telephone ringing somewhere out of view.
+- Dark woods at night, with a few distant flashlight beams behind the trees and a telephone ringing somewhere out of view.
 - An answering machine in a dark kitchen, its red message lamp blinking.
 - Someone pulling a cable through an opening in a wall.
 - A grainy weather broadcast that holds a little too long.
