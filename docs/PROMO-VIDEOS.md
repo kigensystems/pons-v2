@@ -2,6 +2,8 @@
 
 Updated September 7, 2026. Creative direction and first test batch; no finished promo or visual approval yet.
 
+Latest discussion draft: [film direction, current model comparison, and prompt guide](PROMO-PROMPT-GUIDE.md). The original batch record below remains historical; the guide records the current site inspection and logo usage.
+
 ## Direction
 
 Vintage science fiction for X: mysterious, retro, nostalgic, hazy, dreamy and unsettling, resolving into a familiar feeling. References are the established Plum site, [Shader](https://www.shader.se/), Stranger Things, and the [Astra opening](https://openai.com/index/gpt-6-astra/). The inspected Astra opening is an interactive star field gathering into a spiral 6; whether the user also meant a separate release film remains unconfirmed.
