@@ -50,6 +50,7 @@ Prioritize one visible discrepancy, make a small change, inspect it against Shad
 
 ## References and preservation
 
+- [Promo video direction and supplied logo](PROMO-VIDEOS.md)
 - [Asset provenance](../frontend/public/ASSETS.md)
 - [Validation evidence](SCENE-VALIDATION.md)
 - [Historical brief](SCENE-HISTORY.md) — superseded decisions; consult only when needed.
