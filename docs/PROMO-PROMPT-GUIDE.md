@@ -1,5 +1,7 @@
 # Plum film: direction, model choice, and prompt guide
 
+**Superseded creative direction:** the user rejected the Macintosh-led concept below. Read [PROMO-HANDOFF.md](PROMO-HANDOFF.md) for the current infrastructure/world montage direction and the three completed OpenArt tests. This document preserves the earlier proposal and dated model research.
+
 Research checked September 7, 2026 (Pacific time). Discussion draft: the concept, duration, format, model, and spending have not been approved. No video generation was submitted during this research.
 
 ## Recommendation
